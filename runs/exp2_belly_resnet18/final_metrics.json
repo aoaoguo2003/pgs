@@ -1,0 +1,6 @@
+{
+  "best_epoch": 29,
+  "best_val_accuracy": 0.8666666666666667,
+  "test_accuracy": 0.865625,
+  "test_samples": 320
+}

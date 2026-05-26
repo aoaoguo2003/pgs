@@ -1,0 +1,6 @@
+# Temp files
+~$*
+*.tmp
+
+# Claude Code
+.claude/

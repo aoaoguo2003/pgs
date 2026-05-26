@@ -1,0 +1,321 @@
+image_path,true_name,pred_name,confidence,correct
+penguins_dataset_split_belly\test\Beaker\Beaker1.jpg,Beaker,Beaker,0.6619,1
+penguins_dataset_split_belly\test\Beaker\Beaker12.jpg,Beaker,Beaker,0.5000,1
+penguins_dataset_split_belly\test\Beaker\Beaker4.jpg,Beaker,Beaker,0.9998,1
+penguins_dataset_split_belly\test\Beaker\IMG_3055.jpeg,Beaker,Beaker,0.9349,1
+penguins_dataset_split_belly\test\Beau\1.jpg,Beau,Beau,0.9772,1
+penguins_dataset_split_belly\test\Beau\IMG_4318 copy.jpeg,Beau,Beau,0.9996,1
+penguins_dataset_split_belly\test\Beau\IMG_4424 copy.jpeg,Beau,Beau,0.9997,1
+penguins_dataset_split_belly\test\Bob\Bob2.jpg,Bob,Beaker,0.8207,0
+penguins_dataset_split_belly\test\Bob\Bob4.jpg,Bob,Bob,1.0000,1
+penguins_dataset_split_belly\test\Bob\DSC_2563.jpeg,Bob,Ziggy,0.1128,0
+penguins_dataset_split_belly\test\Bud\Bud12.jpg,Bud,Bud,0.9584,1
+penguins_dataset_split_belly\test\Bud\Bud16.jpg,Bud,Bud,0.5770,1
+penguins_dataset_split_belly\test\Bud\Bud2.jpg,Bud,Bud,0.9985,1
+penguins_dataset_split_belly\test\Bud\Bud6.jpg,Bud,Bud,1.0000,1
+penguins_dataset_split_belly\test\Bud\IMGP0653.JPG,Bud,Bud,0.9474,1
+penguins_dataset_split_belly\test\Calypso\Calypso2.jpg,Calypso,Calypso,0.9807,1
+penguins_dataset_split_belly\test\Calypso\IMG_0783_box4.jpg,Calypso,Calypso,0.9998,1
+penguins_dataset_split_belly\test\Calypso\IMG_0800_box1.jpg,Calypso,Phineas,0.5144,0
+penguins_dataset_split_belly\test\Calypso\IMG_2393_box4.jpg,Calypso,Calypso,0.9977,1
+penguins_dataset_split_belly\test\Chompy\DSC_2434.jpeg,Chompy,Cooper,0.6405,0
+penguins_dataset_split_belly\test\Chompy\DSC_2435.jpeg,Chompy,Cooper,0.4625,0
+penguins_dataset_split_belly\test\Chompy\IMGP0665.JPG,Chompy,Chompy,0.9985,1
+penguins_dataset_split_belly\test\Chompy\IMGP0705.JPG,Chompy,Chompy,0.7641,1
+penguins_dataset_split_belly\test\Chompy\IMGP0708.JPG,Chompy,Chompy,0.9423,1
+penguins_dataset_split_belly\test\Coco\Coco12.jpg,Coco,Coco,0.9341,1
+penguins_dataset_split_belly\test\Coco\Coco3.jpg,Coco,Coco,0.9998,1
+penguins_dataset_split_belly\test\Coco\Coco5.jpg,Coco,Phineas,0.1591,0
+penguins_dataset_split_belly\test\Cooper\Cooper1.jpg,Cooper,Cooper,0.9727,1
+penguins_dataset_split_belly\test\Cooper\Cooper11.jpg,Cooper,Cooper,0.9955,1
+penguins_dataset_split_belly\test\Cooper\Cooper16.jpg,Cooper,Cooper,0.9995,1
+penguins_dataset_split_belly\test\Cooper\Cooper8.jpg,Cooper,Cooper,0.7794,1
+penguins_dataset_split_belly\test\Cooper\DSC_2422.jpeg,Cooper,Cooper,0.9982,1
+penguins_dataset_split_belly\test\Cooper\IMGP0072.JPG,Cooper,Cooper,0.9948,1
+penguins_dataset_split_belly\test\Cooper\IMGP0077.JPG,Cooper,Cooper,0.9477,1
+penguins_dataset_split_belly\test\Cooper\IMG_0409_box1.jpg,Cooper,Phineas,0.4267,0
+penguins_dataset_split_belly\test\Cooper\IMG_1387_box1.jpg,Cooper,Cooper,0.9389,1
+penguins_dataset_split_belly\test\Cooper\IMG_1431_box3.jpg,Cooper,Cooper,0.9955,1
+penguins_dataset_split_belly\test\Cooper\IMG_1469_box4.jpg,Cooper,Phineas,0.4928,0
+penguins_dataset_split_belly\test\Cooper\IMG_2110_box1.jpg,Cooper,Cooper,0.9970,1
+penguins_dataset_split_belly\test\Cooper\IMG_2225_box4.jpg,Cooper,Cooper,0.9955,1
+penguins_dataset_split_belly\test\Cooper\IMG_2283_box2.jpg,Cooper,Cooper,0.9742,1
+penguins_dataset_split_belly\test\Cooper\IMG_2719.jpeg,Cooper,Cooper,0.9944,1
+penguins_dataset_split_belly\test\Cooper\IMG_2906.jpeg,Cooper,Cooper,0.9989,1
+penguins_dataset_split_belly\test\Cooper\IMG_2908.jpeg,Cooper,Cooper,0.9992,1
+penguins_dataset_split_belly\test\Cooper\IMG_2966.jpeg,Cooper,Cooper,0.8707,1
+penguins_dataset_split_belly\test\Cooper\IMG_3245.jpeg,Cooper,Cooper,0.9936,1
+penguins_dataset_split_belly\test\Cooper\IMG_3261.jpeg,Cooper,Cooper,0.9171,1
+penguins_dataset_split_belly\test\Courtney\IMGP0407.JPG,Courtney,Courtney,0.9996,1
+penguins_dataset_split_belly\test\Courtney\IMGP0409.JPG,Courtney,Courtney,0.9992,1
+penguins_dataset_split_belly\test\Courtney\IMGP0412.JPG,Courtney,Courtney,0.9982,1
+penguins_dataset_split_belly\test\Courtney\IMG_0787_box1.jpg,Courtney,Medici,0.2892,0
+penguins_dataset_split_belly\test\Courtney\IMG_0821_box2.jpg,Courtney,Courtney,0.9947,1
+penguins_dataset_split_belly\test\Courtney\IMG_2945_box6.jpg,Courtney,Courtney,0.8669,1
+penguins_dataset_split_belly\test\Danny\Danny 3.jpg,Danny,Danny,0.5008,1
+penguins_dataset_split_belly\test\Danny\IMG_0800_box5.jpg,Danny,Danny,0.9995,1
+penguins_dataset_split_belly\test\Danny\IMG_0826_box1.jpg,Danny,Danny,0.9997,1
+penguins_dataset_split_belly\test\Danny\IMG_0827_box4.jpg,Danny,Danny,0.9995,1
+penguins_dataset_split_belly\test\Danny\IMG_0829_box1.jpg,Danny,Danny,0.9986,1
+penguins_dataset_split_belly\test\Dragon\IMG_4315 copy.jpeg,Dragon,Dragon,0.9838,1
+penguins_dataset_split_belly\test\Dragon\IMG_4334 copy.jpeg,Dragon,Dragon,0.9995,1
+penguins_dataset_split_belly\test\Dragon\IMG_4386 copy.jpeg,Dragon,Dragon,0.9993,1
+penguins_dataset_split_belly\test\Dragon\IMG_4389 copy.jpeg,Dragon,Dragon,0.8769,1
+penguins_dataset_split_belly\test\Dragon\IMG_4401 copy.jpeg,Dragon,Dragon,0.9999,1
+penguins_dataset_split_belly\test\Dragon\IMG_4406 copy.jpeg,Dragon,Dragon,0.9999,1
+penguins_dataset_split_belly\test\Dragon\IMG_4412 copy.jpeg,Dragon,Dragon,0.9996,1
+penguins_dataset_split_belly\test\Egg\Egg1.jpg,Egg,Ziggy,0.3581,0
+penguins_dataset_split_belly\test\Egg\Egg2.jpg,Egg,Ziggy,0.5093,0
+penguins_dataset_split_belly\test\Egg\IMG_2957.jpeg,Egg,Egg,0.9999,1
+penguins_dataset_split_belly\test\Ellis\DSC_2705.jpeg,Ellis,Ron_burgundy,0.2041,0
+penguins_dataset_split_belly\test\Ellis\Ellis11.jpg,Ellis,Ellis,0.9379,1
+penguins_dataset_split_belly\test\Ellis\Ellis12.jpg,Ellis,Ellis,0.9664,1
+penguins_dataset_split_belly\test\Ellis\Ellis16.jpg,Ellis,Phineas,0.8304,0
+penguins_dataset_split_belly\test\Ernest\DSC_2526.jpeg,Ernest,Ernest,1.0000,1
+penguins_dataset_split_belly\test\Ernest\IMG_0999_box4.jpg,Ernest,Ernest,0.9999,1
+penguins_dataset_split_belly\test\Ernest\IMG_1037_box4.jpg,Ernest,Ernest,0.9390,1
+penguins_dataset_split_belly\test\Gonzo\IMG_0342_box2.jpg,Gonzo,Gonzo,0.9984,1
+penguins_dataset_split_belly\test\Gonzo\IMG_0479_box1.jpg,Gonzo,Gonzo,0.9999,1
+penguins_dataset_split_belly\test\Gonzo\IMG_0514_box2.jpg,Gonzo,Gonzo,0.9927,1
+penguins_dataset_split_belly\test\Gonzo\IMG_0900_box2.jpg,Gonzo,Gonzo,0.9997,1
+penguins_dataset_split_belly\test\Gonzo\IMG_0909_box4.jpg,Gonzo,Gonzo,0.9999,1
+penguins_dataset_split_belly\test\Gonzo\IMG_1570_box3.jpg,Gonzo,Gonzo,0.9999,1
+penguins_dataset_split_belly\test\Gonzo\IMG_1753_box1.jpg,Gonzo,Gonzo,0.9998,1
+penguins_dataset_split_belly\test\Gonzo\thumbnail_image002.jpg,Gonzo,Gonzo,1.0000,1
+penguins_dataset_split_belly\test\Greyjoy\DSC_2548.jpeg,Greyjoy,Greyjoy,0.9997,1
+penguins_dataset_split_belly\test\Greyjoy\DSC_2550.jpeg,Greyjoy,Greyjoy,0.9974,1
+penguins_dataset_split_belly\test\Greyjoy\Greyjoy8.jpg,Greyjoy,Ellis,0.1274,0
+penguins_dataset_split_belly\test\Hanbury\Hanbury19.jpg,Hanbury,Hanbury,0.9925,1
+penguins_dataset_split_belly\test\Hanbury\Hanbury5.jpg,Hanbury,Medici,0.8811,0
+penguins_dataset_split_belly\test\Hanbury\Hanbury9.jpg,Hanbury,Hanbury,0.9995,1
+penguins_dataset_split_belly\test\Heathcliffe\DSC_2584.jpeg,Heathcliffe,Heathcliffe,0.9958,1
+penguins_dataset_split_belly\test\Heathcliffe\DSC_2585.jpeg,Heathcliffe,Phineas,0.4930,0
+penguins_dataset_split_belly\test\Heathcliffe\Heathcliff4.jpg,Heathcliffe,Heathcliffe,0.9465,1
+penguins_dataset_split_belly\test\Heathcliffe\Heathcliff7.jpg,Heathcliffe,Heathcliffe,0.8375,1
+penguins_dataset_split_belly\test\Heathcliffe\Heathcliff9.jpg,Heathcliffe,Heathcliffe,0.3653,1
+penguins_dataset_split_belly\test\Heathcliffe\IMGP0401.JPG,Heathcliffe,Heathcliffe,0.9995,1
+penguins_dataset_split_belly\test\Heathcliffe\IMG_0105_box1.jpg,Heathcliffe,Heathcliffe,0.9998,1
+penguins_dataset_split_belly\test\Heathcliffe\Penguins_All - 246 of 322_box4.jpeg,Heathcliffe,Heathcliffe,0.9972,1
+penguins_dataset_split_belly\test\Heathcliffe\Penguins_All - 266 of 322_box1.jpeg,Heathcliffe,Heathcliffe,0.9998,1
+penguins_dataset_split_belly\test\Heathcliffe\Penguins_All - 285 of 322_box4.jpeg,Heathcliffe,Heathcliffe,0.9922,1
+penguins_dataset_split_belly\test\Jaz\DSC_2629.jpeg,Jaz,Jaz,0.4214,1
+penguins_dataset_split_belly\test\Jaz\IMGP0147.JPG,Jaz,Jaz,0.9997,1
+penguins_dataset_split_belly\test\Jaz\IMGP0148.JPG,Jaz,Jaz,0.9998,1
+penguins_dataset_split_belly\test\Jaz\IMGP0149.JPG,Jaz,Jaz,0.9999,1
+penguins_dataset_split_belly\test\Kermit\DSC_2775.jpeg,Kermit,Patrick,0.2202,0
+penguins_dataset_split_belly\test\Kermit\DSC_2777.jpeg,Kermit,Kermit,0.9985,1
+penguins_dataset_split_belly\test\Kermit\IMGP0793.JPG,Kermit,Kermit,0.9909,1
+penguins_dataset_split_belly\test\Kermit\IMGP0809.JPG,Kermit,Kermit,0.9938,1
+penguins_dataset_split_belly\test\Kermit\IMGP0813.JPG,Kermit,Kermit,0.9991,1
+penguins_dataset_split_belly\test\Kermit\IMG_0834_box1.jpg,Kermit,McVitie,0.9481,0
+penguins_dataset_split_belly\test\Kermit\IMG_0985_box5.jpg,Kermit,Kermit,0.9994,1
+penguins_dataset_split_belly\test\Kermit\IMG_2046_box2.jpg,Kermit,Kermit,0.9991,1
+penguins_dataset_split_belly\test\Kermit\Kermit11.jpg,Kermit,Lenny,0.3527,0
+penguins_dataset_split_belly\test\Kermit\Kermit2.jpg,Kermit,Kermit,0.5321,1
+penguins_dataset_split_belly\test\Kermit\Kermit5.jpg,Kermit,Kermit,0.9514,1
+penguins_dataset_split_belly\test\Lannister\DSC_2402.jpeg,Lannister,Medici,0.4642,0
+penguins_dataset_split_belly\test\Lannister\DSC_2474.jpeg,Lannister,Lannister,0.8681,1
+penguins_dataset_split_belly\test\Lannister\DSC_2476.jpeg,Lannister,Lannister,0.8932,1
+penguins_dataset_split_belly\test\Lannister\Lannister 3.jpg,Lannister,Lannister,0.9949,1
+penguins_dataset_split_belly\test\Laura\IMGP0444.JPG,Laura,Laura,0.9997,1
+penguins_dataset_split_belly\test\Laura\IMGP0448.JPG,Laura,Laura,0.9996,1
+penguins_dataset_split_belly\test\Laura\IMGP0454.JPG,Laura,Laura,0.9999,1
+penguins_dataset_split_belly\test\Lenny\IMG_0932_box1.jpg,Lenny,Lenny,0.9990,1
+penguins_dataset_split_belly\test\Lenny\IMG_0955_box1.jpg,Lenny,Tang,0.7828,0
+penguins_dataset_split_belly\test\Lenny\IMG_3127_box1.jpg,Lenny,Cooper,0.5125,0
+penguins_dataset_split_belly\test\Lenny\IMG_3406_box4.jpg,Lenny,Lenny,0.9950,1
+penguins_dataset_split_belly\test\Lenny\Lenny 8.jpg,Lenny,Cooper,0.3315,0
+penguins_dataset_split_belly\test\Lucy\IMG_4339 copy.jpeg,Lucy,Lucy,1.0000,1
+penguins_dataset_split_belly\test\Lucy\IMG_4381 copy.jpeg,Lucy,Lucy,0.9875,1
+penguins_dataset_split_belly\test\Lucy\IMG_4383 copy.jpeg,Lucy,Lucy,1.0000,1
+penguins_dataset_split_belly\test\McVitie\DSC_2450.jpeg,McVitie,McVitie,0.9495,1
+penguins_dataset_split_belly\test\McVitie\DSC_2456.jpeg,McVitie,McVitie,0.9996,1
+penguins_dataset_split_belly\test\McVitie\DSC_2513.jpeg,McVitie,McVitie,0.5324,1
+penguins_dataset_split_belly\test\McVitie\IMG_0831_box5.jpg,McVitie,Kermit,0.9715,0
+penguins_dataset_split_belly\test\McVitie\IMG_1570_box5.jpg,McVitie,McVitie,0.6439,1
+penguins_dataset_split_belly\test\McVitie\IMG_1751_box1.jpg,McVitie,McVitie,0.4755,1
+penguins_dataset_split_belly\test\McVitie\IMG_1754_box3.jpg,McVitie,McVitie,0.9996,1
+penguins_dataset_split_belly\test\McVitie\IMG_1757_box3.jpg,McVitie,McVitie,0.9934,1
+penguins_dataset_split_belly\test\McVitie\McVitie2.jpg,McVitie,McVitie,0.9766,1
+penguins_dataset_split_belly\test\Medici\DSC_2746.jpeg,Medici,Medici,0.9858,1
+penguins_dataset_split_belly\test\Medici\DSC_2747.jpeg,Medici,Medici,0.9807,1
+penguins_dataset_split_belly\test\Medici\IMGP0865.JPG,Medici,Medici,0.9991,1
+penguins_dataset_split_belly\test\Medici\IMGP0866.JPG,Medici,Medici,0.9920,1
+penguins_dataset_split_belly\test\Medici\IMGP0872.JPG,Medici,Medici,0.9892,1
+penguins_dataset_split_belly\test\Medici\IMGP0878.JPG,Medici,Medici,0.9476,1
+penguins_dataset_split_belly\test\Medici\IMGP0894.JPG,Medici,Medici,0.9892,1
+penguins_dataset_split_belly\test\Medici\IMGP0898.JPG,Medici,Medici,0.9792,1
+penguins_dataset_split_belly\test\Medici\IMGP0901.JPG,Medici,Medici,0.9916,1
+penguins_dataset_split_belly\test\Medici\IMGP0904.JPG,Medici,Medici,0.9870,1
+penguins_dataset_split_belly\test\Medici\IMG_0559_box1.jpg,Medici,Medici,0.9952,1
+penguins_dataset_split_belly\test\Medici\IMG_0649_box1.jpg,Medici,Medici,0.7886,1
+penguins_dataset_split_belly\test\Medici\IMG_0829_box5.jpg,Medici,Medici,0.6832,1
+penguins_dataset_split_belly\test\Medici\IMG_0846_box2.jpg,Medici,Ping,0.6068,0
+penguins_dataset_split_belly\test\Medici\IMG_1000_box4.jpg,Medici,Medici,0.4484,1
+penguins_dataset_split_belly\test\Medici\IMG_1143_box1.jpg,Medici,Medici,0.7078,1
+penguins_dataset_split_belly\test\Medici\IMG_1817_box1.jpg,Medici,Medici,0.9484,1
+penguins_dataset_split_belly\test\Medici\IMG_1867_box1.jpg,Medici,McVitie,0.7288,0
+penguins_dataset_split_belly\test\Medici\IMG_2074_box1.jpg,Medici,Medici,0.9939,1
+penguins_dataset_split_belly\test\Medici\IMG_2194_box1.jpg,Medici,Medici,0.9853,1
+penguins_dataset_split_belly\test\Medici\IMG_2761_box1.jpg,Medici,Medici,0.9236,1
+penguins_dataset_split_belly\test\Medici\IMG_2871.jpeg,Medici,Medici,0.9474,1
+penguins_dataset_split_belly\test\Medici\IMG_2939.jpeg,Medici,Medici,0.4403,1
+penguins_dataset_split_belly\test\Medici\IMG_2942.jpeg,Medici,Medici,0.9212,1
+penguins_dataset_split_belly\test\Medici\IMG_3069.jpeg,Medici,Medici,0.9702,1
+penguins_dataset_split_belly\test\Medici\IMG_3079.jpeg,Medici,Medici,0.6478,1
+penguins_dataset_split_belly\test\Medici\IMG_3091.jpeg,Medici,Medici,0.9997,1
+penguins_dataset_split_belly\test\Medici\IMG_3093.jpeg,Medici,Medici,0.9995,1
+penguins_dataset_split_belly\test\Medici\IMG_3106.jpeg,Medici,Medici,0.9973,1
+penguins_dataset_split_belly\test\Medici\IMG_3108.jpeg,Medici,Medici,0.9996,1
+penguins_dataset_split_belly\test\Medici\IMG_3111.jpeg,Medici,Nicki,0.9543,0
+penguins_dataset_split_belly\test\Medici\IMG_3344.jpeg,Medici,Medici,0.9974,1
+penguins_dataset_split_belly\test\Medici\IMG_3346.jpeg,Medici,Medici,0.9790,1
+penguins_dataset_split_belly\test\Medici\IMG_3347.jpeg,Medici,Medici,0.9977,1
+penguins_dataset_split_belly\test\Medici\IMG_3351.jpeg,Medici,Medici,0.9933,1
+penguins_dataset_split_belly\test\Medici\IMG_3352.jpeg,Medici,Medici,0.9897,1
+penguins_dataset_split_belly\test\Medici\IMG_3355.jpeg,Medici,Medici,0.7165,1
+penguins_dataset_split_belly\test\Medici\IMG_3373.jpeg,Medici,Medici,0.9973,1
+penguins_dataset_split_belly\test\Medici\IMG_3385.jpeg,Medici,Medici,0.9966,1
+penguins_dataset_split_belly\test\Medici\IMG_3434.jpeg,Medici,Medici,0.9980,1
+penguins_dataset_split_belly\test\Medici\IMG_3441.jpeg,Medici,Medici,0.9791,1
+penguins_dataset_split_belly\test\Medici\IMG_3444.jpeg,Medici,Medici,0.9371,1
+penguins_dataset_split_belly\test\Medici\IMG_3464.jpeg,Medici,Medici,0.9932,1
+penguins_dataset_split_belly\test\Medici\IMG_3479.jpeg,Medici,Medici,0.9714,1
+penguins_dataset_split_belly\test\Nicki\IMGP0823.JPG,Nicki,Nicki,0.8878,1
+penguins_dataset_split_belly\test\Nicki\IMGP0839.JPG,Nicki,Coco,0.9546,0
+penguins_dataset_split_belly\test\Nicki\IMG_3121.jpeg,Nicki,Nicki,0.9687,1
+penguins_dataset_split_belly\test\Nicki\IMG_3137.jpeg,Nicki,Nicki,0.9952,1
+penguins_dataset_split_belly\test\Nicki\Nicki1.jpg,Nicki,Nicki,0.9976,1
+penguins_dataset_split_belly\test\Nicki\Nicki11.jpg,Nicki,Nicki,0.8904,1
+penguins_dataset_split_belly\test\Nicki\Nicki12.jpg,Nicki,Nicki,0.9042,1
+penguins_dataset_split_belly\test\Nicki\Nicki9.jpg,Nicki,Pong,0.7514,0
+penguins_dataset_split_belly\test\Nik_nak\DSC_2785.jpeg,Nik_nak,Nik_nak,0.9906,1
+penguins_dataset_split_belly\test\Nik_nak\DSC_2788.jpeg,Nik_nak,Nik_nak,0.8420,1
+penguins_dataset_split_belly\test\Nik_nak\IMG_2981.jpeg,Nik_nak,Nik_nak,0.9902,1
+penguins_dataset_split_belly\test\Nik_nak\IMG_2982.jpeg,Nik_nak,Nik_nak,0.6227,1
+penguins_dataset_split_belly\test\Nik_nak\IMG_2991.jpeg,Nik_nak,Nik_nak,0.9999,1
+penguins_dataset_split_belly\test\Not Tiki\IMGP0104.JPG,Not Tiki,Not Tiki,0.9988,1
+penguins_dataset_split_belly\test\Not Tiki\IMGP0112.JPG,Not Tiki,Not Tiki,0.4051,1
+penguins_dataset_split_belly\test\Not Tiki\IMGP0113.JPG,Not Tiki,Not Tiki,0.9409,1
+penguins_dataset_split_belly\test\Not Tiki\IMGP0125.JPG,Not Tiki,Ron_burgundy,0.6099,0
+penguins_dataset_split_belly\test\Not Tiki\IMGP0537.JPG,Not Tiki,Not Tiki,0.9992,1
+penguins_dataset_split_belly\test\Olive\DSC_2621.jpeg,Olive,Olive,0.5422,1
+penguins_dataset_split_belly\test\Olive\DSC_2680.jpg,Olive,Lannister,0.5475,0
+penguins_dataset_split_belly\test\Olive\IMG_2324_box1.jpg,Olive,Olive,0.9981,1
+penguins_dataset_split_belly\test\Olive\IMG_2892_box2.jpg,Olive,Olive,0.9988,1
+penguins_dataset_split_belly\test\Olive\IMG_2908_box3.jpg,Olive,Olive,0.6308,1
+penguins_dataset_split_belly\test\Olive\IMG_2945_box2.jpg,Olive,Olive,0.9989,1
+penguins_dataset_split_belly\test\Parky\IMG_4324 copy.jpeg,Parky,Parky,0.9990,1
+penguins_dataset_split_belly\test\Parky\IMG_4338 copy.jpeg,Parky,Parky,0.9980,1
+penguins_dataset_split_belly\test\Parky\IMG_4360 copy.jpeg,Parky,Parky,0.9987,1
+penguins_dataset_split_belly\test\Parky\IMG_4374 copy.jpeg,Parky,Parky,0.9992,1
+penguins_dataset_split_belly\test\Parky\IMG_4385 copy.jpeg,Parky,Parky,0.9998,1
+penguins_dataset_split_belly\test\Parky\IMG_4388 copy.jpeg,Parky,Parky,0.9959,1
+penguins_dataset_split_belly\test\Parky\IMG_4399 copy.jpeg,Parky,Parky,0.9968,1
+penguins_dataset_split_belly\test\Parky\IMG_4400 copy.jpeg,Parky,Parky,0.9741,1
+penguins_dataset_split_belly\test\Parky\IMG_4407 copy.jpeg,Parky,Parky,0.7465,1
+penguins_dataset_split_belly\test\Parky\IMG_4420 copy.jpeg,Parky,Parky,1.0000,1
+penguins_dataset_split_belly\test\Parky\IMG_4422 copy.jpeg,Parky,Parky,0.9998,1
+penguins_dataset_split_belly\test\Patrick\IMG_1062_box1.jpg,Patrick,Patrick,0.9969,1
+penguins_dataset_split_belly\test\Patrick\IMG_2162_box1.jpg,Patrick,Patrick,0.9997,1
+penguins_dataset_split_belly\test\Patrick\IMG_2256_box5.jpg,Patrick,Patrick,0.9390,1
+penguins_dataset_split_belly\test\Patrick\IMG_2262_box2.jpg,Patrick,Patrick,0.9240,1
+penguins_dataset_split_belly\test\Patrick\IMG_2280_box1.jpg,Patrick,Patrick,0.9998,1
+penguins_dataset_split_belly\test\Peapod\IMG_2862_box4.jpg,Peapod,Peapod,0.5818,1
+penguins_dataset_split_belly\test\Peapod\IMG_2878_box6.jpg,Peapod,Peapod,0.9990,1
+penguins_dataset_split_belly\test\Peapod\Pea pod5.jpg,Peapod,Peapod,0.9999,1
+penguins_dataset_split_belly\test\Peapod\Pea pod8.jpg,Peapod,Peapod,0.2787,1
+penguins_dataset_split_belly\test\Phineas\IMGP0164.JPG,Phineas,Phineas,0.9914,1
+penguins_dataset_split_belly\test\Phineas\IMG_0034_box2.jpg,Phineas,Phineas,0.9997,1
+penguins_dataset_split_belly\test\Phineas\IMG_0036_box1.jpg,Phineas,Phineas,0.9899,1
+penguins_dataset_split_belly\test\Phineas\IMG_0536_box1.jpg,Phineas,Phineas,0.9997,1
+penguins_dataset_split_belly\test\Phineas\IMG_0581_box1.jpg,Phineas,Medici,0.8652,0
+penguins_dataset_split_belly\test\Phineas\IMG_0784_box4.jpg,Phineas,Cooper,0.2905,0
+penguins_dataset_split_belly\test\Phineas\IMG_1505_box1.jpg,Phineas,Phineas,0.9906,1
+penguins_dataset_split_belly\test\Phineas\IMG_2285_box3.jpg,Phineas,Phineas,0.4152,1
+penguins_dataset_split_belly\test\Phineas\Phineas4.jpg,Phineas,Phineas,0.1983,1
+penguins_dataset_split_belly\test\Phineas\Phineas6.jpg,Phineas,Phineas,0.9996,1
+penguins_dataset_split_belly\test\Ping\IMG_0827_box5.jpg,Ping,Danny,0.6126,0
+penguins_dataset_split_belly\test\Ping\IMG_0842_box6.jpg,Ping,Ping,0.9999,1
+penguins_dataset_split_belly\test\Ping\IMG_0847_box7.jpg,Ping,Cooper,0.3819,0
+penguins_dataset_split_belly\test\Ping\Ping5.jpg,Ping,Beaker,0.1848,0
+penguins_dataset_split_belly\test\Pong\ASC_2720.jpeg,Pong,Pong,0.4234,1
+penguins_dataset_split_belly\test\Pong\Pong14.jpg,Pong,Pong,1.0000,1
+penguins_dataset_split_belly\test\Pong\Pong16.jpg,Pong,Pong,1.0000,1
+penguins_dataset_split_belly\test\Pong\Pong4.jpg,Pong,Pong,0.9967,1
+penguins_dataset_split_belly\test\Pong\Pong9.jpg,Pong,Pong,0.7469,1
+penguins_dataset_split_belly\test\Rainbow\IMGP0430.JPG,Rainbow,Rainbow,0.9951,1
+penguins_dataset_split_belly\test\Rainbow\IMGP0559.JPG,Rainbow,Rainbow,0.9982,1
+penguins_dataset_split_belly\test\Rainbow\IMGP0565.JPG,Rainbow,Rainbow,0.8453,1
+penguins_dataset_split_belly\test\Rainbow\IMGP0585.JPG,Rainbow,Rainbow,0.9537,1
+penguins_dataset_split_belly\test\Rainbow\IMG_0797_box4.jpg,Rainbow,Snorkel,0.2374,0
+penguins_dataset_split_belly\test\Rainbow\Rainbow3.jpg,Rainbow,Rainbow,0.4052,1
+penguins_dataset_split_belly\test\Rainbow\Rainbow4.jpg,Rainbow,Rainbow,0.9480,1
+penguins_dataset_split_belly\test\Robin\IMG_4338 copy.jpeg,Robin,Robin,0.9892,1
+penguins_dataset_split_belly\test\Robin\IMG_4340 copy.jpeg,Robin,Robin,0.9987,1
+penguins_dataset_split_belly\test\Robin\IMG_4391 copy.jpeg,Robin,Robin,0.6123,1
+penguins_dataset_split_belly\test\Robin\IMG_4402 copy.jpeg,Robin,Robin,0.7117,1
+penguins_dataset_split_belly\test\Ron_burgundy\ASC_2720 copy.jpeg,Ron_burgundy,Cooper,0.3792,0
+penguins_dataset_split_belly\test\Ron_burgundy\ASC_2723 copy.jpeg,Ron_burgundy,Ron_burgundy,0.9987,1
+penguins_dataset_split_belly\test\Ron_burgundy\DSC_2740.jpeg,Ron_burgundy,Ron_burgundy,0.9989,1
+penguins_dataset_split_belly\test\Ron_burgundy\IMGP0696.JPG,Ron_burgundy,Ron_burgundy,0.9991,1
+penguins_dataset_split_belly\test\Ron_burgundy\IMG_0421_box1.jpg,Ron_burgundy,Cooper,0.5593,0
+penguins_dataset_split_belly\test\Ron_burgundy\IMG_0538_box1.jpg,Ron_burgundy,Cooper,0.2475,0
+penguins_dataset_split_belly\test\Ron_burgundy\IMG_0886_box4.jpg,Ron_burgundy,Medici,0.6819,0
+penguins_dataset_split_belly\test\Ron_burgundy\IMG_1955_box2.jpg,Ron_burgundy,Ron_burgundy,0.9332,1
+penguins_dataset_split_belly\test\Ron_burgundy\IMG_1971_box1.jpg,Ron_burgundy,Ron_burgundy,0.7182,1
+penguins_dataset_split_belly\test\Ron_burgundy\IMG_2148_box2.jpg,Ron_burgundy,Ron_burgundy,0.9993,1
+penguins_dataset_split_belly\test\Ron_burgundy\IMG_3146.jpeg,Ron_burgundy,Ron_burgundy,0.9983,1
+penguins_dataset_split_belly\test\Ron_burgundy\IMG_3150.jpeg,Ron_burgundy,Ron_burgundy,0.9996,1
+penguins_dataset_split_belly\test\Ron_burgundy\IMG_3157.jpeg,Ron_burgundy,Ron_burgundy,0.9956,1
+penguins_dataset_split_belly\test\Ron_burgundy\IMG_3166.jpeg,Ron_burgundy,Ron_burgundy,0.9968,1
+penguins_dataset_split_belly\test\Ron_burgundy\IMG_3187.jpeg,Ron_burgundy,Ron_burgundy,0.9998,1
+penguins_dataset_split_belly\test\Ron_burgundy\IMG_3190.jpeg,Ron_burgundy,Ron_burgundy,0.9991,1
+penguins_dataset_split_belly\test\Ron_burgundy\IMG_3197.jpeg,Ron_burgundy,Ron_burgundy,0.9997,1
+penguins_dataset_split_belly\test\Ron_burgundy\IMG_3204.jpeg,Ron_burgundy,Ron_burgundy,0.9969,1
+penguins_dataset_split_belly\test\Ron_burgundy\IMG_3208.jpeg,Ron_burgundy,Ron_burgundy,0.9976,1
+penguins_dataset_split_belly\test\Ron_burgundy\IMG_3216.jpeg,Ron_burgundy,Ron_burgundy,0.9996,1
+penguins_dataset_split_belly\test\Ron_burgundy\IMG_3217.jpeg,Ron_burgundy,Ron_burgundy,0.9997,1
+penguins_dataset_split_belly\test\Ron_burgundy\IMG_3218.jpeg,Ron_burgundy,Ron_burgundy,1.0000,1
+penguins_dataset_split_belly\test\Ron_burgundy\IMG_3225.jpeg,Ron_burgundy,Ron_burgundy,0.9812,1
+penguins_dataset_split_belly\test\Ron_burgundy\IMG_3240.jpeg,Ron_burgundy,Ron_burgundy,0.9995,1
+penguins_dataset_split_belly\test\Ron_burgundy\IMG_3241.jpeg,Ron_burgundy,Ron_burgundy,0.9992,1
+penguins_dataset_split_belly\test\Ron_burgundy\IMG_3395.jpeg,Ron_burgundy,Ron_burgundy,0.9950,1
+penguins_dataset_split_belly\test\Ron_burgundy\IMG_3402.jpeg,Ron_burgundy,Ron_burgundy,0.9998,1
+penguins_dataset_split_belly\test\Ron_burgundy\IMG_3405.jpeg,Ron_burgundy,Ron_burgundy,0.9999,1
+penguins_dataset_split_belly\test\Ron_burgundy\IMG_3406.jpeg,Ron_burgundy,Ron_burgundy,0.9994,1
+penguins_dataset_split_belly\test\Snorkel\IMG_0793_box5.jpg,Snorkel,Snorkel,0.9765,1
+penguins_dataset_split_belly\test\Snorkel\IMG_0830_box6.jpg,Snorkel,Snorkel,0.9950,1
+penguins_dataset_split_belly\test\Snorkel\IMG_0839_box2.jpg,Snorkel,Snorkel,0.9990,1
+penguins_dataset_split_belly\test\Snorkel\IMG_0840_box2.jpg,Snorkel,Snorkel,0.9878,1
+penguins_dataset_split_belly\test\Snorkel\IMG_0847_box1.jpg,Snorkel,Snorkel,0.9982,1
+penguins_dataset_split_belly\test\Spider\3.jpg,Spider,Spider,0.9869,1
+penguins_dataset_split_belly\test\Spider\IMG_4332 copy.jpeg,Spider,Spider,0.9967,1
+penguins_dataset_split_belly\test\Spider\IMG_4339 copy.jpeg,Spider,Spider,0.9997,1
+penguins_dataset_split_belly\test\Spider\IMG_4346 copy.jpeg,Spider,Spider,0.9990,1
+penguins_dataset_split_belly\test\Spider\IMG_4349 copy.jpeg,Spider,Spider,0.9993,1
+penguins_dataset_split_belly\test\Spider\IMG_4351 copy.jpeg,Spider,Spider,0.9985,1
+penguins_dataset_split_belly\test\Swiftie\DSC_2499.jpeg,Swiftie,Swiftie,0.9930,1
+penguins_dataset_split_belly\test\Swiftie\DSC_2602.jpeg,Swiftie,Swiftie,0.9994,1
+penguins_dataset_split_belly\test\Swiftie\DSC_2605.jpeg,Swiftie,Swiftie,0.9366,1
+penguins_dataset_split_belly\test\Swiftie\IMG_2881.jpeg,Swiftie,Swiftie,0.7436,1
+penguins_dataset_split_belly\test\Swiftie\IMG_2882.jpeg,Swiftie,Swiftie,0.9958,1
+penguins_dataset_split_belly\test\Swiftie\IMG_2893.jpeg,Swiftie,Swiftie,0.9334,1
+penguins_dataset_split_belly\test\Swiftie\IMG_2898.jpeg,Swiftie,Swiftie,0.9998,1
+penguins_dataset_split_belly\test\Tang\IMGP0464.JPG,Tang,Tang,0.9999,1
+penguins_dataset_split_belly\test\Tang\IMGP0467.JPG,Tang,Tang,0.9933,1
+penguins_dataset_split_belly\test\Tang\IMGP0476.JPG,Tang,Tang,0.9999,1
+penguins_dataset_split_belly\test\Tang\IMGP0484.JPG,Tang,Tang,0.9101,1
+penguins_dataset_split_belly\test\Tang\IMG_0287_box3.jpg,Tang,Tang,0.9938,1
+penguins_dataset_split_belly\test\Tang\IMG_0521_box1.jpg,Tang,Tang,0.8204,1
+penguins_dataset_split_belly\test\Tang\IMG_2844.jpeg,Tang,Nicki,0.3035,0
+penguins_dataset_split_belly\test\Tang\IMG_2848.jpeg,Tang,Tang,0.9983,1
+penguins_dataset_split_belly\test\Tang\IMG_2851.jpeg,Tang,Tang,0.9510,1
+penguins_dataset_split_belly\test\Tang\Tang3.jpg,Tang,Ron_burgundy,0.2142,0
+penguins_dataset_split_belly\test\Ziggy\DSC_2503.jpeg,Ziggy,Ziggy,0.9973,1
+penguins_dataset_split_belly\test\Ziggy\DSC_2519.jpeg,Ziggy,Ziggy,0.9607,1
+penguins_dataset_split_belly\test\Ziggy\DSC_2521.jpeg,Ziggy,Ziggy,0.8690,1
+penguins_dataset_split_belly\test\Ziggy\DSC_2596.jpeg,Ziggy,Ziggy,0.9570,1
+penguins_dataset_split_belly\test\Ziggy\DSC_2597.jpeg,Ziggy,Ziggy,0.9988,1
+penguins_dataset_split_belly\test\Ziggy\Ziggy4.jpg,Ziggy,Ziggy,0.9941,1
+penguins_dataset_split_belly\test\Ziggy\Ziggy7.jpg,Ziggy,Ziggy,0.8439,1
