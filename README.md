@@ -2,7 +2,7 @@
 
 **English** | [中文](README.zh-CN.md)
 
-Given a photo of a penguin, identify **which individual** it is (individual identity, not species). The end goal: a visitor takes one photo and instantly learns which specific penguin it is, plus that penguin's name, traits, and habits.
+Given a photo of a **Humboldt penguin**, identify **which individual** it is (individual identity, not species). The end goal: a visitor takes one photo and instantly learns which specific penguin it is, plus that penguin's name, traits, and habits. All individuals in this project are Humboldt penguins from a single colony.
 
 The project is evolving from a **classification baseline** into an **embedding-retrieval + RAG** system — turning each photo into a vector, matching it against a vector database, and using an LLM to generate a grounded description of the identified penguin.
 
@@ -109,6 +109,18 @@ Visitor photo
 
 ### Optional agentic layer (extra portfolio value)
 An LLM agent orchestrating tools: `identify_penguin(image)`, `get_profile(name)`, `search_knowledge(query)` — the model decides which to call. This showcases **AI agent + multimodal retrieval + RAG** in one system.
+
+### Product form: a conversational Humboldt penguin expert
+The user-facing wrapper is a chat window. On entry (QR scan / app open) the bot greets the visitor:
+
+> 🐧 Hi! I'm the resident **Humboldt penguin expert**. Send me a **front-facing, full-body** photo of a penguin and I'll tell you which individual it is — its name, birthday, personality and story. Ask me anything about penguins too!
+
+- **Persona** = the agent's system prompt (a warm, concise keeper).
+- **Photo → identity**: a penguin photo triggers `identify_penguin`, then `get_profile` to describe that individual.
+- **Question → knowledge**: a general penguin question triggers `search_knowledge`.
+- **Conversation memory**: the identified individual is kept in session state, so follow-ups ("how old is it?") need no photo re-upload.
+- **Graceful uncertainty**: on low confidence / non-frontal photos, the bot asks for a clearer front-facing shot instead of guessing.
+- **Grounding**: facts about a specific penguin come only from `get_profile`; if a field is missing the bot says so rather than inventing it — the core anti-hallucination guarantee.
 
 ### Suggested stack
 - **Image embeddings**: the ArcFace-trained backbone from B1, benchmarked against off-the-shelf **DINOv2 / CLIP** (strong fine-grained features with no training).
