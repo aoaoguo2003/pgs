@@ -1,0 +1,197 @@
+# 企鹅个体识别（Penguin Individual Re-Identification）
+
+[English](README.md) | **中文**
+
+给定一张企鹅照片，识别它是**哪一只**具体的企鹅（个体身份，非物种）。最终目标：游客拍一张照片，即可查出对应企鹅个体，以及它的名字、特征、习性。
+
+项目正从**分类 baseline** 演进为 **embedding 检索 + RAG** 系统——把每张照片转成向量，在向量数据库中匹配，再用 LLM 生成有事实依据（grounded）的企鹅介绍。
+
+---
+
+## 目录
+- [1. 数据集](#1-数据集)
+- [2. 已完成的实验](#2-已完成的实验)
+- [3. 实验数据记录图](#3-实验数据记录图)
+- [4. 关键结论](#4-关键结论)
+- [5. 后续实验计划](#5-后续实验计划)
+- [6. 旗舰方案：Embedding 检索 + RAG](#6-旗舰方案embedding-检索--rag)
+- [7. 目录结构](#7-目录结构)
+- [8. 复现方式](#8-复现方式)
+
+---
+
+## 1. 数据集
+
+- 原始数据 `penguins_data/`：共 **82 只**企鹅，每只照片数从 1 到 291 张不等，**长尾严重不均衡**。
+- 按「照片数 ≥ 16 张」筛选出 **44 只**作为可训练个体（`penguin_image_count_summary.csv` 中 `selected=True`），其余 37 只（≤15 张）样本太少，暂不参与训练。
+- 已按个体切分为 train / val / test：`penguins_dataset_split/`。
+- 肚子裁剪版本数据（由肚子检测器裁出）：`penguins_dataset_split_belly_by_yoloV8/`。
+
+> 即便在筛选后的 44 类内部，样本量仍从 291（Medici）到约 16，最大/最小差约 18 倍，是后续所有难点的根源。见 [图 05](#3-实验数据记录图)。
+
+## 2. 已完成的实验
+
+| 实验 | 输入 | 模型 | 训练轮次 | best val acc | **test acc** |
+|---|---|---|---|---|---|
+| **exp1 baseline** | 全身照 | ResNet18（迁移学习） | 29（早停，上限30） | 0.907 | **0.950** |
+| **exp2 belly** | 肚子裁剪图 | ResNet18（迁移学习） | 39（早停，上限50） | 0.867 | 0.866 |
+| **belly detector** | 全身照 | YOLOv8s 检测 | 98 | mAP@50 ≈ 0.98 | mAP@50-95 ≈ 0.60 |
+
+三者共用流程：
+- `torchvision.datasets.ImageFolder` 加载
+- 迁移学习（ImageNet 预训练 ResNet18）
+- 类别不均衡处理：`WeightedRandomSampler` + 类别加权 `CrossEntropyLoss`
+- 按验证集准确率保存最优 checkpoint，最后在 test 上评估并导出预测 CSV
+
+**exp1（全身照）**——test accuracy **0.950**，best val 0.907（第 21 轮）。每类表现见 [图 04](#3-实验数据记录图)：样本多的个体（Cooper n=20、Ron_burgundy n=29、Medici n=44）几乎全对；出错集中在 test 只有 3~5 张样本的小类。
+
+**exp2（肚子裁剪）**——test accuracy **0.866**，明显**低于**全身照的 0.950。其 val loss 始终高于 exp1（[图 01](#3-实验数据记录图) 右），泛化更差。
+
+**肚子检测器（YOLOv8s）**——训练 98 轮，验证 **mAP@50 ≈ 0.98、mAP@50-95 ≈ 0.60**，precision/recall 约 0.95（[图 03](#3-实验数据记录图)）。权重：`runs/detect/runs/belly_detector/exp1/weights/best.pt`。检测本身够好，但裁剪会**丢弃脸/胸带/体型等身份信息**，且检测误差会传播给下游分类器——这解释了实验二为何更差。
+
+## 3. 实验数据记录图
+
+所有图由 `plot_experiments.py` 从各 run 的日志重新生成，输出到 `figures/`。
+
+**图 01 — 分类器训练曲线（全身 vs 肚子）**
+![训练曲线](figures/01_classifier_training_curves.png)
+
+**图 02 — 最终 44 类 test 准确率对比**
+![准确率对比](figures/02_test_accuracy_comparison.png)
+
+**图 03 — 肚子检测器（YOLOv8s）验证指标**
+![检测器指标](figures/03_belly_detector_map.png)
+
+**图 04 — 实验一每类 test 准确率（按准确率排序，含每类支持样本数 n）**
+![每类准确率](figures/04_exp1_per_class_accuracy.png)
+
+**图 05 — 数据集每个个体的照片数分布（蓝=入选可训练，灰=样本太少被弃）**
+![数据分布](figures/05_dataset_distribution.png)
+
+## 4. 关键结论
+
+1. **全身照 > 肚子裁剪（0.950 vs 0.866）。** 身份信号不只在肚子——脸部花纹、胸前黑带、体型比例都是线索。裁得太狠会丢信息，检测误差还会传播噪声。
+2. **训练/采集标准 = 全身正面照。** 不再强求肚子清晰完整。
+3. **只用正面。** 企鹅背部大面积均匀深色，个体间几乎无差别，正反混训会拉高类内方差、引入跨类混淆。线上系统对「非正面」照片应提示重拍，而不是硬给身份。
+4. **瓶颈是数据，不是模型。** 错误几乎全部落在样本 ≤5 张的小类上；样本多的个体已接近满分。提升上限的关键是**补数据 + 更强的少样本/度量学习方法**，而非单纯换更大的 backbone。
+
+## 5. 后续实验计划
+
+> 补拍照片的计划见《企鹅照片收集清单》（由 `make_doc.py` 生成）；本节是**除拍照之外**的建模/实验方案。
+
+### 阶段 A — 榨干 baseline（低成本，先做）
+- **A1 数据增强升级**：RandAugment/TrivialAugment、RandomErasing、ColorJitter、随机遮挡，模拟游客照的逆光、模糊、遮挡。目标：缩小 exp1 的 train(≈1.0)–val(≈0.90) 过拟合间隙。
+- **A2 Backbone 对照**：同一流程下比较 ResNet18/50、ConvNeXt-Tiny、EfficientNet-V2-S、ViT-S；画准确率–参数量对照图，确认「全身照」结论对更强模型是否依旧成立。
+- **A3 输入分辨率消融**：224 vs 288 vs 384。
+- **A4 TTA + 置信度阈值**：给低置信预测设「拒识/建议重拍」，度量高精度下的覆盖率。
+
+### 阶段 B — 长尾/少样本（核心难点）
+- **B1 度量学习 / 检索式识别**（ArcFace/CosFace/triplet/ProxyAnchor）：把「44 类分类」改为**嵌入 + 最近邻**。新个体或稀有个体只需入库注册，无需重训。用 top-1 / top-5 检索准确率评估。**→ 这将成为 [第 6 节旗舰方案](#6-旗舰方案embedding-检索--rag) 的核心。**
+- **B2 类别不均衡再加强**：对比 WeightedSampler、Focal Loss、Logit-Adjustment、类平衡重加权。
+- **B3 开放集识别**：加入「未知个体 / 非企鹅 / 非正面」拒识能力，用被弃的 37 只小样本个体和非企鹅图做 open-set 测试。
+
+### 阶段 C — 贴近真实使用
+- **C1 端到端流水线**：定位企鹅 → 姿态/正面过滤 → 识别，串成可跑单张游客照的 pipeline。
+- **C2 正面/朝向分类器**：轻量「正面 vs 背面/侧后」判别器，用于线上「请重拍」提示。
+- **C3 鲁棒性评测集**：单独收一小批真·游客照（逆光/远/糊/多只同框）作为 hard test set。
+
+### 阶段 D — 可解释性与运营
+- **D1 Grad-CAM 可视化**：确认模型究竟看的是脸/胸带/肚子哪部分。
+- **D2 混淆对分析**：从 `confusion_matrix.csv` 找最易混的个体对。
+- **D3 脚环颜色作为辅助特征**：脚环颜色（`Color_Bands*.jpg`）作为强先验/复核信号；研究「视觉模型 + 脚环颜色」融合。
+
+## 6. 旗舰方案：Embedding 检索 + RAG
+
+核心方向：把分类器升级为**多模态检索 + 检索增强生成（RAG）**应用。
+
+### 流水线
+```
+游客照片
+   │
+   ▼
+[检测 + 正面过滤]  ── 非正面 / 非企鹅 ──▶ “请重拍”
+   │
+   ▼
+[图像 embedding 模型]  （ArcFace 训练的 backbone，或 CLIP / DINOv2）
+   │  照片 → 向量
+   ▼
+[向量数据库：企鹅底库]  （FAISS / Qdrant / Milvus / pgvector）
+   │  ANN 检索 top-k 已注册向量
+   ▼
+[匹配 + 开放集阈值]  ── 距离过大 ──▶ “未知个体”
+   │  身份 = Cooper
+   ▼
+[知识检索 — RAG]
+   ├─ Cooper 的结构化档案（名字、年龄、性别、脚环颜色、性格、习性、饲养员备注）
+   └─ 企鹅通用知识片段（物种生物学、种群、保育）
+   │
+   ▼
+[LLM 基于检索文档生成]  → 名字、特征、习性、回答游客问题
+```
+
+### RAG 的两种角色（同时使用）
+1. **档案 grounded 生成**——识别出身份后，取该个体的档案文档，让 LLM 生成自然语言介绍。grounding 能防止模型**对一只真实、有名字的动物编造事实**——这是这里用 RAG 的一个具体、站得住脚的理由。
+2. **开放域问答**——一个知识库（企鹅生物学、种群、饲养、保育）切块 + 向量化；游客自由提问时检索相关片段 → 有引用来源的 grounded 回答。
+
+### 可选的 Agent 层（额外加分）
+一个 LLM agent 编排工具：`identify_penguin(image)`、`get_profile(name)`、`search_knowledge(query)`——由模型决定调用哪个。这在一个系统里同时展示 **AI agent + 多模态检索 + RAG**。
+
+### 建议技术栈
+- **图像 embedding**：B1 训练的 ArcFace backbone，与开箱即用的 **DINOv2 / CLIP**（免训练、细粒度特征强）做对照。
+- **向量数据库**：FAISS（简单/本地）→ **Qdrant**（更有生产感）做 demo。
+- **文本 embedding**：`bge` / `e5` 或 API embedding，用于知识库。
+- **LLM**：Claude（如 `claude-opus-4-8`）走 API，做 grounded 生成 + 引用。
+- **服务**：FastAPI 后端 + Streamlit/Gradio demo 前端。
+- **评测**（AI 应用岗最看重的）：检索命中率（top-k）、回答 **忠实度/grounded 程度**、开放集拒识精度。
+
+### 为什么这是个有含金量的求职项目
+它把细粒度 CV、**度量学习**、**向量数据库**、**多模态 RAG**、**带防幻觉护栏的 grounded LLM 生成**、**RAG 评测**组合在一起——正是 AI 应用工程师的完整工具箱，且跑在一份真实、非玩具的数据集上。
+
+## 7. 目录结构
+
+```text
+pgs/
+├─ README.md / README.zh-CN.md       # 中英双语文档
+├─ plot_experiments.py               # 由日志重新生成 figures/
+├─ figures/                          # 实验记录图（PNG）
+├─ penguin_image_count_summary.csv   # 82 只个体照片数与是否入选
+├─ make_doc.py                       # 生成《企鹅照片收集清单》.docx
+│
+├─ train_experiment1.py              # 分类训练脚本（exp1/exp2）
+├─ eval_checkpoint.py                # checkpoint 评估
+├─ crop_penguin_belly_yolo.py        # 用 YOLO 裁肚子
+├─ prepare_belly_yolo_dataset.py     # 准备肚子检测数据集
+├─ train_belly_detector.py           # 训练肚子检测器
+├─ annotate_belly.py                 # 肚子标注工具
+│
+├─ penguins_data/                    # 原始数据
+├─ penguins_dataset_split/           # 全身照 train/val/test（exp1）
+├─ penguins_dataset_split_belly_by_yoloV8/  # 肚子裁剪 train/val/test（exp2）
+│
+└─ runs/
+   ├─ exp1_baseline/                 # 全身照分类结果
+   ├─ exp2_belly_resnet18/           # 肚子裁剪分类结果
+   └─ detect/…/belly_detector/exp1/  # 肚子检测器结果
+```
+
+## 8. 复现方式
+
+安装依赖（RTX 4060 用 CUDA 版 PyTorch）：
+```powershell
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
+pip install numpy pillow ultralytics matplotlib python-docx
+```
+
+训练分类器：
+```powershell
+# 实验一：全身照
+python train_experiment1.py --data-dir penguins_dataset_split --epochs 30 --batch-size 32
+# 实验二：肚子裁剪
+python train_experiment1.py --data-dir penguins_dataset_split_belly_by_yoloV8 --epochs 50 --batch-size 32
+```
+
+重新生成实验图 / 照片清单：
+```powershell
+python plot_experiments.py
+python make_doc.py
+```

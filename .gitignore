@@ -4,3 +4,7 @@
 
 # Claude Code
 .claude/
+
+# Python / working dirs
+__pycache__/
+_cb_tmp/
