@@ -35,6 +35,7 @@
 | **exp1 baseline** | 全身照 | ResNet18（迁移学习） | 29（早停，上限30） | 0.907 | **0.950** |
 | **exp2 belly** | 肚子裁剪图 | ResNet18（迁移学习） | 39（早停，上限50） | 0.867 | 0.866 |
 | **belly detector** | 全身照 | YOLOv8s 检测 | 98 | mAP@50 ≈ 0.98 | mAP@50-95 ≈ 0.60 |
+| **exp3 向量检索** | 全身照 | ResNet18 特征 + FAISS（免训练） | — | — | **0.959**（原型）/ 0.947（1-NN）/ 0.978（top-5） |
 
 三者共用流程：
 - `torchvision.datasets.ImageFolder` 加载
@@ -47,6 +48,8 @@
 **exp2（肚子裁剪）**——test accuracy **0.866**，明显**低于**全身照的 0.950。其 val loss 始终高于 exp1（[图 01](#3-实验数据记录图) 右），泛化更差。
 
 **肚子检测器（YOLOv8s）**——训练 98 轮，验证 **mAP@50 ≈ 0.98、mAP@50-95 ≈ 0.60**，precision/recall 约 0.95（[图 03](#3-实验数据记录图)）。权重：`runs/detect/runs/belly_detector/exp1/weights/best.pt`。检测本身够好，但裁剪会**丢弃脸/胸带/体型等身份信息**，且检测误差会传播给下游分类器——这解释了实验二为何更差。
+
+**exp3（向量检索——旗舰方案的 CNN 路线）**——复用 exp1 的 ResNet18 作为**冻结的 512 维特征提取器**（去掉分类头），把 train+val 全部图片注册进 **FAISS** 向量库，对 test 照片用最近邻 / 类原型检索识别。**不做新训练。** 结果：原型（类均值）top-1 **0.959**、1-NN top-1 0.947、top-5 0.978——即检索式识别**追平/略超** softmax 分类器（0.950），同时得到一个可注册的向量库（新个体直接入库、无需重训）。代码：`embedding_id/`（`embedder.py`、`build_and_eval.py`、`identify.py`），这就是 `identify_penguin` 工具的可用内核。
 
 ## 3. 实验数据记录图
 

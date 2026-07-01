@@ -8,3 +8,6 @@
 # Python / working dirs
 __pycache__/
 _cb_tmp/
+
+# Regenerable embedding gallery (rebuild via embedding_id/build_and_eval.py)
+embedding_id/artifacts/*.npz
