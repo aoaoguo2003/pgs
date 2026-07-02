@@ -4,7 +4,7 @@
 
 Given a photo of a **Humboldt penguin**, identify **which individual** it is (individual identity, not species). The end goal: a visitor takes one photo and instantly learns which specific penguin it is, plus that penguin's name, traits, and habits. All individuals in this project are Humboldt penguins from a single colony.
 
-The project is evolving from a **classification baseline** into an **embedding-retrieval + RAG** system — turning each photo into a vector, matching it against a vector database, and using an LLM to generate a grounded description of the identified penguin.
+The project is evolving from a **classification baseline** into an **embedding-retrieval + RAG** system — turning each photo into a vector, matching it against a vector database, and using an LLM to generate a grounded description of the identified penguin. **The retrieval core already works** (95.9% top-1, see exp3); the profile/RAG layer and a conversational UI are in progress.
 
 ---
 
@@ -126,7 +126,7 @@ The user-facing wrapper is a chat window. On entry (QR scan / app open) the bot 
 - **Grounding**: facts about a specific penguin come only from `get_profile`; if a field is missing the bot says so rather than inventing it — the core anti-hallucination guarantee.
 
 ### Suggested stack
-- **Image embeddings**: the ArcFace-trained backbone from B1, benchmarked against off-the-shelf **DINOv2 / CLIP** (strong fine-grained features with no training).
+- **Image embeddings**: currently the exp1 ResNet18 as a frozen feature extractor (exp3); planned ArcFace-trained backbone, benchmarked against off-the-shelf **DINOv2 / CLIP**.
 - **Vector DB**: FAISS (simple/local) → **Qdrant** (production feel) for the demo.
 - **Text embeddings**: `bge` / `e5` or an API embedding for the knowledge base.
 - **LLM**: Claude (e.g. `claude-opus-4-8`) via API, with grounded generation + citations.
@@ -135,6 +135,15 @@ The user-facing wrapper is a chat window. On entry (QR scan / app open) the bot 
 
 ### Why this is a strong portfolio project
 It combines fine-grained CV, **metric learning**, a **vector database**, **multimodal RAG**, **grounded LLM generation with anti-hallucination guardrails**, and **RAG evaluation** — the exact toolbox of an AI-application engineer, on a real, non-toy dataset.
+
+### Current status & next steps
+**Done** — the CNN retrieval route (exp3): a working **FAISS vector database** at **95.9% top-1**, with **incremental enrollment** (add a new penguin by storing its features — no retraining) and **open-set rejection** (blurry / non-frontal photo → ask the visitor to re-shoot). This is the ready core of the `identify_penguin` tool.
+
+**Next**
+1. **Build a clean penguin profile database** — one structured record per individual (name, date of birth, personality, features, habits, band colors) to ground `get_profile`.
+2. **Wire the agent loop** — orchestrate `identify_penguin` / `get_profile` / `search_knowledge` via Claude tool-use, with conversation memory.
+3. **Conversational Humboldt penguin expert UI** — a chat window with the welcome message and session memory described above.
+4. **Accuracy levers (in parallel)** — ArcFace metric-learning fine-tuning + more photos for sparse individuals. (A no-training test-time-augmentation attempt gave no gain, since the model was already trained with horizontal-flip augmentation.)
 
 ## 6. Repo Structure
 
