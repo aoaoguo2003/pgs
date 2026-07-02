@@ -52,7 +52,13 @@ def main():
     ap.add_argument("--query-split", default="test")
     ap.add_argument("--out-dir", default="embedding_id/artifacts")
     ap.add_argument("--k", type=int, default=5)
+    ap.add_argument("--tta", action="store_true",
+                    help="use test-time augmentation (average multiple views per image)")
     args = ap.parse_args()
+
+    def embed(paths):
+        fn = embedder.embed_paths_tta if args.tta else embedder.embed_paths
+        return fn(paths, verbose=True)
 
     root = Path(__file__).resolve().parent.parent
     data_dir = (root / args.data_dir) if not os.path.isabs(args.data_dir) else Path(args.data_dir)
@@ -69,8 +75,8 @@ def main():
     for sp in args.gallery_splits:
         p, l = list_split(data_dir, sp)
         g_paths += p; g_labels += l
-    print(f"[2/4] Enrolling gallery: {len(g_paths)} images from {args.gallery_splits}")
-    g_emb = embedder.embed_paths(g_paths, verbose=True)
+    print(f"[2/4] Enrolling gallery: {len(g_paths)} images from {args.gallery_splits}  (TTA={args.tta})")
+    g_emb = embed(g_paths)
     store = VectorStore(g_emb, g_labels, g_paths)
     print(f"      vector store backend = {store.backend}, dim = {g_emb.shape[1]}")
 
@@ -84,7 +90,7 @@ def main():
     # ---- query ----
     q_paths, q_labels = list_split(data_dir, args.query_split)
     print(f"[3/4] Querying with {len(q_paths)} '{args.query_split}' images")
-    q_emb = embedder.embed_paths(q_paths, verbose=True)
+    q_emb = embed(q_paths)
 
     scores, idx = store.search(q_emb, k=args.k)
     knn_pred = [store.labels[idx[i, 0]] for i in range(len(q_paths))]           # 1-NN

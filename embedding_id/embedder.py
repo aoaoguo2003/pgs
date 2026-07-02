@@ -34,12 +34,31 @@ def build_eval_transform(img_size: int = 224) -> transforms.Compose:
     ])
 
 
+def build_tta_transforms(img_size: int = 224) -> list[transforms.Compose]:
+    """
+    Test-time augmentation views. Each returns a normalized tensor; we embed
+    every view and average -> a more robust embedding. No training involved.
+    Views: base resize, horizontal flip, resize+center-crop, and its flip.
+    """
+    norm = transforms.Normalize(IMAGENET_MEAN, IMAGENET_STD)
+    to_t = transforms.ToTensor()
+    bigger = int(round(img_size * 256 / 224))
+    hflip = transforms.RandomHorizontalFlip(p=1.0)
+    return [
+        transforms.Compose([transforms.Resize((img_size, img_size)), to_t, norm]),
+        transforms.Compose([transforms.Resize((img_size, img_size)), hflip, to_t, norm]),
+        transforms.Compose([transforms.Resize(bigger), transforms.CenterCrop(img_size), to_t, norm]),
+        transforms.Compose([transforms.Resize(bigger), transforms.CenterCrop(img_size), hflip, to_t, norm]),
+    ]
+
+
 class Embedder:
     """Wraps the exp1 ResNet18 as a frozen 512-d feature extractor."""
 
     def __init__(self, checkpoint: str, device: str | None = None, img_size: int = 224):
         self.device = device or ("cuda" if torch.cuda.is_available() else "cpu")
         self.tfm = build_eval_transform(img_size)
+        self.tta_tfms = build_tta_transforms(img_size)
 
         model = models.resnet18(weights=None)
         # rebuild the exact head used in training so the state_dict loads,
@@ -75,6 +94,22 @@ class Embedder:
         if normalize:
             emb = l2_normalize(emb)
         return emb
+
+    @torch.no_grad()
+    def embed_paths_tta(self, paths: list[str], batch_size: int = 64,
+                        verbose: bool = False) -> np.ndarray:
+        """Embed each image under several TTA views and average the vectors."""
+        views = self.tta_tfms
+        acc = np.zeros((len(paths), EMBED_DIM), dtype="float32")
+        for v_i, tfm in enumerate(views):
+            for i in range(0, len(paths), batch_size):
+                batch = paths[i:i + batch_size]
+                x = torch.stack([tfm(Image.open(p).convert("RGB")) for p in batch]).to(self.device)
+                acc[i:i + len(batch)] += self.model(x).cpu().numpy().astype("float32")
+            if verbose:
+                print(f"  TTA view {v_i + 1}/{len(views)} done")
+        acc /= len(views)              # average across views
+        return l2_normalize(acc)       # normalize the averaged embedding
 
 
 def l2_normalize(x: np.ndarray, eps: float = 1e-10) -> np.ndarray:
