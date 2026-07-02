@@ -110,7 +110,7 @@ Visitor photo
 1. **Profile-grounded generation** — after identity retrieval, fetch that individual's profile document and have the LLM generate a natural-language description. Grounding prevents the model from **hallucinating facts about a real, named animal** — a concrete, defensible reason to use RAG here.
 2. **Open-domain Q&A** — a knowledge base (penguin biology, the colony, care, conservation) chunked + embedded; free-form visitor questions retrieve relevant chunks → grounded answers with citations.
 
-### Optional agentic layer (extra portfolio value)
+### Optional agentic layer
 An LLM agent orchestrating tools: `identify_penguin(image)`, `get_profile(name)`, `search_knowledge(query)` — the model decides which to call. This showcases **AI agent + multimodal retrieval + RAG** in one system.
 
 ### Product form: a conversational Humboldt penguin expert
@@ -131,10 +131,10 @@ The user-facing wrapper is a chat window. On entry (QR scan / app open) the bot 
 - **Text embeddings**: `bge` / `e5` or an API embedding for the knowledge base.
 - **LLM**: Claude (e.g. `claude-opus-4-8`) via API, with grounded generation + citations.
 - **Serving**: FastAPI backend + Streamlit/Gradio demo UI.
-- **Evaluation** (what AI-application roles look for): retrieval hit-rate (top-k), answer **faithfulness/groundedness**, and open-set reject precision.
+- **Evaluation**: retrieval hit-rate (top-k), answer **faithfulness/groundedness**, and open-set reject precision.
 
-### Why this is a strong portfolio project
-It combines fine-grained CV, **metric learning**, a **vector database**, **multimodal RAG**, **grounded LLM generation with anti-hallucination guardrails**, and **RAG evaluation** — the exact toolbox of an AI-application engineer, on a real, non-toy dataset.
+### Technical scope
+This direction combines fine-grained computer vision, **metric learning**, a **vector database**, **multimodal RAG**, **grounded LLM generation with anti-hallucination guardrails**, and **RAG evaluation**, applied to a real-world dataset.
 
 ### Current status & next steps
 **Done** — the CNN retrieval route (exp3): a working **FAISS vector database** at **95.9% top-1**, with **incremental enrollment** (add a new penguin by storing its features — no retraining) and **open-set rejection** (blurry / non-frontal photo → ask the visitor to re-shoot). This is the ready core of the `identify_penguin` tool.
