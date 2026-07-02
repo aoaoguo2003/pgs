@@ -1,5 +1,0 @@
-path: C:/Users/14773/Desktop/pgs/belly_yolo_dataset
-train: images/train
-val:   images/val
-nc: 1
-names: ['belly']

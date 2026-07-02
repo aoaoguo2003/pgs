@@ -11,3 +11,11 @@ _cb_tmp/
 
 # Regenerable embedding gallery (rebuild via embedding_id/build_and_eval.py)
 embedding_id/artifacts/*.npz
+
+# Penguin photo datasets (kept local, not uploaded to GitHub)
+/belly/
+/belly_yolo_dataset/
+/penguins_data/
+/penguins_data_over15/
+/penguins_dataset_split/
+/penguins_dataset_split_belly_by_yoloV8/
