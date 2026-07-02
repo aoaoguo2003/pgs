@@ -128,8 +128,8 @@
 ### 建议技术栈
 - **图像 embedding**：当前用 exp1 的 ResNet18 作冻结特征提取器（exp3）；计划训练 ArcFace backbone，并与开箱即用的 **DINOv2 / CLIP** 做对照。
 - **向量数据库**：FAISS（简单/本地）→ **Qdrant**（更有生产感）做 demo。
-- **文本 embedding**：`bge` / `e5` 或 API embedding，用于知识库。
-- **LLM**：Claude（如 `claude-opus-4-8`）走 API，做 grounded 生成 + 引用。
+- **文本 embedding**：开源 `bge` / `e5`，用于知识库。
+- **LLM**：**本地部署的开源模型**（如 Qwen / Llama），可选在企鹅资料上做 **LoRA 微调**——自建部署而非付费 API——做 grounded 生成 + 引用。
 - **服务**：FastAPI 后端 + Streamlit/Gradio demo 前端。
 - **评测**：检索命中率（top-k）、回答 **忠实度/grounded 程度**、开放集拒识精度。
 
@@ -141,7 +141,7 @@
 
 **下一步**
 1. **建立整洁的企鹅档案库**——每只一份结构化记录（姓名、出生日期、性格、特征、习性、脚环颜色），用于给 `get_profile` 做事实支撑。
-2. **搭建 agent 主循环**——用 Claude tool-use 编排 `identify_penguin` / `get_profile` / `search_knowledge`，并带会话记忆。
+2. **搭建 agent 主循环**——用 LLM 的 function-calling / tool-use 编排 `identify_penguin` / `get_profile` / `search_knowledge`，并带会话记忆。
 3. **对话式洪堡企鹅专家界面**——聊天窗口，含上文的欢迎语与会话记忆。
 4. **精度提升（并行推进）**——ArcFace 度量学习微调 + 为稀有个体补拍照片。（免训练的测试时增强 TTA 实测无增益，因为模型训练时已用了水平翻转增强。）
 

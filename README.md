@@ -128,8 +128,8 @@ The user-facing wrapper is a chat window. On entry (QR scan / app open) the bot 
 ### Suggested stack
 - **Image embeddings**: currently the exp1 ResNet18 as a frozen feature extractor (exp3); planned ArcFace-trained backbone, benchmarked against off-the-shelf **DINOv2 / CLIP**.
 - **Vector DB**: FAISS (simple/local) → **Qdrant** (production feel) for the demo.
-- **Text embeddings**: `bge` / `e5` or an API embedding for the knowledge base.
-- **LLM**: Claude (e.g. `claude-opus-4-8`) via API, with grounded generation + citations.
+- **Text embeddings**: open-source `bge` / `e5` for the knowledge base.
+- **LLM**: a **self-hosted open-source model** (e.g. Qwen / Llama), optionally **LoRA-fine-tuned** on penguin data — local deployment rather than a paid API — for grounded generation + citations.
 - **Serving**: FastAPI backend + Streamlit/Gradio demo UI.
 - **Evaluation**: retrieval hit-rate (top-k), answer **faithfulness/groundedness**, and open-set reject precision.
 
@@ -141,7 +141,7 @@ This direction combines fine-grained computer vision, **metric learning**, a **v
 
 **Next**
 1. **Build a clean penguin profile database** — one structured record per individual (name, date of birth, personality, features, habits, band colors) to ground `get_profile`.
-2. **Wire the agent loop** — orchestrate `identify_penguin` / `get_profile` / `search_knowledge` via Claude tool-use, with conversation memory.
+2. **Wire the agent loop** — orchestrate `identify_penguin` / `get_profile` / `search_knowledge` via the LLM's function-calling / tool-use, with conversation memory.
 3. **Conversational Humboldt penguin expert UI** — a chat window with the welcome message and session memory described above.
 4. **Accuracy levers (in parallel)** — ArcFace metric-learning fine-tuning + more photos for sparse individuals. (A no-training test-time-augmentation attempt gave no gain, since the model was already trained with horizontal-flip augmentation.)
 
