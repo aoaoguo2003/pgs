@@ -54,11 +54,11 @@ class PenguinIdentifier:
         best = candidates[0]["score"]
         margin = candidates[0]["score"] - (candidates[1]["score"] if len(candidates) > 1 else 0.0)
         if best < CONFIDENT_SCORE:
-            decision, message = "unknown", "未能匹配到已登记的企鹅，请拍一张更清晰的正面全身照。"
+            decision, message = "unknown", "No match among the enrolled penguins; please take a clearer front-facing, full-body photo."
         elif margin < AMBIGUOUS_MARGIN:
-            decision, message = "ambiguous", "有几只很像，请确认或换一张更清晰的正面照。"
+            decision, message = "ambiguous", "Several individuals look similar; please confirm, or take a clearer front-facing photo."
         else:
-            decision, message = "confident", f"匹配到 {candidates[0]['name']}。"
+            decision, message = "confident", f"Matched {candidates[0]['name']}."
 
         return {
             "decision": decision,

@@ -19,12 +19,14 @@ data = [
     ("Ernest", 19), ("Greyjoy", 19), ("Hanbury", 19),
 ]
 
-# 脚环颜色：读自 Color_Bands1.jpg / Color_Bands2.jpg
-# 表中顺序为 B1 B2 B3 B4 B5（外侧→中间→外侧）。照片中部有一条斜向反光/阴影，
-# 把不少个体的“中间环(B2–B4)”盖住了；外侧环(B1/B5)和绑带(cable tie)颜色较可靠。
-# 标“(中间反光不清)”的需对照原表或重拍色卡核对。没出现在色卡上的写“没找到对应颜色”。
+# Band colours: read from Color_Bands1.jpg / Color_Bands2.jpg.
+# Order in the table is B1 B2 B3 B4 B5 (outer -> middle -> outer). A diagonal glare/shadow
+# across the middle of each photo hides many birds' "middle rings (B2-B4)"; the outer rings
+# (B1/B5) and the cable tie are more reliable. Entries marked "(middle unclear, glare)" need
+# checking against the original card or a re-shot photo. Birds absent from the card are marked
+# with NOT_FOUND ("no matching colour found").
 bands = {
-    # —— 清晰可读 ——
+    # —— Clearly readable ——
     "Ronnie":  "紫 绿 绿 紫 紫",
     "Marley":  "蓝 绿 绿（两端空）",
     "Polka":   "青 蓝 蓝 蓝 蓝",
@@ -39,7 +41,7 @@ bands = {
     "Greyjoy": "灰 灰 灰 灰 灰",
     "Piggy":   "粉 紫 紫 紫 粉",
     "Karen":   "紫 紫 紫 紫 紫",
-    # —— 外侧/绑带可读，中间反光不清 ——
+    # —— Outer rings / cable tie readable, middle unclear due to glare ——
     "Coco":    "红…红（中间约黄，欠清）",
     "Luke":    "外侧绿（中间反光不清）",
     "Puddle":  "蓝…黄（中间反光不清）",
@@ -79,7 +81,7 @@ r = p.add_run(f"{total_short} 张")
 r.bold = True
 p.add_run("。")
 
-# ---- 拍摄建议 ----
+# ---- Shooting guidance ----
 doc.add_heading("拍摄建议：只拍游客角度的全身正面照（不采集背面）", level=1)
 
 p = doc.add_paragraph()
@@ -114,7 +116,7 @@ for head, body in bullets:
     rr.bold = True
     pp.add_run(body)
 
-# ---- 脚环颜色说明 ----
+# ---- Band-colour notes ----
 doc.add_heading("脚环颜色（Color Bands）说明", level=1)
 p = doc.add_paragraph()
 p.add_run("数据来源：").bold = True
@@ -126,7 +128,7 @@ r.bold = True
 p.add_run("两张色卡照片中部都有一条斜向反光/阴影，把一批个体的“中间环(B2–B4)”盖住了，这些标为“(中间反光不清)”。"
           "建议把色卡平铺、避免反光重拍一张，我就能把所有颜色读全读准。色卡上没有的个体写“"+NOT_FOUND+"”。")
 
-# ---- 表格 ----
+# ---- Table ----
 doc.add_heading("需补拍清单（按缺口从大到小排序，含脚环颜色）", level=1)
 
 table = doc.add_table(rows=1, cols=5)

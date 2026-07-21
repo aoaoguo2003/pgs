@@ -4,13 +4,13 @@ import random
 import pandas as pd
 
 # =========================
-# 1. 修改这里
+# 1. Edit these paths
 # =========================
 SOURCE_DIR = Path("penguins_data_over15")
 OUTPUT_DIR = Path("penguins_dataset_split")
 
 # =========================
-# 2. 划分比例
+# 2. Split ratios
 # =========================
 TRAIN_RATIO = 0.70
 VAL_RATIO = 0.15
@@ -22,7 +22,7 @@ IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".bmp", ".webp"}
 
 random.seed(RANDOM_SEED)
 
-# 如果目标文件夹已存在，建议先删除，避免重复复制
+# If the output folder already exists, remove it first to avoid duplicate copies
 if OUTPUT_DIR.exists():
     shutil.rmtree(OUTPUT_DIR)
 
@@ -32,7 +32,7 @@ for split in ["train", "val", "test"]:
 summary = []
 
 # =========================
-# 3. 按每个企鹅类别分别划分
+# 3. Split each penguin (class) separately
 # =========================
 for penguin_folder in SOURCE_DIR.iterdir():
     if not penguin_folder.is_dir():
@@ -79,7 +79,7 @@ for penguin_folder in SOURCE_DIR.iterdir():
     })
 
 # =========================
-# 4. 保存划分统计表
+# 4. Save the split-summary table
 # =========================
 df = pd.DataFrame(summary)
 df = df.sort_values(by="total_images", ascending=False)

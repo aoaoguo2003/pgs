@@ -62,10 +62,10 @@ def prepare() -> None:
         encoding="utf-8",
     )
     print(f"  data.yaml → {yaml_path}")
-    print(f"\n完成。共准备 {N_TRAIN} 张训练图 + {N_VAL} 张验证图。")
-    print("现在运行标注工具：")
-    print("  python annotate_belly.py        # 标注 train")
-    print("  python annotate_belly.py val    # 标注 val")
+    print(f"\nDone. Prepared {N_TRAIN} training images + {N_VAL} validation images.")
+    print("Now run the annotation tool:")
+    print("  python annotate_belly.py        # annotate train")
+    print("  python annotate_belly.py val    # annotate val")
 
 
 if __name__ == "__main__":

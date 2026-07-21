@@ -98,7 +98,7 @@ class AnnotationTool:
                  font=("Arial", 8), bg="#1e1e1e", fg="#888"
                  ).pack(side=tk.LEFT)
 
-        tk.Label(bot, text="← A  |  D →  |  R = 重画  |  Q = 退出",
+        tk.Label(bot, text="← A  |  D →  |  R = Redraw  |  Q = Quit",
                  font=("Arial", 9), bg="#1e1e1e", fg="#666"
                  ).pack(side=tk.RIGHT)
 
@@ -116,7 +116,7 @@ class AnnotationTool:
         annotated = self._count_annotated()
 
         self.progress_var.set(
-            f"图片  {self.idx + 1} / {total}    已标注: {annotated} / {total}"
+            f"Image  {self.idx + 1} / {total}    Annotated: {annotated} / {total}"
         )
         self.fname_var.set(path.name)
 
@@ -149,9 +149,9 @@ class AnnotationTool:
         label_path = self.labels_dir / (path.stem + ".txt")
         if label_path.exists():
             self._draw_existing(label_path)
-            self.status_var.set("✓ 已标注  (R=重画)")
+            self.status_var.set("✓ Annotated  (R = redraw)")
         else:
-            self.status_var.set("未标注 — 点击拖动画框")
+            self.status_var.set("Not annotated — click and drag to draw a box")
 
     def _draw_existing(self, label_path: Path) -> None:
         try:
@@ -195,7 +195,7 @@ class AnnotationTool:
             self._redo()
             return
         self.box = (x1, y1, x2, y2)
-        self.status_var.set("✓ 画好了 — 按 D 保存并下一张")
+        self.status_var.set("✓ Box drawn — press D to save and go to next")
 
     def _redo(self) -> None:
         if self.rect_id is not None:
@@ -205,9 +205,9 @@ class AnnotationTool:
         self.start_x = self.start_y = None
         label_path = self.labels_dir / (self.image_paths[self.idx].stem + ".txt")
         if label_path.exists():
-            self.status_var.set("✓ 已标注  (R=重画)")
+            self.status_var.set("✓ Annotated  (R = redraw)")
         else:
-            self.status_var.set("未标注 — 点击拖动画框")
+            self.status_var.set("Not annotated — click and drag to draw a box")
 
     # ------------------------------------------------------- save / navigate
 
