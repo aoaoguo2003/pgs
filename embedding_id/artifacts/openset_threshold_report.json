@@ -1,0 +1,82 @@
+{
+  "n_query": 320,
+  "n_enrolled_penguins": 44,
+  "auc_known_vs_unknown": 0.990830078125,
+  "known_score_mean": 0.9005838632583618,
+  "unknown_score_mean": 0.6777032613754272,
+  "sweep": [
+    {
+      "threshold": 0.4,
+      "known_kept": 1.0,
+      "unknown_rejected": 0.0,
+      "balanced_accuracy": 0.5
+    },
+    {
+      "threshold": 0.45,
+      "known_kept": 1.0,
+      "unknown_rejected": 0.0,
+      "balanced_accuracy": 0.5
+    },
+    {
+      "threshold": 0.5,
+      "known_kept": 1.0,
+      "unknown_rejected": 0.0,
+      "balanced_accuracy": 0.5
+    },
+    {
+      "threshold": 0.55,
+      "known_kept": 1.0,
+      "unknown_rejected": 0.003125,
+      "balanced_accuracy": 0.5015625
+    },
+    {
+      "threshold": 0.6,
+      "known_kept": 1.0,
+      "unknown_rejected": 0.09375,
+      "balanced_accuracy": 0.546875
+    },
+    {
+      "threshold": 0.65,
+      "known_kept": 1.0,
+      "unknown_rejected": 0.359375,
+      "balanced_accuracy": 0.6796875
+    },
+    {
+      "threshold": 0.7,
+      "known_kept": 1.0,
+      "unknown_rejected": 0.61875,
+      "balanced_accuracy": 0.809375
+    },
+    {
+      "threshold": 0.75,
+      "known_kept": 0.98125,
+      "unknown_rejected": 0.878125,
+      "balanced_accuracy": 0.9296875
+    },
+    {
+      "threshold": 0.8,
+      "known_kept": 0.91875,
+      "unknown_rejected": 0.965625,
+      "balanced_accuracy": 0.9421875
+    },
+    {
+      "threshold": 0.85,
+      "known_kept": 0.8,
+      "unknown_rejected": 0.996875,
+      "balanced_accuracy": 0.8984375
+    },
+    {
+      "threshold": 0.9,
+      "known_kept": 0.621875,
+      "unknown_rejected": 1.0,
+      "balanced_accuracy": 0.8109375
+    },
+    {
+      "threshold": 0.95,
+      "known_kept": 0.225,
+      "unknown_rejected": 1.0,
+      "balanced_accuracy": 0.6125
+    }
+  ],
+  "recommended_threshold": 0.8
+}

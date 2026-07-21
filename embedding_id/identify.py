@@ -24,9 +24,20 @@ import numpy as np
 
 from embedder import Embedder, VectorStore, l2_normalize
 
-# Open-set thresholds on cosine similarity (tune on a held-out set).
-# best score below LOW  -> unknown; margin below MARGIN -> ambiguous.
-CONFIDENT_SCORE = 0.55
+# Open-set thresholds on cosine similarity to the class prototypes.
+# best score below CONFIDENT_SCORE -> unknown; margin below MARGIN -> ambiguous.
+#
+# Tuned by leave-one-penguin-out simulation (see tune_openset.py): a bird is
+# dropped from the gallery, then queried, so its best score is the score of a
+# genuinely unenrolled individual. Known/unknown separability is AUC 0.991.
+#   0.55 (the original guess) rejected only 0.3% of unenrolled birds -- i.e. it
+#   confidently named a stranger almost every time.
+#   0.80 keeps 91.9% of enrolled birds and rejects 96.6% of unenrolled ones
+#   (best balanced accuracy, 94.2%). Deliberately biased towards "ask for
+#   another photo" over stating a wrong name.
+# NOTE: the enrolled-bird scores are optimistic because train/test share photo
+# sessions; expect to lower this again once session-disjoint data is available.
+CONFIDENT_SCORE = 0.80
 AMBIGUOUS_MARGIN = 0.05
 
 
