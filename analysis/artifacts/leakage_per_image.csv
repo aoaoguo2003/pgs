@@ -1,0 +1,321 @@
+penguin,test_image,min_hamming,max_ncc,nearest_by_hash,nearest_by_ncc,exif_time_gap_s,min_frame_gap,same_camera_prefix,same_session,leaky,knn_correct
+Beaker,Beaker1.jpg,24,0.355,IMG_3054.jpeg,IMG_0831_box1.jpg,,1,True,True,False,False
+Beaker,Beaker12.jpg,20,0.434,IMG_3052.jpeg,Beaker13.jpg,,1,True,True,False,True
+Beaker,Beaker4.jpg,15,0.297,Beaker11.jpg,Beaker11.jpg,,1,True,True,False,True
+Beaker,IMG_3055.jpeg,23,0.338,IMG_0831_box1.jpg,IMGP0626.JPG,,1,True,True,False,True
+Beau,1.jpg,19,0.202,IMG_4324 copy.jpeg,IMG_4410 copy.jpeg,,1,True,True,False,True
+Beau,IMG_4318 copy.jpeg,15,0.821,IMG_4317 copy.jpeg,IMG_4317 copy.jpeg,2.0,1,True,True,False,True
+Beau,IMG_4424 copy.jpeg,14,0.816,IMG_4423 copy.jpeg,IMG_4423 copy.jpeg,2.0,1,True,True,False,True
+Bob,Bob2.jpg,22,0.172,DSC_2463.jpeg,DSC_2465.jpeg,,1,True,True,False,True
+Bob,Bob4.jpg,6,0.815,Bob3.jpg,Bob3.jpg,,1,True,True,True,True
+Bob,DSC_2563.jpeg,15,0.467,Bob1.jpg,DSC_2564.jpeg,,1,True,True,False,True
+Bud,Bud12.jpg,21,0.393,Bud8.jpg,Bud13.jpg,,1,True,True,False,True
+Bud,Bud16.jpg,17,0.857,Bud14.jpg,Bud14.jpg,,1,True,True,True,True
+Bud,Bud2.jpg,25,0.27,IMGP0646.JPG,IMGP0647.JPG,,1,True,True,False,True
+Bud,Bud6.jpg,16,0.465,Bud4.jpg,Bud4.jpg,,1,True,True,False,True
+Bud,IMGP0653.JPG,20,0.519,IMGP0644.JPG,IMGP0654.JPG,,1,True,True,False,True
+Calypso,Calypso2.jpg,23,0.327,IMG_0784_box2.jpg,IMG_0784_box2.jpg,,1,True,True,False,True
+Calypso,IMG_0783_box4.jpg,18,0.691,IMG_0784_box2.jpg,IMG_0784_box2.jpg,,1,True,True,False,True
+Calypso,IMG_0800_box1.jpg,25,0.314,IMG_1561_box3.jpg,IMG_0784_box2.jpg,,15,True,True,False,False
+Calypso,IMG_2393_box4.jpg,21,0.27,IMG_2109_box5.jpg,IMG_2260_box3.jpg,,96,True,False,False,True
+Chompy,DSC_2434.jpeg,26,0.25,Chompy10.jpg,Chompy11.jpg,,,False,False,False,False
+Chompy,DSC_2435.jpeg,25,0.19,Chompy10.jpg,Chompy11.jpg,,,False,False,False,False
+Chompy,IMGP0665.JPG,21,0.478,IMGP0667.JPG,IMGP0666.JPG,,1,True,True,False,True
+Chompy,IMGP0705.JPG,16,0.434,IMGP0669.JPG,IMGP0709.JPG,,1,True,True,False,True
+Chompy,IMGP0708.JPG,18,0.595,IMGP0664.JPG,IMGP0668.JPG,,1,True,True,False,True
+Coco,Coco12.jpg,19,0.307,Coco8.jpg,Coco9.jpg,,1,True,True,False,True
+Coco,Coco3.jpg,11,0.873,Coco4.jpg,Coco4.jpg,,1,True,True,True,True
+Coco,Coco5.jpg,24,0.203,Coco10.jpg,Coco9.jpg,,1,True,True,False,False
+Cooper,Cooper1.jpg,17,0.356,Cooper12.jpg,Cooper2.jpg,,1,True,True,False,True
+Cooper,Cooper11.jpg,20,0.543,Cooper12.jpg,Cooper12.jpg,,1,True,True,False,True
+Cooper,Cooper16.jpg,19,0.348,IMG_1791_box1.jpg,Cooper12.jpg,,1,True,True,False,True
+Cooper,Cooper8.jpg,20,0.553,IMG_3259.jpeg,IMG_3251.jpeg,,1,True,True,False,True
+Cooper,DSC_2422.jpeg,17,0.553,IMG_2868.jpeg,DSC_2421.jpeg,,1,True,True,False,True
+Cooper,IMG_0409_box1.jpg,22,0.415,IMGP0388.JPG,IMG_0408_box1.jpg,,1,True,True,False,True
+Cooper,IMG_1387_box1.jpg,22,0.425,Cooper5.jpg,IMG_1464_box2.jpg,,1,True,True,False,True
+Cooper,IMG_1431_box3.jpg,17,0.632,IMG_2859.jpeg,IMG_1430_box3.jpg,,1,True,True,False,True
+Cooper,IMG_1469_box4.jpg,17,0.557,IMG_1048_box1.jpg,IMG_1464_box2.jpg,,5,True,True,False,True
+Cooper,IMG_2110_box1.jpg,14,0.72,IMG_2111_box1.jpg,IMG_2112_box1.jpg,,1,True,True,False,True
+Cooper,IMG_2225_box4.jpg,21,0.352,DSC_2409.jpeg,IMG_1047_box1.jpg,,19,True,True,False,True
+Cooper,IMG_2283_box2.jpg,19,0.417,IMG_2285_box1.jpg,IMG_2285_box1.jpg,,1,True,True,False,True
+Cooper,IMG_2719.jpeg,14,0.55,IMG_2717.jpeg,IMG_2718.jpeg,,1,True,True,False,True
+Cooper,IMG_2906.jpeg,19,0.316,IMG_3254.jpeg,Cooper12.jpg,,1,True,True,False,True
+Cooper,IMG_2908.jpeg,20,0.432,IMG_2903.jpeg,IMG_2909.jpeg,,1,True,True,False,True
+Cooper,IMG_2966.jpeg,21,0.582,IMG_1716_box3.jpg,IMG_2964.jpeg,,1,True,True,False,True
+Cooper,IMG_3245.jpeg,17,0.669,IMG_3259.jpeg,IMG_3260.jpeg,,1,True,True,False,True
+Cooper,IMG_3261.jpeg,15,0.536,IMGP0078.JPG,IMG_1172_box3.jpg,,1,True,True,False,True
+Cooper,IMGP0072.JPG,11,0.749,IMGP0073.JPG,IMGP0073.JPG,,1,True,True,False,True
+Cooper,IMGP0077.JPG,21,0.432,IMG_3257.jpeg,IMGP0390.JPG,,1,True,True,False,True
+Courtney,IMG_0787_box1.jpg,23,0.42,IMG_0783_box3.jpg,IMG_0785_box2.jpg,,1,True,True,False,True
+Courtney,IMG_0821_box2.jpg,21,0.338,IMG_0784_box1.jpg,DSC_2730.jpeg,,1,True,True,False,True
+Courtney,IMG_2945_box6.jpg,24,0.421,IMG_2940_box6.jpg,IMG_2942_box4.jpg,,3,True,True,False,True
+Courtney,IMGP0407.JPG,18,0.582,IMGP0406.JPG,IMGP0406.JPG,,1,True,True,False,True
+Courtney,IMGP0409.JPG,15,0.654,IMGP0405.JPG,IMGP0406.JPG,,1,True,True,False,True
+Courtney,IMGP0412.JPG,12,0.709,IMGP0418.JPG,IMGP0418.JPG,,1,True,True,False,True
+Danny,Danny 3.jpg,20,0.55,Danny 4.jpg,Danny 4.jpg,,1,True,True,False,True
+Danny,IMG_0800_box5.jpg,19,0.651,IMG_0794_box6.jpg,IMG_0794_box6.jpg,,1,True,True,False,True
+Danny,IMG_0826_box1.jpg,14,0.648,IMG_0831_box4.jpg,IMG_0831_box4.jpg,,1,True,True,False,True
+Danny,IMG_0827_box4.jpg,17,0.553,IMG_0831_box4.jpg,IMG_0831_box4.jpg,,1,True,True,False,True
+Danny,IMG_0829_box1.jpg,3,0.907,IMG_0830_box2.jpg,IMG_0830_box2.jpg,,1,True,True,True,True
+Dragon,IMG_4315 copy.jpeg,9,0.825,IMG_4314 copy.jpeg,IMG_4314 copy.jpeg,1.0,1,True,True,True,True
+Dragon,IMG_4334 copy.jpeg,21,0.343,IMG_4335 copy.jpeg,IMG_4413 copy.jpeg,2.0,1,True,True,False,True
+Dragon,IMG_4386 copy.jpeg,18,0.718,IMG_4415 copy.jpeg,IMG_4385 copy.jpeg,92.0,1,True,True,False,True
+Dragon,IMG_4389 copy.jpeg,21,0.535,IMG_4388 copy.jpeg,IMG_4388 copy.jpeg,1.0,1,True,True,False,True
+Dragon,IMG_4401 copy.jpeg,15,0.731,IMG_4415 copy.jpeg,IMG_4415 copy.jpeg,37.0,1,True,True,False,True
+Dragon,IMG_4406 copy.jpeg,17,0.772,IMG_4405 copy.jpeg,IMG_4405 copy.jpeg,1.0,1,True,True,False,True
+Dragon,IMG_4412 copy.jpeg,16,0.77,IMG_4413 copy.jpeg,IMG_4411 copy.jpeg,1.0,1,True,True,False,True
+Egg,Egg1.jpg,21,0.464,IMG_2955.jpeg,IMG_2955.jpeg,,2,True,True,False,True
+Egg,Egg2.jpg,22,0.3,IMG_2952.jpeg,IMG_2955.jpeg,,1,True,True,False,False
+Egg,IMG_2957.jpeg,12,0.552,IMG_2958.jpeg,IMG_2958.jpeg,,1,True,True,False,True
+Ellis,DSC_2705.jpeg,19,0.686,DSC_2704.jpeg,DSC_2704.jpeg,1.0,1,True,True,False,True
+Ellis,Ellis11.jpg,20,0.287,Ellis2.jpg,Ellis4.jpg,,1,True,True,False,True
+Ellis,Ellis12.jpg,23,0.325,Ellis2.jpg,Ellis1.jpg,,1,True,True,False,True
+Ellis,Ellis16.jpg,22,0.222,Ellis17.jpg,DSC_2702.jpeg,,1,True,True,False,True
+Ernest,DSC_2526.jpeg,6,0.767,DSC_2525.jpeg,DSC_2525.jpeg,2.0,1,True,True,True,True
+Ernest,IMG_0999_box4.jpg,8,0.816,IMG_0998_box3.jpg,IMG_0998_box3.jpg,,1,True,True,True,True
+Ernest,IMG_1037_box4.jpg,17,0.584,IMG_0376_box1.jpg,IMG_1036_box1.jpg,,1,True,True,False,True
+Gonzo,IMG_0342_box2.jpg,18,0.378,IMG_0515_box1.jpg,IMG_0323_box1.jpg,,16,True,True,False,True
+Gonzo,IMG_0479_box1.jpg,11,0.769,IMG_0477_box1.jpg,IMG_0477_box1.jpg,,2,True,True,False,True
+Gonzo,IMG_0514_box2.jpg,20,0.645,IMG_0515_box1.jpg,IMG_0513_box2.jpg,,1,True,True,False,True
+Gonzo,IMG_0900_box2.jpg,13,0.789,IMG_0516_box2.jpg,IMG_0899_box3.jpg,,1,True,True,False,True
+Gonzo,IMG_0909_box4.jpg,8,0.911,IMG_0910_box3.jpg,IMG_0910_box3.jpg,,1,True,True,True,True
+Gonzo,IMG_1570_box3.jpg,20,0.598,IMG_2990_box1.jpg,IMG_2988_box1.jpg,,1,True,True,False,True
+Gonzo,IMG_1753_box1.jpg,15,0.67,IMG_1754_box2.jpg,IMG_1754_box2.jpg,,1,True,True,False,True
+Gonzo,thumbnail_image002.jpg,12,0.585,thumbnail_image001-3.jpg,thumbnail_image001-3.jpg,,1,True,True,False,True
+Greyjoy,DSC_2548.jpeg,4,0.845,DSC_2549.jpeg,DSC_2549.jpeg,1.0,1,True,True,True,True
+Greyjoy,DSC_2550.jpeg,16,0.545,DSC_2551.jpeg,DSC_2551.jpeg,6.0,1,True,True,False,True
+Greyjoy,Greyjoy8.jpg,20,0.426,DSC_2549.jpeg,Greyjoy as chick.jpg,,1,True,True,False,False
+Hanbury,Hanbury19.jpg,24,0.358,Hanbury18.jpg,Hanbury18.jpg,,1,True,True,False,True
+Hanbury,Hanbury5.jpg,17,0.409,Hanbury4.jpg,Hanbury11.jpg,,1,True,True,False,True
+Hanbury,Hanbury9.jpg,23,0.345,Hanbury15.jpg,Hanbury7.jpg,,1,True,True,False,True
+Heathcliffe,DSC_2584.jpeg,21,0.255,Penguins_All - 275 of 322_box2.jpeg,IMGP0400.JPG,799419523.0,1,True,True,False,True
+Heathcliffe,DSC_2585.jpeg,20,0.478,Penguins_All - 282 of 322_box1.jpeg,Heathcliff6.jpg,799419499.0,2,True,True,False,False
+Heathcliffe,Heathcliff4.jpg,19,0.574,Penguins_All - 274 of 322_box3.jpeg,Heathcliff5.jpg,,1,True,True,False,True
+Heathcliffe,Heathcliff7.jpg,20,0.356,DSC_2623.jpeg,IMGP0393.JPG,,1,True,True,False,True
+Heathcliffe,Heathcliff9.jpg,21,0.274,Heathcliff8.jpg,Penguins_All - 241 of 322_box4.jpeg,,1,True,True,False,True
+Heathcliffe,IMG_0105_box1.jpg,23,0.396,IMGP0398.JPG,Penguins_All - 258 of 322_box3.jpeg,,24,True,True,False,True
+Heathcliffe,IMGP0401.JPG,14,0.658,IMGP0402.JPG,IMGP0402.JPG,,1,True,True,False,True
+Heathcliffe,Penguins_All - 246 of 322_box4.jpeg,21,0.551,Penguins_All - 247 of 322_box4.jpeg,Penguins_All - 247 of 322_box4.jpeg,8.0,1,True,True,False,True
+Heathcliffe,Penguins_All - 266 of 322_box1.jpeg,9,0.661,Penguins_All - 265 of 322_box2.jpeg,Penguins_All - 265 of 322_box2.jpeg,1.0,1,True,True,True,True
+Heathcliffe,Penguins_All - 285 of 322_box4.jpeg,23,0.379,IMGP0393.JPG,Heathcliff8.jpg,,2,True,True,False,True
+Jaz,DSC_2629.jpeg,18,0.391,IMGP0136.JPG,IMGP0136.JPG,,1,True,True,False,True
+Jaz,IMGP0147.JPG,9,0.848,IMGP0151.JPG,IMGP0151.JPG,,1,True,True,True,True
+Jaz,IMGP0148.JPG,14,0.697,IMGP0150.JPG,IMGP0150.JPG,,2,True,True,False,True
+Jaz,IMGP0149.JPG,13,0.728,IMGP0150.JPG,IMGP0150.JPG,,1,True,True,False,True
+Kermit,DSC_2775.jpeg,19,0.641,DSC_2776.jpeg,DSC_2776.jpeg,7.0,1,True,True,False,True
+Kermit,DSC_2777.jpeg,11,0.872,DSC_2778.jpeg,DSC_2778.jpeg,4.0,1,True,True,True,True
+Kermit,IMG_0834_box1.jpg,10,0.579,IMG_0830_box3.jpg,IMG_0832_box1.jpg,,1,True,True,True,True
+Kermit,IMG_0985_box5.jpg,20,0.538,IMG_3290.jpeg,IMG_0792_box3.jpg,,145,True,False,False,True
+Kermit,IMG_2046_box2.jpg,18,0.37,IMG_3422_box2.jpg,IMG_3422_box2.jpg,,1,True,True,False,True
+Kermit,IMGP0793.JPG,20,0.559,IMGP0817.JPG,IMGP0817.JPG,,17,True,True,False,True
+Kermit,IMGP0809.JPG,19,0.587,IMG_0835_box2.jpg,IMGP0817.JPG,,1,True,True,False,True
+Kermit,IMGP0813.JPG,16,0.54,IMGP0814.JPG,IMGP0814.JPG,,1,True,True,False,True
+Kermit,Kermit11.jpg,18,0.358,DSC_2778.jpeg,DSC_2778.jpeg,,1,True,True,False,True
+Kermit,Kermit2.jpg,25,0.476,IMG_0295_box2.jpg,IMG_3281.jpeg,,1,True,True,False,True
+Kermit,Kermit5.jpg,25,0.32,Kermit3.jpg,Kermit4.jpg,,1,True,True,False,True
+Lannister,DSC_2402.jpeg,23,0.555,Lannister 1.jpg,Lannister 14.jpg,,1,True,True,False,False
+Lannister,DSC_2474.jpeg,12,0.901,DSC_2475.jpeg,DSC_2475.jpeg,1.0,1,True,True,True,True
+Lannister,DSC_2476.jpeg,22,0.505,Lannister 4.jpg,DSC_2477.jpeg,,1,True,True,False,True
+Lannister,Lannister 3.jpg,17,0.466,Lannister 1.jpg,Lannister 1.jpg,,1,True,True,False,True
+Laura,IMGP0444.JPG,14,0.846,IMGP0445.JPG,IMGP0442.JPG,,1,True,True,False,True
+Laura,IMGP0448.JPG,23,0.497,IMGP0450.JPG,IMGP0449.JPG,,1,True,True,False,True
+Laura,IMGP0454.JPG,15,0.752,IMGP0452.JPG,IMGP0453.JPG,,1,True,True,False,True
+Lenny,IMG_0932_box1.jpg,26,0.302,IMG_0937_box1.jpg,IMG_0934_box1.jpg,,2,True,True,False,True
+Lenny,IMG_0955_box1.jpg,21,0.465,IMG_1089_box1.jpg,IMG_1089_box1.jpg,,18,True,True,False,True
+Lenny,IMG_3127_box1.jpg,23,0.43,Lenny 3.jpg,IMG_1090_box2.jpg,,2,True,True,False,True
+Lenny,IMG_3406_box4.jpg,19,0.28,Lenny 3.jpg,IMG_3407_box3.jpg,,1,True,True,False,True
+Lenny,Lenny 8.jpg,20,0.241,IMG_1090_box2.jpg,IMG_1090_box2.jpg,,1,True,True,False,False
+Lucy,IMG_4339 copy.jpeg,10,0.883,IMG_4340 copy.jpeg,IMG_4340 copy.jpeg,2.0,1,True,True,True,True
+Lucy,IMG_4381 copy.jpeg,20,0.608,IMG_4378 copy.jpeg,IMG_4378 copy.jpeg,5.0,1,True,True,False,True
+Lucy,IMG_4383 copy.jpeg,5,0.834,IMG_4382 copy.jpeg,IMG_4382 copy.jpeg,0.0,1,True,True,True,True
+McVitie,DSC_2450.jpeg,21,0.551,McVitie7.jpg,IMGP0085.JPG,,2,True,True,False,True
+McVitie,DSC_2456.jpeg,8,0.768,DSC_2455.jpeg,DSC_2455.jpeg,2.0,1,True,True,True,True
+McVitie,DSC_2513.jpeg,18,0.607,IMGP0084.JPG,IMGP0083.JPG,,1,True,True,False,True
+McVitie,IMG_0831_box5.jpg,24,0.635,McVitie8.jpg,IMG_0834_box5.jpg,,2,True,True,False,True
+McVitie,IMG_1570_box5.jpg,22,0.392,IMG_1485_box1.jpg,DSC_2457.jpeg,,2,True,True,False,True
+McVitie,IMG_1751_box1.jpg,22,0.616,IMG_1393_box2.jpg,IMG_1572_box1.jpg,,1,True,True,False,True
+McVitie,IMG_1754_box3.jpg,23,0.463,IMG_1573_box2.jpg,IMG_1752_box3.jpg,,1,True,True,False,True
+McVitie,IMG_1757_box3.jpg,20,0.421,DSC_2453.jpeg,IMG_1760_box2.jpg,,1,True,True,False,True
+McVitie,McVitie2.jpg,23,0.413,DSC_2508.jpeg,McVitie4.jpg,,1,True,True,False,True
+Medici,DSC_2746.jpeg,13,0.473,IMG_0469_box1.jpg,IMG_0558_box1.jpg,,1,True,True,False,True
+Medici,DSC_2747.jpeg,19,0.462,IMG_3062.jpeg,IMG_0558_box1.jpg,,1,True,True,False,True
+Medici,IMG_0559_box1.jpg,14,0.644,IMG_2203_box3.jpg,IMG_0558_box1.jpg,,1,True,True,False,True
+Medici,IMG_0649_box1.jpg,15,0.522,IMG_3468.jpeg,IMG_2936.jpeg,,3,True,True,False,True
+Medici,IMG_0829_box5.jpg,21,0.444,IMG_3089.jpeg,IMG_1722_box1.jpg,,15,True,True,False,True
+Medici,IMG_0846_box2.jpg,20,0.422,IMG_3380.jpeg,IMG_0845_box4.jpg,,1,True,True,False,True
+Medici,IMG_1000_box4.jpg,18,0.352,IMG_1983_box1.jpg,IMG_3097.jpeg,,7,True,True,False,True
+Medici,IMG_1143_box1.jpg,3,0.874,IMG_1142_box1.jpg,IMG_1142_box1.jpg,,1,True,True,True,True
+Medici,IMG_1817_box1.jpg,21,0.698,IMG_3065.jpeg,IMG_1818_box1.jpg,,1,True,True,False,True
+Medici,IMG_1867_box1.jpg,6,0.745,IMG_1821_box1.jpg,IMG_1821_box1.jpg,,1,True,True,True,True
+Medici,IMG_2074_box1.jpg,19,0.394,IMG_0845_box4.jpg,IMG_3390.jpeg,,1,True,True,False,True
+Medici,IMG_2194_box1.jpg,15,0.542,IMGP0870.JPG,IMG_2745_box1.jpg,,2,True,True,False,True
+Medici,IMG_2761_box1.jpg,16,0.389,IMG_3103.jpeg,IMG_2746_box1.jpg,,15,True,True,False,True
+Medici,IMG_2871.jpeg,14,0.766,IMG_2876.jpeg,IMG_3480.jpeg,,4,True,True,False,True
+Medici,IMG_2939.jpeg,11,0.599,IMG_2940.jpeg,IMG_2940.jpeg,,1,True,True,False,True
+Medici,IMG_2942.jpeg,18,0.538,IMG_2943.jpeg,IMG_2943.jpeg,,1,True,True,False,True
+Medici,IMG_3069.jpeg,18,0.492,IMG_3475.jpeg,IMG_3475.jpeg,,1,True,True,False,True
+Medici,IMG_3079.jpeg,14,0.476,IMG_3078.jpeg,IMG_3078.jpeg,1.0,1,True,True,False,True
+Medici,IMG_3091.jpeg,17,0.614,IMG_3075.jpeg,IMG_3101.jpeg,,1,True,True,False,True
+Medici,IMG_3093.jpeg,10,0.822,IMG_3092.jpeg,IMG_3092.jpeg,,1,True,True,True,True
+Medici,IMG_3106.jpeg,18,0.482,IMG_1821_box1.jpg,IMG_0230_box1.jpg,,1,True,True,False,True
+Medici,IMG_3108.jpeg,13,0.576,IMG_3082.jpeg,IMG_3099.jpeg,,1,True,True,False,True
+Medici,IMG_3111.jpeg,18,0.411,IMG_3085.jpeg,DSC_2749.jpeg,,1,True,True,False,False
+Medici,IMG_3344.jpeg,17,0.52,IMG_3473.jpeg,IMGP0883.JPG,,1,True,True,False,True
+Medici,IMG_3346.jpeg,18,0.606,IMG_3076.jpeg,IMGP0892.JPG,,1,True,True,False,True
+Medici,IMG_3347.jpeg,16,0.668,IMG_3455.jpeg,IMGP0884.JPG,,2,True,True,False,True
+Medici,IMG_3351.jpeg,13,0.721,IMG_3445.jpeg,IMG_3350.jpeg,,1,True,True,False,True
+Medici,IMG_3352.jpeg,16,0.622,IMG_3458.jpeg,IMG_3456.jpeg,,1,True,True,False,True
+Medici,IMG_3355.jpeg,21,0.418,IMG_0251_box1.jpg,IMG_1861_box1.jpg,,1,True,True,False,True
+Medici,IMG_3373.jpeg,17,0.709,IMG_2876.jpeg,IMG_3480.jpeg,,1,True,True,False,True
+Medici,IMG_3385.jpeg,19,0.512,IMG_3476.jpeg,IMG_3476.jpeg,,1,True,True,False,True
+Medici,IMG_3434.jpeg,9,0.762,IMG_3435.jpeg,IMG_3437.jpeg,,1,True,True,True,True
+Medici,IMG_3441.jpeg,13,0.716,IMG_1458_box1.jpg,IMGP0863.JPG,,1,True,True,False,True
+Medici,IMG_3444.jpeg,10,0.763,IMG_3447.jpeg,IMG_3447.jpeg,,1,True,True,True,True
+Medici,IMG_3464.jpeg,3,0.937,IMG_3463.jpeg,IMG_3463.jpeg,,1,True,True,True,True
+Medici,IMG_3479.jpeg,13,0.636,IMG_3445.jpeg,IMG_3456.jpeg,,1,True,True,False,True
+Medici,IMGP0865.JPG,13,0.734,IMG_3440.jpeg,IMG_3440.jpeg,,1,True,True,False,True
+Medici,IMGP0866.JPG,8,0.828,IMG_3440.jpeg,IMGP0867.JPG,,1,True,True,True,True
+Medici,IMGP0872.JPG,17,0.631,DSC_2481.jpeg,IMG_3440.jpeg,,1,True,True,False,True
+Medici,IMGP0878.JPG,21,0.395,IMG_3469.jpeg,IMGP0889.JPG,,1,True,True,False,True
+Medici,IMGP0894.JPG,10,0.805,IMGP0896.JPG,IMGP0893.JPG,,1,True,True,True,True
+Medici,IMGP0898.JPG,8,0.839,IMGP0899.JPG,IMGP0899.JPG,,1,True,True,True,True
+Medici,IMGP0901.JPG,9,0.807,IMGP0884.JPG,IMGP0884.JPG,,1,True,True,True,True
+Medici,IMGP0904.JPG,9,0.778,IMG_3470.jpeg,IMGP0905.JPG,,1,True,True,True,True
+Nicki,IMG_3121.jpeg,6,0.805,IMG_3122.jpeg,IMG_3122.jpeg,,1,True,True,True,True
+Nicki,IMG_3137.jpeg,7,0.919,IMG_3138.jpeg,IMG_3138.jpeg,,1,True,True,True,True
+Nicki,IMGP0823.JPG,6,0.733,IMGP0822.JPG,IMGP0822.JPG,,1,True,True,True,True
+Nicki,IMGP0839.JPG,11,0.7,IMGP0835.JPG,IMGP0833.JPG,,1,True,True,False,True
+Nicki,Nicki1.jpg,13,0.802,Nicki2.jpg,Nicki2.jpg,,1,True,True,False,True
+Nicki,Nicki11.jpg,19,0.196,IMG_3135.jpeg,Nicki2.jpg,,1,True,True,False,True
+Nicki,Nicki12.jpg,19,0.316,Nicki6.jpg,Nicki8.jpg,,2,True,True,False,True
+Nicki,Nicki9.jpg,23,0.562,IMG_3117.jpeg,Nicki8.jpg,,1,True,True,False,True
+Nik_nak,DSC_2785.jpeg,18,0.522,Nik Nak6.jpg,DSC_2784.jpeg,,1,True,True,False,True
+Nik_nak,DSC_2788.jpeg,16,0.332,Nik Nak1.jpg,DSC_2784.jpeg,,1,True,True,False,True
+Nik_nak,IMG_2981.jpeg,23,0.552,IMG_2978.jpeg,IMG_2980.jpeg,5.0,1,True,True,False,True
+Nik_nak,IMG_2982.jpeg,24,0.263,DSC_2782.jpeg,IMG_2980.jpeg,801482124.0,2,True,True,False,True
+Nik_nak,IMG_2991.jpeg,12,0.752,IMG_2992.jpeg,IMG_2992.jpeg,1.0,1,True,True,False,True
+Not Tiki,IMGP0104.JPG,13,0.711,IMGP0114.JPG,IMGP0114.JPG,,1,True,True,False,True
+Not Tiki,IMGP0112.JPG,13,0.695,IMGP0102.JPG,IMGP0123.JPG,,2,True,True,False,True
+Not Tiki,IMGP0113.JPG,13,0.483,IMGP0124.JPG,IMGP0123.JPG,,1,True,True,False,True
+Not Tiki,IMGP0125.JPG,17,0.52,IMGP0124.JPG,IMGP0124.JPG,,1,True,True,False,True
+Not Tiki,IMGP0537.JPG,11,0.607,IMGP0122.JPG,IMGP0122.JPG,,1,True,True,False,True
+Olive,DSC_2621.jpeg,22,0.255,DSC_2620.jpeg,Olive2.jpg,5.0,1,True,True,False,True
+Olive,DSC_2680.jpg,12,0.815,DSC_2681.jpg,DSC_2681.jpg,,1,True,True,False,True
+Olive,IMG_2324_box1.jpg,24,0.355,Olive chick.jpg,IMG_2325_box4.jpg,,1,True,True,False,True
+Olive,IMG_2892_box2.jpg,12,0.798,IMG_2891_box3.jpg,IMG_2891_box3.jpg,,1,True,True,False,True
+Olive,IMG_2908_box3.jpg,18,0.287,IMG_2944_box2.jpg,DSC_2619.jpeg,,9,True,True,False,True
+Olive,IMG_2945_box2.jpg,12,0.714,IMG_2944_box2.jpg,IMG_2944_box2.jpg,,1,True,True,False,True
+Parky,IMG_4324 copy.jpeg,1,0.986,IMG_4325 copy.jpeg,IMG_4325 copy.jpeg,1.0,1,True,True,True,True
+Parky,IMG_4338 copy.jpeg,17,0.666,IMG_4337 copy.jpeg,IMG_4337 copy.jpeg,2.0,1,True,True,False,True
+Parky,IMG_4360 copy.jpeg,7,0.939,IMG_4359 copy.jpeg,IMG_4361 copy.jpeg,1.0,1,True,True,True,True
+Parky,IMG_4374 copy.jpeg,8,0.876,IMG_4365 copy.jpeg,IMG_4373 copy.jpeg,15.0,1,True,True,True,True
+Parky,IMG_4385 copy.jpeg,11,0.754,IMG_4384 copy.jpeg,IMG_4386 copy.jpeg,1.0,1,True,True,False,True
+Parky,IMG_4388 copy.jpeg,14,0.874,IMG_4389 copy.jpeg,IMG_4389 copy.jpeg,1.0,1,True,True,True,True
+Parky,IMG_4399 copy.jpeg,10,0.841,IMG_4397 copy.jpeg,IMG_4397 copy.jpeg,2.0,1,True,True,True,True
+Parky,IMG_4400 copy.jpeg,21,0.444,IMG_4308 copy.jpeg,IMG_4384 copy.jpeg,694.0,1,True,True,False,True
+Parky,IMG_4407 copy.jpeg,23,0.434,IMG_4365 copy.jpeg,IMG_4378 copy.jpeg,116.0,1,True,True,False,True
+Parky,IMG_4420 copy.jpeg,11,0.683,IMG_4406 copy.jpeg,IMG_4406 copy.jpeg,33.0,1,True,True,False,True
+Parky,IMG_4422 copy.jpeg,22,0.663,IMG_4397 copy.jpeg,IMG_4330 copy.jpeg,56.0,1,True,True,False,True
+Patrick,IMG_1062_box1.jpg,24,0.298,IMG_3010_box2.jpg,IMG_3011_box1.jpg,,3,True,True,False,True
+Patrick,IMG_2162_box1.jpg,13,0.53,IMG_2163_box2.jpg,IMG_2163_box2.jpg,,1,True,True,False,True
+Patrick,IMG_2256_box5.jpg,22,0.344,IMG_2164_box3.jpg,IMG_3296.jpeg,,5,True,True,False,False
+Patrick,IMG_2262_box2.jpg,26,0.425,Patrick1.jpg,IMG_2261_box3.jpg,,1,True,True,False,True
+Patrick,IMG_2280_box1.jpg,21,0.356,IMG_3011_box1.jpg,IMG_2278_box1.jpg,,1,True,True,False,True
+Peapod,IMG_2862_box4.jpg,26,0.153,IMG_2383_box2.jpg,IMG_2383_box2.jpg,,10,True,True,False,True
+Peapod,IMG_2878_box6.jpg,25,0.141,Pea pod9.jpg,IMG_2351_box5.jpg,,1,True,True,False,True
+Peapod,Pea pod5.jpg,3,0.991,Pea pod2.jpg,Pea pod2.jpg,,1,True,True,True,True
+Peapod,Pea pod8.jpg,26,0.315,IMG_2873_box5.jpg,Pea pod7.jpg,,1,True,True,False,True
+Phineas,IMG_0034_box2.jpg,20,0.663,IMG_2869_box1.jpg,IMG_0035_box1.jpg,,1,True,True,False,True
+Phineas,IMG_0036_box1.jpg,23,0.5,IMG_0983_box4.jpg,IMG_0035_box1.jpg,,1,True,True,False,True
+Phineas,IMG_0536_box1.jpg,19,0.406,IMG_0986_box5.jpg,IMG_0618_box1.jpg,,12,True,True,False,True
+Phineas,IMG_0581_box1.jpg,19,0.44,IMGP0163.JPG,IMG_0578_box1.jpg,,1,True,True,False,True
+Phineas,IMG_0784_box4.jpg,25,0.247,DSC_2657.jpeg,DSC_2657.jpeg,,38,True,True,False,False
+Phineas,IMG_1505_box1.jpg,18,0.35,IMG_0080_box1.jpg,IMG_0080_box1.jpg,,36,True,True,False,True
+Phineas,IMG_2285_box3.jpg,23,0.362,IMG_2073_box1.jpg,IMG_0035_box1.jpg,,6,True,True,False,True
+Phineas,IMGP0164.JPG,19,0.323,IMG_0035_box1.jpg,IMG_0570_box1.jpg,,1,True,True,False,True
+Phineas,Phineas4.jpg,8,0.871,Phineas3.jpg,Phineas3.jpg,,1,True,True,True,True
+Phineas,Phineas6.jpg,22,0.676,Phineas12.jpg,Phineas12.jpg,,1,True,True,False,True
+Ping,IMG_0827_box5.jpg,19,0.47,IMG_0825_box2.jpg,IMG_0825_box2.jpg,,2,True,True,False,True
+Ping,IMG_0842_box6.jpg,20,0.574,IMG_0848_box4.jpg,IMG_0823_box6.jpg,,1,True,True,False,True
+Ping,IMG_0847_box7.jpg,17,0.4,IMG_0825_box2.jpg,IMG_0846_box5.jpg,,1,True,True,False,True
+Ping,Ping5.jpg,19,0.484,Ping2.jpg,DSC_2652.jpeg,,1,True,True,False,False
+Pong,ASC_2720.jpeg,20,0.551,ASC_2719.jpeg,ASC_2719.jpeg,4.0,1,True,True,False,True
+Pong,Pong14.jpg,19,0.429,Pong8.jpg,Pong8.jpg,,1,True,True,False,True
+Pong,Pong16.jpg,3,0.932,Pong20.jpg,Pong20.jpg,,1,True,True,True,True
+Pong,Pong4.jpg,20,0.309,Pong17.jpg,Pong10.jpg,,1,True,True,False,True
+Pong,Pong9.jpg,20,0.628,Pong8.jpg,Pong8.jpg,,1,True,True,False,True
+Rainbow,IMG_0797_box4.jpg,21,0.298,IMGP0427.JPG,IMG_2596_box1.jpg,,546,True,False,False,False
+Rainbow,IMGP0430.JPG,19,0.409,IMGP0425.JPG,IMGP0554.JPG,,1,True,True,False,True
+Rainbow,IMGP0559.JPG,17,0.445,IMGP0582.JPG,IMGP0423.JPG,,1,True,True,False,True
+Rainbow,IMGP0565.JPG,19,0.672,IMG_2591_box1.jpg,IMGP0566.JPG,,1,True,True,False,True
+Rainbow,IMGP0585.JPG,17,0.523,IMGP0582.JPG,IMGP0584.JPG,,1,True,True,False,True
+Rainbow,Rainbow3.jpg,23,0.314,IMGP0426.JPG,IMGP0566.JPG,,1,True,True,False,False
+Rainbow,Rainbow4.jpg,20,0.314,IMGP0566.JPG,IMGP0568.JPG,,1,True,True,False,True
+Robin,IMG_4338 copy.jpeg,18,0.719,IMG_4337 copy.jpeg,IMG_4339 copy.jpeg,2.0,1,True,True,False,True
+Robin,IMG_4340 copy.jpeg,7,0.942,IMG_4339 copy.jpeg,IMG_4339 copy.jpeg,2.0,1,True,True,True,True
+Robin,IMG_4391 copy.jpeg,21,0.245,IMG_4339 copy.jpeg,IMG_4365 copy.jpeg,472.0,1,True,True,False,False
+Robin,IMG_4402 copy.jpeg,21,0.298,IMG_4326 copy.jpeg,IMG_4366 copy.jpeg,604.0,9,True,True,False,True
+Ron_burgundy,ASC_2720 copy.jpeg,22,0.469,IMG_2005_box3.jpg,ASC_2719 copy.jpeg,,1,True,True,False,True
+Ron_burgundy,ASC_2723 copy.jpeg,16,0.347,IMG_3426.jpeg,IMG_3164.jpeg,,1,True,True,False,True
+Ron_burgundy,DSC_2740.jpeg,5,0.957,DSC_2741.jpeg,DSC_2741.jpeg,1.0,1,True,True,True,True
+Ron_burgundy,IMG_0421_box1.jpg,19,0.459,IMG_2245_box1.jpg,IMG_0097_box1.jpg,,35,True,True,False,True
+Ron_burgundy,IMG_0538_box1.jpg,12,0.57,IMG_3198.jpeg,IMG_0386_box1.jpg,,152,True,False,False,True
+Ron_burgundy,IMG_0886_box4.jpg,20,0.514,IMG_3397.jpeg,IMG_2064_box1.jpg,,1,True,True,False,True
+Ron_burgundy,IMG_1955_box2.jpg,22,0.25,IMG_2011_box1.jpg,IMG_2063_box1.jpg,,2,True,True,False,True
+Ron_burgundy,IMG_1971_box1.jpg,13,0.55,DSC_2717.jpeg,ASC_2722 copy.jpeg,,1,True,True,False,True
+Ron_burgundy,IMG_2148_box2.jpg,21,0.509,IMG_2152_box1.jpg,IMG_2152_box1.jpg,,4,True,True,False,True
+Ron_burgundy,IMG_3146.jpeg,11,0.456,IMG_3145.jpeg,IMG_3145.jpeg,,1,True,True,False,True
+Ron_burgundy,IMG_3150.jpeg,20,0.393,IMG_3215.jpeg,IMG_3147.jpeg,,1,True,True,False,True
+Ron_burgundy,IMG_3157.jpeg,18,0.517,IMG_3420.jpeg,IMG_3205.jpeg,,1,True,True,False,True
+Ron_burgundy,IMG_3166.jpeg,14,0.791,IMG_3167.jpeg,IMG_3167.jpeg,,1,True,True,False,True
+Ron_burgundy,IMG_3187.jpeg,15,0.77,IMG_3194.jpeg,IMG_3193.jpeg,,1,True,True,False,True
+Ron_burgundy,IMG_3190.jpeg,12,0.773,IMG_3186.jpeg,IMG_3186.jpeg,,1,True,True,False,True
+Ron_burgundy,IMG_3197.jpeg,8,0.699,IMG_3196.jpeg,IMG_3196.jpeg,,1,True,True,True,True
+Ron_burgundy,IMG_3204.jpeg,15,0.633,IMG_3203.jpeg,IMG_3205.jpeg,,1,True,True,False,True
+Ron_burgundy,IMG_3208.jpeg,16,0.624,IMG_3185.jpeg,IMG_3207.jpeg,,1,True,True,False,True
+Ron_burgundy,IMG_3216.jpeg,15,0.662,IMG_3219.jpeg,IMG_3215.jpeg,,1,True,True,False,True
+Ron_burgundy,IMG_3217.jpeg,12,0.671,IMG_3219.jpeg,IMG_3219.jpeg,,2,True,True,False,True
+Ron_burgundy,IMG_3218.jpeg,12,0.679,IMG_3221.jpeg,IMG_3221.jpeg,,1,True,True,False,True
+Ron_burgundy,IMG_3225.jpeg,20,0.534,IMG_1959_box1.jpg,IMG_3207.jpeg,,2,True,True,False,True
+Ron_burgundy,IMG_3240.jpeg,12,0.508,IMG_3140.jpeg,IMG_3140.jpeg,,1,True,True,False,True
+Ron_burgundy,IMG_3241.jpeg,14,0.495,IMG_3141.jpeg,IMG_3141.jpeg,,2,True,True,False,True
+Ron_burgundy,IMG_3395.jpeg,12,0.612,IMG_3269.jpeg,IMG_3397.jpeg,,1,True,True,False,True
+Ron_burgundy,IMG_3402.jpeg,11,0.699,IMG_3401.jpeg,IMG_3401.jpeg,,1,True,True,False,True
+Ron_burgundy,IMG_3405.jpeg,18,0.409,IMG_3410.jpeg,IMG_3213.jpeg,,1,True,True,False,True
+Ron_burgundy,IMG_3406.jpeg,12,0.616,IMG_3407.jpeg,IMG_3407.jpeg,,1,True,True,False,True
+Ron_burgundy,IMGP0696.JPG,17,0.641,IMGP0697.JPG,IMGP0697.JPG,,1,True,True,False,True
+Snorkel,IMG_0793_box5.jpg,21,0.468,IMG_0373_box1.jpg,IMG_0791_box2.jpg,,1,True,True,False,True
+Snorkel,IMG_0830_box6.jpg,21,0.516,IMG_0838_box4.jpg,IMG_0838_box4.jpg,,7,True,True,False,True
+Snorkel,IMG_0839_box2.jpg,25,0.653,IMG_0841_box2.jpg,IMG_0837_box6.jpg,,1,True,True,False,True
+Snorkel,IMG_0840_box2.jpg,22,0.735,IMG_0838_box4.jpg,IMG_0841_box2.jpg,,1,True,True,False,True
+Snorkel,IMG_0847_box1.jpg,18,0.425,IMG_0843_box6.jpg,IMG_0841_box2.jpg,,2,True,True,False,True
+Spider,3.jpg,22,0.614,IMG_4309 copy.jpeg,2.jpg,,1,True,True,False,True
+Spider,IMG_4332 copy.jpeg,19,0.738,IMG_4308 copy.jpeg,IMG_4331 copy.jpeg,130.0,1,True,True,False,True
+Spider,IMG_4339 copy.jpeg,12,0.884,IMG_4340 copy.jpeg,IMG_4340 copy.jpeg,2.0,1,True,True,True,True
+Spider,IMG_4346 copy.jpeg,26,0.431,IMG_4359 copy.jpeg,IMG_4345 copy.jpeg,65.0,1,True,True,False,True
+Spider,IMG_4349 copy.jpeg,15,0.761,IMG_4350 copy.jpeg,IMG_4350 copy.jpeg,1.0,1,True,True,False,True
+Spider,IMG_4351 copy.jpeg,12,0.839,IMG_4352 copy.jpeg,IMG_4352 copy.jpeg,1.0,1,True,True,False,True
+Swiftie,DSC_2499.jpeg,18,0.565,DSC_2497.jpeg,DSC_2497.jpeg,14.0,1,True,True,False,True
+Swiftie,DSC_2602.jpeg,23,0.426,DSC_2601.jpeg,Swiftie7.jpg,7.0,1,True,True,False,True
+Swiftie,DSC_2605.jpeg,21,0.463,DSC_2496.jpeg,DSC_2604.jpeg,73141.0,1,True,True,False,True
+Swiftie,IMG_2881.jpeg,16,0.648,IMG_2887.jpeg,IMG_2883.jpeg,,2,True,True,False,True
+Swiftie,IMG_2882.jpeg,19,0.712,IMG_2883.jpeg,IMG_2883.jpeg,,1,True,True,False,True
+Swiftie,IMG_2893.jpeg,19,0.445,IMG_2894.jpeg,IMG_2899.jpeg,,1,True,True,False,True
+Swiftie,IMG_2898.jpeg,11,0.8,IMG_2897.jpeg,IMG_2897.jpeg,,1,True,True,False,True
+Tang,IMG_0287_box3.jpg,21,0.261,IMGP0458.JPG,IMGP0461.JPG,,1,True,True,False,True
+Tang,IMG_0521_box1.jpg,24,0.23,Tang6.jpg,Tang6.jpg,,227,True,False,False,True
+Tang,IMG_2844.jpeg,19,0.527,IMG_2845.jpeg,IMG_2845.jpeg,,1,True,True,False,True
+Tang,IMG_2848.jpeg,16,0.81,IMG_2846.jpeg,IMG_2847.jpeg,,1,True,True,False,True
+Tang,IMG_2851.jpeg,20,0.474,IMG_2849.jpeg,IMG_2850.jpeg,,1,True,True,False,True
+Tang,IMGP0464.JPG,16,0.498,IMGP0480.JPG,IMG_2855.jpeg,,1,True,True,False,True
+Tang,IMGP0467.JPG,16,0.476,IMGP0471.JPG,IMGP0471.JPG,,1,True,True,False,True
+Tang,IMGP0476.JPG,19,0.487,IMGP0478.JPG,IMGP0478.JPG,,1,True,True,False,True
+Tang,IMGP0484.JPG,26,0.338,IMGP0474.JPG,IMGP0473.JPG,,1,True,True,False,True
+Tang,Tang3.jpg,19,0.592,Tang4.jpg,Tang4.jpg,,1,True,True,False,True
+Ziggy,DSC_2503.jpeg,3,0.967,DSC_2501.jpeg,DSC_2501.jpeg,1.0,1,True,True,True,True
+Ziggy,DSC_2519.jpeg,21,0.355,DSC_2574.jpeg,Ziggy 1.jpg,4542.0,1,True,True,False,True
+Ziggy,DSC_2521.jpeg,22,0.362,DSC_2522.jpeg,DSC_2520.jpeg,41.0,1,True,True,False,True
+Ziggy,DSC_2596.jpeg,23,0.399,Ziggy2.jpg,DSC_2522.jpeg,,2,True,True,False,True
+Ziggy,DSC_2597.jpeg,21,0.359,DSC_2574.jpeg,DSC_2598.jpeg,1059.0,1,True,True,False,True
+Ziggy,Ziggy4.jpg,21,0.36,DSC_2575.jpeg,DSC_2575.jpeg,,1,True,True,False,True
+Ziggy,Ziggy7.jpg,22,0.451,DSC_2504.jpeg,DSC_2574.jpeg,,1,True,True,False,True

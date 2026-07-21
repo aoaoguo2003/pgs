@@ -1,0 +1,131 @@
+{
+  "config": {
+    "data_dir": "C:\\Users\\14773\\Desktop\\pgs\\penguins_dataset_split",
+    "gallery_splits": [
+      "train",
+      "val"
+    ],
+    "query_split": "test",
+    "ham_thr": 10,
+    "ncc_thr": 0.85,
+    "session_gap": 50
+  },
+  "counts": {
+    "gallery_images": 1676,
+    "query_images": 320,
+    "penguins": 44,
+    "exif_coverage": 444
+  },
+  "near_duplicates": {
+    "leaky_images": 44,
+    "leaky_fraction": 0.1375,
+    "min_hamming_percentiles": {
+      "p1": 3.0,
+      "p5": 7.0,
+      "p10": 9.9,
+      "p25": 13.0,
+      "p50": 18.0,
+      "p75": 21.0,
+      "p90": 23.0
+    },
+    "max_ncc_percentiles": {
+      "p50": 0.539,
+      "p75": 0.699,
+      "p90": 0.817,
+      "p95": 0.874,
+      "p99": 0.954
+    },
+    "capture_time_gap": {
+      "within_1s": 0.328,
+      "within_3s": 0.517,
+      "within_10s": 0.672,
+      "within_60s": 0.776,
+      "within_300s": 0.845
+    }
+  },
+  "sessions": {
+    "same_prefix_fraction": 0.9938,
+    "same_session_fraction": 0.9781,
+    "median_sessions_per_penguin": 5.0,
+    "penguins_with_le_2_sessions": [
+      "Coco",
+      "Dragon",
+      "Egg",
+      "Ellis",
+      "Greyjoy",
+      "Hanbury",
+      "Laura",
+      "Lucy",
+      "Parky",
+      "Pong"
+    ],
+    "sessions_per_penguin": {
+      "Beaker": 7,
+      "Beau": 4,
+      "Bob": 3,
+      "Bud": 3,
+      "Calypso": 6,
+      "Chompy": 5,
+      "Coco": 2,
+      "Cooper": 23,
+      "Courtney": 6,
+      "Danny": 5,
+      "Dragon": 2,
+      "Egg": 2,
+      "Ellis": 2,
+      "Ernest": 5,
+      "Gonzo": 13,
+      "Greyjoy": 2,
+      "Hanbury": 1,
+      "Heathcliffe": 8,
+      "Jaz": 4,
+      "Kermit": 12,
+      "Lannister": 5,
+      "Laura": 2,
+      "Lenny": 5,
+      "Lucy": 2,
+      "McVitie": 12,
+      "Medici": 24,
+      "Nicki": 3,
+      "Nik_nak": 3,
+      "Not Tiki": 5,
+      "Olive": 5,
+      "Parky": 2,
+      "Patrick": 7,
+      "Peapod": 3,
+      "Phineas": 14,
+      "Ping": 7,
+      "Pong": 2,
+      "Rainbow": 8,
+      "Robin": 3,
+      "Ron_burgundy": 16,
+      "Snorkel": 6,
+      "Spider": 3,
+      "Swiftie": 8,
+      "Tang": 7,
+      "Ziggy": 4
+    }
+  },
+  "impact": {
+    "exp1_softmax_top1": {
+      "all": 0.9531,
+      "leaky": 1.0,
+      "clean": 0.9457
+    },
+    "exp3_knn_top1": {
+      "all": 0.9469,
+      "leaky": 1.0,
+      "clean": 0.9384
+    },
+    "exp3_prototype_top1": {
+      "all": 0.9594,
+      "leaky": 1.0,
+      "clean": 0.9529
+    },
+    "exp3_knn_top5": {
+      "all": 0.9781,
+      "leaky": 1.0,
+      "clean": 0.9746
+    }
+  }
+}
