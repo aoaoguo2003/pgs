@@ -1,0 +1,274 @@
+{
+  "included": [
+    "Beaker",
+    "Beau",
+    "Bob",
+    "Bud",
+    "Calypso",
+    "Chompy",
+    "Cooper",
+    "Courtney",
+    "Danny",
+    "Ernest",
+    "Gonzo",
+    "Greyjoy",
+    "Heathcliffe",
+    "Jaz",
+    "Kermit",
+    "Lannister",
+    "Lenny",
+    "McVitie",
+    "Medici",
+    "Nicki",
+    "Nik_nak",
+    "Not Tiki",
+    "Olive",
+    "Patrick",
+    "Peapod",
+    "Phineas",
+    "Ping",
+    "Rainbow",
+    "Robin",
+    "Ron_burgundy",
+    "Snorkel",
+    "Spider",
+    "Swiftie",
+    "Tang",
+    "Ziggy"
+  ],
+  "excluded": {
+    "Coco": 2,
+    "Dragon": 2,
+    "Egg": 2,
+    "Ellis": 2,
+    "Hanbury": 1,
+    "Laura": 2,
+    "Lucy": 2,
+    "Parky": 2,
+    "Pong": 2
+  },
+  "totals": {
+    "sd": {
+      "train": 1199,
+      "val": 283,
+      "test": 261
+    },
+    "rnd": {
+      "train": 1199,
+      "val": 283,
+      "test": 261
+    }
+  },
+  "per_penguin": {
+    "Beaker": {
+      "sessions": 7,
+      "train": 17,
+      "val": 4,
+      "test": 4
+    },
+    "Beau": {
+      "sessions": 4,
+      "train": 16,
+      "val": 2,
+      "test": 1
+    },
+    "Bob": {
+      "sessions": 3,
+      "train": 9,
+      "val": 4,
+      "test": 5
+    },
+    "Bud": {
+      "sessions": 3,
+      "train": 16,
+      "val": 11,
+      "test": 2
+    },
+    "Calypso": {
+      "sessions": 6,
+      "train": 15,
+      "val": 5,
+      "test": 3
+    },
+    "Chompy": {
+      "sessions": 5,
+      "train": 23,
+      "val": 3,
+      "test": 2
+    },
+    "Cooper": {
+      "sessions": 23,
+      "train": 89,
+      "val": 19,
+      "test": 19
+    },
+    "Courtney": {
+      "sessions": 6,
+      "train": 27,
+      "val": 6,
+      "test": 5
+    },
+    "Danny": {
+      "sessions": 5,
+      "train": 22,
+      "val": 5,
+      "test": 4
+    },
+    "Ernest": {
+      "sessions": 5,
+      "train": 14,
+      "val": 3,
+      "test": 2
+    },
+    "Gonzo": {
+      "sessions": 13,
+      "train": 36,
+      "val": 8,
+      "test": 8
+    },
+    "Greyjoy": {
+      "sessions": 3,
+      "train": 10,
+      "val": 1,
+      "test": 8
+    },
+    "Heathcliffe": {
+      "sessions": 8,
+      "train": 45,
+      "val": 9,
+      "test": 10
+    },
+    "Jaz": {
+      "sessions": 5,
+      "train": 16,
+      "val": 4,
+      "test": 2
+    },
+    "Kermit": {
+      "sessions": 12,
+      "train": 48,
+      "val": 11,
+      "test": 10
+    },
+    "Lannister": {
+      "sessions": 5,
+      "train": 20,
+      "val": 4,
+      "test": 2
+    },
+    "Lenny": {
+      "sessions": 5,
+      "train": 18,
+      "val": 5,
+      "test": 4
+    },
+    "McVitie": {
+      "sessions": 12,
+      "train": 37,
+      "val": 9,
+      "test": 8
+    },
+    "Medici": {
+      "sessions": 24,
+      "train": 204,
+      "val": 44,
+      "test": 43
+    },
+    "Nicki": {
+      "sessions": 3,
+      "train": 23,
+      "val": 12,
+      "test": 18
+    },
+    "Nik_nak": {
+      "sessions": 3,
+      "train": 12,
+      "val": 9,
+      "test": 9
+    },
+    "Not Tiki": {
+      "sessions": 5,
+      "train": 28,
+      "val": 2,
+      "test": 1
+    },
+    "Olive": {
+      "sessions": 6,
+      "train": 26,
+      "val": 7,
+      "test": 5
+    },
+    "Patrick": {
+      "sessions": 7,
+      "train": 20,
+      "val": 4,
+      "test": 4
+    },
+    "Peapod": {
+      "sessions": 3,
+      "train": 12,
+      "val": 4,
+      "test": 6
+    },
+    "Phineas": {
+      "sessions": 14,
+      "train": 46,
+      "val": 10,
+      "test": 10
+    },
+    "Ping": {
+      "sessions": 7,
+      "train": 16,
+      "val": 3,
+      "test": 3
+    },
+    "Rainbow": {
+      "sessions": 9,
+      "train": 32,
+      "val": 7,
+      "test": 7
+    },
+    "Robin": {
+      "sessions": 3,
+      "train": 19,
+      "val": 3,
+      "test": 2
+    },
+    "Ron_burgundy": {
+      "sessions": 16,
+      "train": 133,
+      "val": 29,
+      "test": 28
+    },
+    "Snorkel": {
+      "sessions": 6,
+      "train": 19,
+      "val": 5,
+      "test": 4
+    },
+    "Spider": {
+      "sessions": 3,
+      "train": 32,
+      "val": 4,
+      "test": 1
+    },
+    "Swiftie": {
+      "sessions": 8,
+      "train": 30,
+      "val": 7,
+      "test": 6
+    },
+    "Tang": {
+      "sessions": 7,
+      "train": 43,
+      "val": 11,
+      "test": 9
+    },
+    "Ziggy": {
+      "sessions": 4,
+      "train": 26,
+      "val": 9,
+      "test": 6
+    }
+  }
+}

@@ -19,3 +19,7 @@ embedding_id/artifacts/*.npz
 /penguins_data_over15/
 /penguins_dataset_split/
 /penguins_dataset_split_belly_by_yoloV8/
+
+# Session-split experiment datasets (regenerate via analysis/build_session_splits.py)
+/penguins_dataset_split_session_disjoint/
+/penguins_dataset_split_session_random/

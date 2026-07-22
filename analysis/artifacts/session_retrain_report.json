@@ -1,0 +1,20 @@
+{
+  "session-disjoint": {
+    "softmax_test_top1": 0.433,
+    "best_val_top1": 0.4629,
+    "best_epoch": 13,
+    "knn_top1": 0.4406,
+    "prototype_top1": 0.4904,
+    "top5": 0.5939,
+    "n_test": 261
+  },
+  "random-control": {
+    "softmax_test_top1": 0.9425,
+    "best_val_top1": 0.9293,
+    "best_epoch": 16,
+    "knn_top1": 0.931,
+    "prototype_top1": 0.9502,
+    "top5": 0.9579,
+    "n_test": 261
+  }
+}
