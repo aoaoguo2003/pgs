@@ -55,19 +55,30 @@ def build_tta_transforms(img_size: int = 224) -> list[transforms.Compose]:
 class Embedder:
     """Wraps the exp1 ResNet18 as a frozen 512-d feature extractor."""
 
-    def __init__(self, checkpoint: str, device: str | None = None, img_size: int = 224):
+    def __init__(self, checkpoint: str, device: str | None = None, img_size: int = 224,
+                 num_classes: int | None = None):
         self.device = device or ("cuda" if torch.cuda.is_available() else "cpu")
         self.tfm = build_eval_transform(img_size)
         self.tta_tfms = build_tta_transforms(img_size)
 
-        model = models.resnet18(weights=None)
-        # rebuild the exact head used in training so the state_dict loads,
-        # then replace it with Identity to expose the 512-d feature.
-        in_features = model.fc.in_features  # 512
-        num_classes = 44
-        model.fc = nn.Linear(in_features, num_classes)
         ckpt = torch.load(checkpoint, map_location="cpu", weights_only=False)
         state = ckpt.get("model_state_dict", ckpt)
+
+        model = models.resnet18(weights=None)
+        in_features = model.fc.in_features  # 512
+        # Rebuild the exact classification head used in training so the
+        # state_dict loads, then replace it with Identity to expose the 512-d
+        # feature. The head size is inferred from the checkpoint (saved fc
+        # weight, else class_names) so a model with any number of classes loads;
+        # pass num_classes to override.
+        if num_classes is None:
+            if "fc.weight" in state:
+                num_classes = state["fc.weight"].shape[0]
+            elif "class_names" in ckpt:
+                num_classes = len(ckpt["class_names"])
+            else:
+                num_classes = 44  # legacy fallback
+        model.fc = nn.Linear(in_features, num_classes)
         model.load_state_dict(state)
         model.fc = nn.Identity()  # now forward() returns the 512-d embedding
         model.eval().to(self.device)
