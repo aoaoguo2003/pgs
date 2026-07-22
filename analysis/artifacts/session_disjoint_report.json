@@ -1,0 +1,293 @@
+{
+  "config": {
+    "session_gap": 50,
+    "test_frac": 0.3,
+    "checkpoint": "C:\\Users\\14773\\Desktop\\pgs\\runs\\exp1_baseline\\best_model.pt"
+  },
+  "penguins_total": 44,
+  "penguins_qualifying": 43,
+  "penguins_excluded": [
+    {
+      "penguin": "Hanbury",
+      "sessions": 1
+    }
+  ],
+  "random_split": {
+    "knn_top1": 0.9464,
+    "prototype_top1": 0.959,
+    "top5": 0.9779,
+    "n_query": 317
+  },
+  "session_disjoint": {
+    "knn_top1": 0.9516,
+    "prototype_top1": 0.9742,
+    "top5": 0.979,
+    "n_query": 620
+  },
+  "drop": {
+    "prototype_top1": -0.0152,
+    "knn_top1": -0.0052,
+    "top5": -0.0011
+  },
+  "per_penguin_split": {
+    "Beaker": {
+      "sessions": 7,
+      "gallery_sessions": 4,
+      "query_sessions": 3,
+      "images": 25
+    },
+    "Beau": {
+      "sessions": 4,
+      "gallery_sessions": 3,
+      "query_sessions": 1,
+      "images": 19
+    },
+    "Bob": {
+      "sessions": 3,
+      "gallery_sessions": 1,
+      "query_sessions": 2,
+      "images": 18
+    },
+    "Bud": {
+      "sessions": 3,
+      "gallery_sessions": 2,
+      "query_sessions": 1,
+      "images": 29
+    },
+    "Calypso": {
+      "sessions": 6,
+      "gallery_sessions": 5,
+      "query_sessions": 1,
+      "images": 23
+    },
+    "Chompy": {
+      "sessions": 5,
+      "gallery_sessions": 4,
+      "query_sessions": 1,
+      "images": 28
+    },
+    "Coco": {
+      "sessions": 2,
+      "gallery_sessions": 1,
+      "query_sessions": 1,
+      "images": 18
+    },
+    "Cooper": {
+      "sessions": 23,
+      "gallery_sessions": 20,
+      "query_sessions": 3,
+      "images": 127
+    },
+    "Courtney": {
+      "sessions": 6,
+      "gallery_sessions": 4,
+      "query_sessions": 2,
+      "images": 38
+    },
+    "Danny": {
+      "sessions": 5,
+      "gallery_sessions": 2,
+      "query_sessions": 3,
+      "images": 31
+    },
+    "Dragon": {
+      "sessions": 2,
+      "gallery_sessions": 1,
+      "query_sessions": 1,
+      "images": 46
+    },
+    "Egg": {
+      "sessions": 2,
+      "gallery_sessions": 1,
+      "query_sessions": 1,
+      "images": 17
+    },
+    "Ellis": {
+      "sessions": 2,
+      "gallery_sessions": 1,
+      "query_sessions": 1,
+      "images": 22
+    },
+    "Ernest": {
+      "sessions": 5,
+      "gallery_sessions": 4,
+      "query_sessions": 1,
+      "images": 19
+    },
+    "Gonzo": {
+      "sessions": 13,
+      "gallery_sessions": 11,
+      "query_sessions": 2,
+      "images": 52
+    },
+    "Greyjoy": {
+      "sessions": 3,
+      "gallery_sessions": 2,
+      "query_sessions": 1,
+      "images": 19
+    },
+    "Heathcliffe": {
+      "sessions": 8,
+      "gallery_sessions": 6,
+      "query_sessions": 2,
+      "images": 64
+    },
+    "Jaz": {
+      "sessions": 5,
+      "gallery_sessions": 3,
+      "query_sessions": 2,
+      "images": 22
+    },
+    "Kermit": {
+      "sessions": 12,
+      "gallery_sessions": 10,
+      "query_sessions": 2,
+      "images": 69
+    },
+    "Lannister": {
+      "sessions": 5,
+      "gallery_sessions": 3,
+      "query_sessions": 2,
+      "images": 26
+    },
+    "Laura": {
+      "sessions": 2,
+      "gallery_sessions": 1,
+      "query_sessions": 1,
+      "images": 20
+    },
+    "Lenny": {
+      "sessions": 5,
+      "gallery_sessions": 3,
+      "query_sessions": 2,
+      "images": 27
+    },
+    "Lucy": {
+      "sessions": 2,
+      "gallery_sessions": 1,
+      "query_sessions": 1,
+      "images": 17
+    },
+    "McVitie": {
+      "sessions": 12,
+      "gallery_sessions": 9,
+      "query_sessions": 3,
+      "images": 54
+    },
+    "Medici": {
+      "sessions": 24,
+      "gallery_sessions": 22,
+      "query_sessions": 2,
+      "images": 291
+    },
+    "Nicki": {
+      "sessions": 3,
+      "gallery_sessions": 2,
+      "query_sessions": 1,
+      "images": 53
+    },
+    "Nik_nak": {
+      "sessions": 3,
+      "gallery_sessions": 2,
+      "query_sessions": 1,
+      "images": 30
+    },
+    "Not Tiki": {
+      "sessions": 5,
+      "gallery_sessions": 4,
+      "query_sessions": 1,
+      "images": 31
+    },
+    "Olive": {
+      "sessions": 6,
+      "gallery_sessions": 3,
+      "query_sessions": 3,
+      "images": 38
+    },
+    "Parky": {
+      "sessions": 2,
+      "gallery_sessions": 1,
+      "query_sessions": 1,
+      "images": 67
+    },
+    "Patrick": {
+      "sessions": 7,
+      "gallery_sessions": 5,
+      "query_sessions": 2,
+      "images": 28
+    },
+    "Peapod": {
+      "sessions": 3,
+      "gallery_sessions": 1,
+      "query_sessions": 2,
+      "images": 22
+    },
+    "Phineas": {
+      "sessions": 14,
+      "gallery_sessions": 12,
+      "query_sessions": 2,
+      "images": 66
+    },
+    "Ping": {
+      "sessions": 7,
+      "gallery_sessions": 5,
+      "query_sessions": 2,
+      "images": 22
+    },
+    "Pong": {
+      "sessions": 2,
+      "gallery_sessions": 1,
+      "query_sessions": 1,
+      "images": 27
+    },
+    "Rainbow": {
+      "sessions": 9,
+      "gallery_sessions": 6,
+      "query_sessions": 3,
+      "images": 46
+    },
+    "Robin": {
+      "sessions": 3,
+      "gallery_sessions": 1,
+      "query_sessions": 2,
+      "images": 24
+    },
+    "Ron_burgundy": {
+      "sessions": 16,
+      "gallery_sessions": 13,
+      "query_sessions": 3,
+      "images": 190
+    },
+    "Snorkel": {
+      "sessions": 6,
+      "gallery_sessions": 4,
+      "query_sessions": 2,
+      "images": 28
+    },
+    "Spider": {
+      "sessions": 3,
+      "gallery_sessions": 1,
+      "query_sessions": 2,
+      "images": 37
+    },
+    "Swiftie": {
+      "sessions": 8,
+      "gallery_sessions": 6,
+      "query_sessions": 2,
+      "images": 43
+    },
+    "Tang": {
+      "sessions": 7,
+      "gallery_sessions": 5,
+      "query_sessions": 2,
+      "images": 63
+    },
+    "Ziggy": {
+      "sessions": 4,
+      "gallery_sessions": 2,
+      "query_sessions": 2,
+      "images": 41
+    }
+  },
+  "caveat": "Frozen exp1 extractor trained on the random split; measures enrolment (gallery/query) generalisation, not end-to-end."
+}
