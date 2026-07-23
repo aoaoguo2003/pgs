@@ -4,7 +4,7 @@
 
 Given a photo of a **Humboldt penguin**, identify **which individual** it is (individual identity, not species). The end goal: a visitor takes one photo and instantly learns which specific penguin it is, plus that penguin's name, traits, and habits. All individuals in this project are Humboldt penguins from a single colony.
 
-The project is evolving from a **classification baseline** into an **embedding-retrieval + RAG** system — turning each photo into a vector, matching it against a vector database, and using an LLM to generate a grounded description of the identified penguin. **The retrieval core already works** (95.9% top-1, see exp3); the profile/RAG layer and a conversational UI are in progress.
+The project is evolving from a **classification baseline** into an **embedding-retrieval + RAG** system — turning each photo into a vector, matching it against a vector database, and using an LLM to generate a grounded description of the identified penguin. The retrieval core works, but a **data-leakage audit** ([§5](#5-data-leakage-audit--cross-session-evaluation)) found the headline number was inflated by same-session camera bursts shared between train and test: honest **cross-session** top-1 is **~0.49** (vs ~0.96 same-session). Closing that gap — via metric learning and more diverse photos — together with the profile/RAG layer and a conversational UI is the current work.
 
 ---
 
@@ -13,9 +13,10 @@ The project is evolving from a **classification baseline** into an **embedding-r
 - [2. Completed Experiments](#2-completed-experiments)
 - [3. Experiment Record Figures](#3-experiment-record-figures)
 - [4. Key Findings](#4-key-findings)
-- [5. Flagship Plan: Embedding Retrieval + RAG](#5-flagship-plan-embedding-retrieval--rag)
-- [6. Repo Structure](#6-repo-structure)
-- [7. Reproduce](#7-reproduce)
+- [5. Data Leakage Audit & Cross-Session Evaluation](#5-data-leakage-audit--cross-session-evaluation)
+- [6. Flagship Plan: Embedding Retrieval + RAG](#6-flagship-plan-embedding-retrieval--rag)
+- [7. Repo Structure](#7-repo-structure)
+- [8. Reproduce](#8-reproduce)
 
 ---
 
@@ -36,6 +37,8 @@ The project is evolving from a **classification baseline** into an **embedding-r
 | **exp2 belly** | belly crop | ResNet18 (transfer) | 39 (early-stop, cap 50) | 0.867 | 0.866 |
 | **belly detector** | full body | YOLOv8s detection | 98 | mAP@50 ≈ 0.98 | mAP@50-95 ≈ 0.60 |
 | **exp3 embedding retrieval** | full body | ResNet18 features + FAISS (no training) | — | — | **0.959** (prototype) / 0.947 (1-NN) / 0.978 (top-5) |
+
+> ⚠️ **Leakage caveat:** the exp1 (0.950) and exp3 (0.959) accuracies above use a **random split**. A later audit found same-session camera bursts leak into the test set, inflating these numbers; the honest **cross-session** top-1 is **~0.44–0.49**. See [§5](#5-data-leakage-audit--cross-session-evaluation).
 
 Shared pipeline:
 - `torchvision.datasets.ImageFolder` loading
@@ -75,9 +78,35 @@ All figures are regenerated from each run's logs by `plot_experiments.py`, writt
 1. **Full body > belly crop (0.950 vs 0.866).** Identity signal is not only in the belly — face pattern, chest band, and body proportions all carry information. Cropping too tightly discards it, and detector error adds noise.
 2. **Training/collection standard = full-body frontal photos.** No need to force a clean, complete belly.
 3. **Front only.** A penguin's back is a large, uniform dark region, nearly identical across individuals; mixing front+back inflates intra-class variance. A production system should ask the visitor to re-shoot "non-frontal" photos rather than force an identity.
-4. **The bottleneck is data, not the model.** Errors fall almost entirely on classes with ≤5 samples; high-support individuals are near-perfect. Raising the ceiling depends on **more data + few-shot / metric-learning methods**, not merely a bigger backbone.
+4. **The bottleneck is data, not the model.** Errors fall almost entirely on classes with ≤5 samples; high-support individuals are near-perfect. Raising the ceiling depends on **more data + few-shot / metric-learning methods**, not merely a bigger backbone. A leakage-corrected evaluation ([§5](#5-data-leakage-audit--cross-session-evaluation)) makes this concrete: cross-session accuracy is far below the random-split figure.
 
-## 5. Flagship Plan: Embedding Retrieval + RAG
+## 5. Data Leakage Audit & Cross-Session Evaluation
+
+The dataset contains many **burst sequences** — same camera, same moment, consecutive frames (e.g. `DSC_2743…2749`). Because `a.py` splits each individual's photos **at random**, near-duplicate frames from one burst can land in train and test at the same time; the model is then scored on photos it has effectively already seen, inflating accuracy.
+
+**Audit** (`analysis/leakage_audit.py`) — using signals independent of the model (perceptual hash, pixel correlation, EXIF capture time, filename frame numbers):
+- **13.8%** of test images have a near-duplicate in the train+val gallery;
+- **97.8%** share a capture **session** with a gallery image;
+- of images with EXIF, ~29% are within 1 second of their nearest train image.
+
+**Honest re-evaluation.** We re-split by whole **session** (no burst spans train and test) and **retrain from scratch**, against a **random-split control on the same 35 birds / 1743 images / identical per-bird counts** — so any gap is due to the split alone, not to less data. The session-disjoint test set has **0%** near-duplicates vs **10%** for the control.
+
+| metric | random split (leaky) | session-disjoint (honest) | gap |
+|---|---|---|---|
+| softmax classifier top-1 | 0.943 | **0.433** | +0.510 |
+| retrieval prototype top-1 | 0.950 | **0.490** | +0.460 |
+| retrieval 1-NN top-1 | 0.931 | 0.441 | +0.490 |
+| retrieval top-5 | 0.958 | **0.594** | +0.364 |
+
+The control **reproduces the ~0.95 headline**, so the drop is cleanly attributable to the split. Both routes collapse together — the discriminative power lived in a feature extractor that had seen every session. **Honest cross-session top-1 is ~0.44–0.49 (top-5 ~0.59):** the earlier 0.95/0.959 mainly measured *same-session* recognition and overstated *cross-session* (different day / lighting) generalization.
+
+**Open-set threshold** (`embedding_id/tune_openset.py`) — the identifier must also answer "I don't know this bird" (only 44 of ~81 colony members are enrolled). Simulating unknowns by leave-one-penguin-out, known vs unknown separability is **AUC 0.991**; the confidence threshold was raised **0.55 → 0.80** (keeps 91.9% of enrolled birds, rejects 96.6% of unenrolled ones), so an unenrolled penguin is refused rather than misnamed.
+
+**Implication.** Cross-session generalization — not same-session accuracy — is the real challenge, and it is data-limited: 10 of the 44 enrolled birds have only one or two photo sessions. This motivates the two next levers: **ArcFace metric learning** (features built for the cosine retrieval metric) and **more multi-session photos per individual**.
+
+Scripts: `analysis/leakage_audit.py`, `analysis/build_session_splits.py`, `analysis/eval_session_retrain.py`, `analysis/session_disjoint_eval.py`, `embedding_id/tune_openset.py`.
+
+## 6. Flagship Plan: Embedding Retrieval + RAG
 
 The centerpiece direction: turn the classifier into a **multimodal retrieval + Retrieval-Augmented Generation** application.
 
@@ -137,15 +166,15 @@ The user-facing wrapper is a chat window. On entry (QR scan / app open) the bot 
 This direction combines fine-grained computer vision, **metric learning**, a **vector database**, **multimodal RAG**, **grounded LLM generation with anti-hallucination guardrails**, and **RAG evaluation**, applied to a real-world dataset.
 
 ### Current status & next steps
-**Done** — the CNN retrieval route (exp3): a working **FAISS vector database** at **95.9% top-1**, with **incremental enrollment** (add a new penguin by storing its features — no retraining) and **open-set rejection** (blurry / non-frontal photo → ask the visitor to re-shoot). This is the ready core of the `identify_penguin` tool.
+**Done** — the CNN retrieval route (exp3): a working **FAISS vector database** with **incremental enrollment** (add a new penguin by storing its features — no retraining) and **open-set rejection** (threshold tuned to **0.80** by leave-one-penguin-out, AUC 0.991; blurry / unenrolled → refuse rather than misname). A **data-leakage audit** ([§5](#5-data-leakage-audit--cross-session-evaluation)) established the honest baseline: same-session top-1 ~0.96, but **cross-session ~0.49**. The classifier route is kept only as a baseline; **retrieval is the identification method** going forward.
 
 **Next**
-1. **Build a clean penguin profile database** — one structured record per individual (name, date of birth, personality, features, habits, band colors) to ground `get_profile`.
-2. **Wire the agent loop** — orchestrate `identify_penguin` / `get_profile` / `search_knowledge` via the LLM's function-calling / tool-use, with conversation memory.
-3. **Conversational Humboldt penguin expert UI** — a chat window with the welcome message and session memory described above.
-4. **Accuracy levers (in parallel)** — ArcFace metric-learning fine-tuning + more photos for sparse individuals. (A no-training test-time-augmentation attempt gave no gain, since the model was already trained with horizontal-flip augmentation.)
+1. **Close the cross-session gap (priority)** — **ArcFace** metric-learning retrain (features built for the cosine retrieval metric, evaluated on the session-disjoint split) + **more multi-session photos** for individuals shot on only one or two occasions. (A no-training test-time-augmentation attempt gave no gain, since the model was already trained with horizontal-flip augmentation.)
+2. **Build a clean penguin profile database** — one structured record per individual (name, date of birth, personality, features, habits, band colors) to ground `get_profile`.
+3. **Wire the agent loop** — orchestrate `identify_penguin` / `get_profile` / `search_knowledge` via the LLM's function-calling / tool-use, with conversation memory.
+4. **Conversational Humboldt penguin expert UI** — a chat window with the welcome message and session memory described above.
 
-## 6. Repo Structure
+## 7. Repo Structure
 
 ```text
 pgs/
@@ -155,12 +184,16 @@ pgs/
 ├─ penguin_image_count_summary.csv   # per-individual counts & selection
 ├─ make_doc.py                       # generates the photo-collection .docx
 │
-├─ train_experiment1.py              # classifier training (exp1/exp2)
+├─ a.py                              # per-individual train/val/test split
+├─ train_experiment1.py              # classifier training (exp1/exp2, and the §5 retrains)
 ├─ eval_checkpoint.py                # checkpoint evaluation
 ├─ crop_penguin_belly_yolo.py        # crop bellies with YOLO
 ├─ prepare_belly_yolo_dataset.py     # prepare belly-detection dataset
 ├─ train_belly_detector.py           # train belly detector
 ├─ annotate_belly.py                 # belly annotation tool
+│
+├─ embedding_id/                     # retrieval core: embedder, vector store, identify, open-set tuning
+├─ analysis/                         # data-leakage audit & cross-session evaluation (§5)
 │
 ├─ penguins_data/                    # raw data
 ├─ penguins_dataset_split/           # full-body train/val/test (exp1)
@@ -169,10 +202,12 @@ pgs/
 └─ runs/
    ├─ exp1_baseline/                 # full-body classification results
    ├─ exp2_belly_resnet18/           # belly-crop classification results
+   ├─ exp1b_session_disjoint/        # §5 honest cross-session retrain
+   ├─ exp1b_random_control/          # §5 random-split control
    └─ detect/…/belly_detector/exp1/  # belly detector results
 ```
 
-## 7. Reproduce
+## 8. Reproduce
 
 Install dependencies (CUDA PyTorch for an RTX 4060):
 ```powershell
@@ -186,6 +221,19 @@ Train classifiers:
 python train_experiment1.py --data-dir penguins_dataset_split --epochs 30 --batch-size 32
 # exp2: belly crop
 python train_experiment1.py --data-dir penguins_dataset_split_belly_by_yoloV8 --epochs 50 --batch-size 32
+```
+
+Data-leakage audit & honest cross-session evaluation (§5):
+```powershell
+# quantify burst/session leakage in the current split
+python analysis/leakage_audit.py
+# build session-disjoint + random-control splits, then retrain and compare
+python analysis/build_session_splits.py
+python train_experiment1.py --data-dir penguins_dataset_split_session_disjoint --output-dir runs/exp1b_session_disjoint
+python train_experiment1.py --data-dir penguins_dataset_split_session_random  --output-dir runs/exp1b_random_control
+python analysis/eval_session_retrain.py
+# tune the open-set rejection threshold (leave-one-penguin-out)
+python embedding_id/tune_openset.py
 ```
 
 Regenerate figures / photo list:
