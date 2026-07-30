@@ -8,15 +8,28 @@ what enrolment looks like in deployment). Predictions from all K rounds are
 pooled, so every photo in the dataset contributes exactly one prediction made
 by a model that never saw its capture session.
 
-Accuracy is then computed per penguin over ALL of that penguin's photos and
-averaged with equal weight (MACRO). Micro is not computed -- see the metric
-policy in analysis/evaluate.py.
+Every statistic is MACRO -- computed per penguin over all of that penguin's
+photos, then averaged with equal weight. Micro is not computed anywhere; see
+the metric policy in analysis/evaluate.py.
+
+Metrics reported
+  rank-1 / CMC    closed-set identification; CMC is rank-k for k = 1..10
+  mAP             ranking quality over the image gallery, the conventional
+                  re-ID companion to rank-1. Computed against the image
+                  gallery, not prototypes: with one correct prototype per query
+                  mAP would degenerate to mean reciprocal rank.
+  DIR@FAR         open-set identification. Unknowns are simulated leave-one-
+                  penguin-out: a query's impostor score is its best prototype
+                  similarity with its OWN identity removed from the gallery.
+                  DIR@FAR=x is the fraction of queries both correctly named and
+                  confident enough, at the threshold where unenrolled birds are
+                  wrongly accepted x of the time. Only 35 of the colony's 81
+                  birds are enrolled, so this is the metric that matters in use.
 
 Comparing two configurations uses a PAIRED bootstrap: both were evaluated on
 the identical set of photos, so each resample applies the same image indices to
 both and the statistic is the DIFFERENCE in macro. That is far more sensitive
-than checking whether two independent CIs overlap, which is the conservative
-test that made the previous round of experiments inconclusive.
+than checking whether two independent CIs overlap.
 
 Run:
   D:/Anaconda/python.exe analysis/eval_cv.py cv_softmax_basic cv_arcface_strong
@@ -39,8 +52,12 @@ from evaluate import embed, load_extractor          # noqa: E402
 FOLDS_JSON = ROOT / "analysis" / "artifacts" / "cv_folds.json"
 REPORT = ROOT / "analysis" / "artifacts" / "cv_report.json"
 N_BOOTSTRAP = 2000
+CMC_MAX = 10
+FAR_TARGETS = (0.01, 0.05, 0.10)
 SEED = 0
 
+
+# ----------------------------------------------------------------- per-fold work
 
 def fold_split(manifest, classes, fold):
     """(gallery_paths, gallery_labels, query_paths, query_labels) for one round."""
@@ -56,29 +73,55 @@ def fold_split(manifest, classes, fold):
     return gp, gl, qp, ql
 
 
-def predict_fold(model, dev, gp, gl, qp):
-    """Prototype and 1-NN predictions plus top-5 hit flags for one round."""
+def average_precision(relevant: np.ndarray) -> float:
+    """AP for one query given gallery relevance sorted by descending similarity."""
+    hits = np.flatnonzero(relevant)
+    if hits.size == 0:
+        return 0.0
+    precision_at_hit = (np.arange(hits.size) + 1) / (hits + 1)
+    return float(precision_at_hit.mean())
+
+
+def predict_fold(model, dev, gp, gl, qp, ql):
+    """Everything downstream needs, per query, for one CV round."""
     G, Q = embed(model, dev, gp), embed(model, dev, qp)
-    gl = np.array(gl)
+    gl_arr, ql_arr = np.array(gl), np.array(ql)
 
-    names = sorted(set(gl.tolist()))
+    names = np.array(sorted(set(gl)))
     protos = np.stack([
-        (lambda v: v / max(np.linalg.norm(v), 1e-10))(G[gl == n].mean(0))
+        (lambda v: v / max(np.linalg.norm(v), 1e-10))(G[gl_arr == n].mean(0))
         for n in names]).astype("float32")
-    porder = np.argsort(-(Q @ protos.T), axis=1)
-    pnames = np.array(names)
 
-    order = np.argsort(-(Q @ G.T), axis=1)
-    return {
-        "proto_top1": pnames[porder[:, 0]].tolist(),
-        "proto_top5": [pnames[porder[i, :5]].tolist() for i in range(len(qp))],
-        "knn_top1": gl[order[:, 0]].tolist(),
-        "knn_top5": [gl[order[i, :5]].tolist() for i in range(len(qp))],
-    }
+    psims = Q @ protos.T                       # queries x identities
+    isims = Q @ G.T                            # queries x gallery images
+    true_col = np.array([int(np.flatnonzero(names == t)[0]) for t in ql_arr])
+
+    # closed-set rank of the true identity among prototypes (1 = best)
+    order = np.argsort(-psims, axis=1)
+    rank = np.argmax(order == true_col[:, None], axis=1) + 1
+
+    # open-set: best score overall, and best score once the true identity is hidden
+    best_score = psims.max(axis=1)
+    hidden = psims.copy()
+    hidden[np.arange(len(ql_arr)), true_col] = -np.inf
+    impostor_score = hidden.max(axis=1)
+
+    img_order = np.argsort(-isims, axis=1)
+    out = []
+    for i in range(len(qp)):
+        rel = gl_arr[img_order[i]] == ql_arr[i]
+        out.append({
+            "true": ql_arr[i],
+            "rank": int(rank[i]),
+            "ap": average_precision(rel),
+            "knn_rank1": bool(rel[0]),
+            "score": float(best_score[i]),
+            "impostor": float(impostor_score[i]),
+        })
+    return out
 
 
 def run_config(tag, manifest, classes):
-    """Pool predictions over all folds. Returns {path: {...}} keyed by image."""
     base = ROOT / "runs" / tag
     k = len(next(iter(manifest.values())))
     pooled = {}
@@ -88,27 +131,20 @@ def run_config(tag, manifest, classes):
             raise FileNotFoundError(f"{ckpt} missing -- has {tag} finished training?")
         gp, gl, qp, ql = fold_split(manifest, classes, fold)
         model, dev, _ = load_extractor(ckpt)
-        pred = predict_fold(model, dev, gp, gl, qp)
-        for i, path in enumerate(qp):
-            pooled[path] = {
-                "true": ql[i],
-                "proto_top1": pred["proto_top1"][i] == ql[i],
-                "proto_top5": ql[i] in pred["proto_top5"][i],
-                "knn_top1": pred["knn_top1"][i] == ql[i],
-                "knn_top5": ql[i] in pred["knn_top5"][i],
-                "pred": pred["proto_top1"][i],
-            }
+        for path, rec in zip(qp, predict_fold(model, dev, gp, gl, qp, ql)):
+            pooled[path] = rec
         print(f"  fold {fold}: {len(qp)} queries against {len(gp)} gallery imgs",
               flush=True)
     return pooled
 
 
-def by_class(pooled, key, order):
-    """Correctness arrays per penguin, in a fixed image order so two configs align."""
+# --------------------------------------------------------------------- aggregate
+
+def group_by_class(pooled, order, fn):
     out = defaultdict(list)
     for path in order:
-        r = pooled[path]
-        out[r["true"]].append(float(r[key]))
+        rec = pooled[path]
+        out[rec["true"]].append(float(fn(rec)))
     return {k: np.asarray(v) for k, v in sorted(out.items())}
 
 
@@ -123,13 +159,12 @@ def macro_ci(arrays, rng, n_boot=N_BOOTSTRAP):
     return {"macro": round(point, 4), "ci95": [round(float(lo), 4), round(float(hi), 4)]}
 
 
-def paired_diff(arrays_a, arrays_b, rng, n_boot=N_BOOTSTRAP):
-    """Bootstrap the DIFFERENCE in macro, resampling the same images for both."""
-    keys = list(arrays_a)
-    point = float(np.mean([arrays_b[k].mean() - arrays_a[k].mean() for k in keys]))
+def paired_diff(a_arrays, b_arrays, rng, n_boot=N_BOOTSTRAP):
+    keys = list(a_arrays)
+    point = float(np.mean([b_arrays[k].mean() - a_arrays[k].mean() for k in keys]))
     boot = np.zeros(n_boot)
     for k in keys:
-        a, b = arrays_a[k], arrays_b[k]
+        a, b = a_arrays[k], b_arrays[k]
         idx = rng.integers(0, len(a), size=(n_boot, len(a)))
         boot += b[idx].mean(axis=1) - a[idx].mean(axis=1)
     boot /= len(keys)
@@ -137,6 +172,44 @@ def paired_diff(arrays_a, arrays_b, rng, n_boot=N_BOOTSTRAP):
     return {"diff": round(point, 4),
             "ci95": [round(float(lo), 4), round(float(hi), 4)],
             "excludes_zero": bool(lo > 0 or hi < 0)}
+
+
+def open_set_curve(pooled, order):
+    """Macro DIR/FAR sweep. Both rates are averaged per penguin, not per photo."""
+    per_class = defaultdict(list)
+    for path in order:
+        r = pooled[path]
+        per_class[r["true"]].append((r["score"], r["rank"] == 1, r["impostor"]))
+
+    thresholds = np.unique(np.concatenate([
+        np.array([v[0] for vals in per_class.values() for v in vals]),
+        np.array([v[2] for vals in per_class.values() for v in vals])]))
+    thresholds = np.linspace(thresholds.min(), thresholds.max(), 400)
+
+    dir_rates, far_rates = [], []
+    packed = [(np.array([v[0] for v in vals]),
+               np.array([v[1] for v in vals], dtype=bool),
+               np.array([v[2] for v in vals])) for vals in per_class.values()]
+    for t in thresholds:
+        dir_rates.append(np.mean([np.mean(correct & (score >= t))
+                                  for score, correct, _ in packed]))
+        far_rates.append(np.mean([np.mean(imp >= t) for _, _, imp in packed]))
+
+    dir_rates, far_rates = np.array(dir_rates), np.array(far_rates)
+    at = {}
+    for target in FAR_TARGETS:
+        ok = np.flatnonzero(far_rates <= target)
+        if ok.size:
+            j = ok[int(np.argmax(dir_rates[ok]))]
+            at[f"DIR@FAR={target:.0%}"] = {"dir": round(float(dir_rates[j]), 4),
+                                           "far": round(float(far_rates[j]), 4),
+                                           "threshold": round(float(thresholds[j]), 4)}
+        else:
+            at[f"DIR@FAR={target:.0%}"] = None
+    return {"at": at,
+            "curve": {"threshold": [round(float(v), 4) for v in thresholds],
+                      "dir": [round(float(v), 4) for v in dir_rates],
+                      "far": [round(float(v), 4) for v in far_rates]}}
 
 
 def main():
@@ -158,39 +231,47 @@ def main():
         assert len(pooled) == len(order), f"{len(pooled)} predictions vs {len(order)} images"
 
         entry, arrays[tag] = {}, {}
-        for key in ("proto_top1", "proto_top5", "knn_top1", "knn_top5"):
-            arrays[tag][key] = by_class(pooled, key, order)
+        metrics = {"rank1": lambda r: r["rank"] == 1,
+                   "rank5": lambda r: r["rank"] <= 5,
+                   "mAP": lambda r: r["ap"],
+                   "knn_rank1": lambda r: r["knn_rank1"]}
+        for key, fn in metrics.items():
+            arrays[tag][key] = group_by_class(pooled, order, fn)
             entry[key] = macro_ci(list(arrays[tag][key].values()), rng)
-        pc = arrays[tag]["proto_top1"]
+
+        entry["cmc"] = [round(float(np.mean([
+            np.mean(np.asarray(v) <= k)
+            for v in group_by_class(pooled, order, lambda r: r["rank"]).values()])), 4)
+            for k in range(1, CMC_MAX + 1)]
+        entry["open_set"] = open_set_curve(pooled, order)
+
+        pc = arrays[tag]["rank1"]
         entry["per_class"] = {k: round(float(v.mean()), 4) for k, v in pc.items()}
         entry["n_images_per_class"] = {k: int(len(v)) for k, v in pc.items()}
         entry["never_correct"] = sorted(k for k, v in pc.items() if v.max() == 0)
         entry["n_images"] = len(order)
         report[tag] = entry
 
-        print(f"\n=== {tag} ===   (MACRO, {len(order)} photos, "
-              f"{len(pc)} penguins)")
-        for key, label in [("proto_top1", "prototype top-1"),
-                           ("proto_top5", "prototype top-5"),
-                           ("knn_top1", "1-NN top-1"),
-                           ("knn_top5", "1-NN top-5")]:
+        print(f"\n=== {tag} ===   (MACRO, {len(order)} photos, {len(pc)} penguins)")
+        for key, label in [("rank1", "rank-1"), ("rank5", "rank-5"),
+                           ("mAP", "mAP"), ("knn_rank1", "1-NN rank-1")]:
             d = entry[key]
-            print(f"  {label:<18}{d['macro']:>7.3f}   "
-                  f"[{d['ci95'][0]:.3f}, {d['ci95'][1]:.3f}]")
+            print(f"  {label:<14}{d['macro']:>7.3f}   [{d['ci95'][0]:.3f}, {d['ci95'][1]:.3f}]")
+        for name, v in entry["open_set"]["at"].items():
+            print(f"  {name:<14}{v['dir']:>7.3f}   (threshold {v['threshold']:.3f})"
+                  if v else f"  {name:<14}      -")
         nc = entry["never_correct"]
-        print(f"  never recognised ({len(nc)}/{len(pc)}): "
-              f"{', '.join(nc) if nc else 'none'}")
+        print(f"  never recognised ({len(nc)}/{len(pc)}): {', '.join(nc) if nc else 'none'}")
 
     if len(args.tags) == 2:
         a, b = args.tags
         print(f"\n=== paired comparison: {b} minus {a} ===")
         report["_comparison"] = {"baseline": a, "candidate": b}
-        for key, label in [("proto_top1", "prototype top-1"),
-                           ("proto_top5", "prototype top-5"),
-                           ("knn_top1", "1-NN top-1")]:
+        for key, label in [("rank1", "rank-1"), ("rank5", "rank-5"),
+                           ("mAP", "mAP"), ("knn_rank1", "1-NN rank-1")]:
             d = paired_diff(arrays[a][key], arrays[b][key], rng)
             verdict = "REAL (CI excludes 0)" if d["excludes_zero"] else "not distinguishable"
-            print(f"  {label:<18}{d['diff']:>+7.3f}   "
+            print(f"  {label:<14}{d['diff']:>+7.3f}   "
                   f"[{d['ci95'][0]:+.3f}, {d['ci95'][1]:+.3f}]   {verdict}")
             report["_comparison"][key] = d
 

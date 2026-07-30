@@ -60,7 +60,7 @@ Shared pipeline:
 
 ## 3. Experiment Record Figures
 
-All figures are regenerated from each run's logs by `plot_experiments.py`, written to `figures/`.
+Figures 01–05 cover the classification experiments and are regenerated from each run's logs by `plot_experiments.py`. Figures **06–11** cover the leakage audit and the cross-validated evaluation; they are regenerated from the JSON artifacts by `analysis/plot_figures.py` and appear inline in [§5](#5-data-leakage-audit--cross-session-evaluation) and [§6](#6-cross-validated-metric-learning). Both scripts write to `figures/`.
 
 **Fig 01 — Classifier training curves (full body vs belly)**
 ![training curves](figures/01_classifier_training_curves.png)
@@ -99,6 +99,8 @@ The dataset contains many **burst sequences** — same camera, same moment, cons
 
 **Honest re-evaluation.** We re-split by whole **session** (no burst spans train and test) and **retrain from scratch**, against a **random-split control on the same 35 birds / 1743 images / identical per-bird counts** — so any gap is due to the split alone, not to less data. The session-disjoint test set has **0%** near-duplicates vs **10%** for the control.
 
+![leakage: random versus session-disjoint](figures/06_leakage_random_vs_session.png)
+
 All figures below are **macro** (each individual weighted equally), computed by `analysis/evaluate.py`:
 
 | macro metric | random split (leaky) | session-disjoint (honest) | gap |
@@ -130,15 +132,22 @@ Scripts: `analysis/leakage_audit.py`, `analysis/build_session_splits.py`, `analy
 - **Fixed 80-epoch cosine schedule, no validation split, no early stopping**, final epoch kept (`train_metric.py`). This keeps training data at 80% and removes checkpoint selection as a bias source.
 - Configurations are compared by a **paired bootstrap** on the macro difference — the same resampled images applied to both — which is considerably more sensitive than asking whether two independent confidence intervals overlap.
 
+![evaluation coverage per individual](figures/11_evaluation_coverage.png)
+
 **Result** (`analysis/eval_cv.py`, macro, 1743 photos, 35 individuals):
 
 | macro metric | softmax + basic | **ArcFace + strong** | paired difference |
 |---|---|---|---|
-| prototype top-1 | 0.390 [0.367, 0.411] | **0.559** [0.535, 0.583] | **+0.169** [+0.145, +0.193] |
-| prototype top-5 | 0.746 [0.724, 0.769] | **0.782** [0.759, 0.804] | +0.036 [+0.012, +0.058] |
-| 1-NN top-1 | 0.387 [0.366, 0.409] | **0.561** [0.538, 0.585] | +0.174 [+0.151, +0.198] |
+| rank-1 | 0.390 [0.367, 0.411] | **0.559** [0.535, 0.583] | **+0.169** [+0.145, +0.193] |
+| rank-5 | 0.746 [0.724, 0.769] | **0.782** [0.759, 0.804] | +0.036 [+0.012, +0.058] |
+| **mAP** | 0.420 [0.403, 0.438] | **0.581** [0.558, 0.603] | **+0.161** [+0.141, +0.181] |
+| 1-NN rank-1 | 0.387 [0.365, 0.410] | **0.561** [0.537, 0.586] | +0.174 [+0.151, +0.200] |
 
 The baseline's cross-validated **0.390 reproduces the single-split 0.389** of §5, so cross-validation introduces no bias and the ArcFace gain is measured against a verified baseline. Every difference interval excludes zero. Intervals also tighten from ±0.05 to ±0.022, because 1743 photos are scored instead of 261.
+
+![cumulative matching characteristic](figures/07_cmc_curve.png)
+
+mAP rises with rank-1 rather than lagging it, so the gain is a genuinely better ranking and not a lucky first place. The CMC curve is also what justifies a shortlist interface: showing a keeper five candidates contains the right bird **78%** of the time against **56%** for a single answer.
 
 **Accuracy is governed by capture sessions per individual, not by photo count:**
 
@@ -148,11 +157,29 @@ The baseline's cross-validated **0.390 reproduces the single-split 0.389** of §
 | 4–6 | 13 | 0.423 | **0.618** |
 | 7+ | 14 | 0.535 | **0.717** |
 
+![accuracy versus capture sessions](figures/08_accuracy_vs_sessions.png)
+
 Metric learning lifts every bucket, but **cannot rescue the 3-session birds**: they stay unusable at 0.186, and one individual (Greyjoy) is never identified under either configuration. Excluding those 8, the remaining 27 individuals reach **0.669**. The levers are therefore complementary — ArcFace exploits session diversity that already exists, and only re-photographing creates it.
+
+![per-individual change](figures/09_per_individual_change.png)
 
 > **Correction to an earlier reading.** "12 of 35 individuals are never correctly identified" was an artifact of one- and two-photo test sets under the single split. Evaluated over every photo, the baseline has 2 such individuals and ArcFace has 1.
 
-**Not yet done:** mAP and CMC (the conventional re-ID reporting pair), open-set TAR@FAR, and the deployment model retrained on all 1743 photos — for which 0.559 is the conservative estimate, since each fold trains on 80% of the data while the deployment model would use 100%.
+### Open-set identification
+
+Rank-1 assumes the bird in front of the camera is already enrolled. Only **35 of the colony's 81 individuals** are, so in use the identifier is asked about strangers constantly, and it must refuse them rather than pick the nearest name. Unknowns are simulated leave-one-individual-out: a query's impostor score is its best prototype similarity with its own identity removed from the gallery.
+
+| operating point | softmax + basic | **ArcFace + strong** |
+|---|---|---|
+| DIR @ FAR = 1% | 0.112 | **0.229** |
+| DIR @ FAR = 5% | 0.176 | **0.360** |
+| DIR @ FAR = 10% | 0.222 | **0.431** |
+
+![open-set DIR against FAR](figures/10_open_set_dir_far.png)
+
+DIR@FAR=x is the fraction of enrolled birds both correctly named *and* confident enough to be accepted, at the threshold where unenrolled birds are wrongly accepted x of the time. **Closed-set rank-1 of 0.559 falls to 0.229** once unenrolled birds must be refused 99% of the time — that gap is the price of being able to say "I don't know", and it is the number that describes deployment readiness. ArcFace roughly doubles it at every operating point, so metric learning improves the confidence ordering and not only the ranking.
+
+**Not yet done:** the deployment model retrained on all 1743 photos — for which 0.559 is the conservative estimate, since each fold trains on 80% of the data while the deployment model would use 100%.
 
 ## 7. Flagship Plan: Embedding Retrieval + RAG
 
@@ -250,7 +277,8 @@ pgs/
 │  ├─ session_disjoint_eval.py       #   §5 session clustering + re-evaluation
 │  ├─ evaluate.py                    #   canonical macro-only evaluation of one model
 │  ├─ build_cv_folds.py              #   §6 session-wise K-fold folds
-│  ├─ eval_cv.py                     #   §6 fold aggregation + paired bootstrap
+│  ├─ eval_cv.py                     #   §6 fold aggregation, mAP/CMC/open-set, paired bootstrap
+│  ├─ plot_figures.py                #   regenerates figures 06-11 from the artifacts
 │  └─ artifacts/                     #   JSON/CSV results for every analysis above
 │
 ├─ penguins_data/                    # raw data
@@ -304,8 +332,10 @@ python analysis/build_cv_folds.py
 # baseline and ArcFace, 5 folds each, fixed 80 epochs, no early stopping
 python train_metric.py --loss softmax --aug basic  --all-folds
 python train_metric.py --loss arcface --aug strong --all-folds
-# pool folds, report macro + CI, and compare the two with a paired bootstrap
+# pool folds; macro rank-1/rank-5/mAP/CMC/open-set + paired bootstrap comparison
 python analysis/eval_cv.py cv_softmax_basic cv_arcface_strong
+# redraw figures 06-11 from the JSON artifacts
+python analysis/plot_figures.py
 ```
 
 Regenerate figures / photo list:
