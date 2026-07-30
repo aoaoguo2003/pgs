@@ -191,29 +191,36 @@ def fig_sessions():
 # ------------------------------------------------- 09 per-individual change
 
 def fig_per_individual():
-    birds = sorted(ARC["per_class"], key=lambda b: ARC["per_class"][b])
+    # Individuals on x, accuracy on y: height reads directly as "doing better",
+    # which a horizontal layout does not give you at a glance.
+    birds = sorted(ARC["per_class"], key=lambda b: -ARC["per_class"][b])
     base = np.array([BASE["per_class"][b] for b in birds])
     arc = np.array([ARC["per_class"][b] for b in birds])
-    y = np.arange(len(birds))
+    x = np.arange(len(birds))
+    overall = ARC["rank1"]["macro"]
 
-    fig, ax = plt.subplots(figsize=(6.6, 8.4))
-    ax.hlines(y, base, arc, color=AXIS, lw=1.6, zorder=2)
-    ax.scatter(base, y, s=34, color=ORANGE, edgecolors=SURFACE, linewidths=1.2,
+    fig, ax = plt.subplots(figsize=(10.6, 5.4))
+    ax.axhline(overall, color=AXIS, lw=1, zorder=1)
+    ax.text(len(birds) - 0.4, overall + 0.015, f"ArcFace overall {overall:.3f}",
+            ha="right", va="bottom", fontsize=8.5, color=MUTED)
+
+    ax.vlines(x, base, arc, color=AXIS, lw=1.6, zorder=2)
+    ax.scatter(x, base, s=34, color=ORANGE, edgecolors=SURFACE, linewidths=1.2,
                zorder=3, label=BASE_LABEL)
-    ax.scatter(arc, y, s=34, color=BLUE, edgecolors=SURFACE, linewidths=1.2,
+    ax.scatter(x, arc, s=34, color=BLUE, edgecolors=SURFACE, linewidths=1.2,
                zorder=4, label=ARC_LABEL)
 
-    labels = [f"{b}  ({SESSIONS[b]}s, {ARC['n_images_per_class'][b]}p)" for b in birds]
-    ax.set_yticks(y, labels, fontsize=8.5)
-    ax.set_ylim(-0.8, len(birds) - 0.2)
-    ax.set_xlim(-0.03, 1.03)
-    ax.set_xlabel("macro rank-1 accuracy")
+    ax.set_xticks(x, [f"{b} ({SESSIONS[b]})" for b in birds],
+                  rotation=90, fontsize=8.5)
+    ax.set_xlim(-0.8, len(birds) - 0.2)
+    ax.set_ylim(-0.04, 1.06)
+    ax.set_ylabel("macro rank-1 accuracy")
     ax.set_title("Every individual, baseline → ArcFace", color=INK, pad=12, loc="left")
-    ax.legend(frameon=False, loc="lower right", fontsize=9, labelcolor=INK2)
-    tidy(ax, grid_axis="x")
-    fig.text(0.0, -0.02,
-             "Sorted by ArcFace accuracy. Each label gives the individual's capture "
-             "sessions (s) and photographs (p).",
+    ax.legend(frameon=False, loc="upper right", fontsize=9, labelcolor=INK2)
+    tidy(ax, grid_axis="y")
+    fig.text(0.0, -0.20,
+             "Sorted by ArcFace accuracy, best on the left; the number after each "
+             "name is that individual's capture sessions. Higher is better.",
              fontsize=8.5, color=MUTED)
     save(fig, "09_per_individual_change.png")
 
