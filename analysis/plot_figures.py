@@ -193,7 +193,7 @@ def fig_sessions():
 def fig_per_individual():
     # Individuals on x, accuracy on y: height reads directly as "doing better",
     # which a horizontal layout does not give you at a glance.
-    birds = sorted(ARC["per_class"], key=lambda b: -ARC["per_class"][b])
+    birds = sorted(ARC["per_class"], key=lambda b: ARC["per_class"][b])
     base = np.array([BASE["per_class"][b] for b in birds])
     arc = np.array([ARC["per_class"][b] for b in birds])
     x = np.arange(len(birds))
@@ -201,8 +201,10 @@ def fig_per_individual():
 
     fig, ax = plt.subplots(figsize=(10.6, 5.4))
     ax.axhline(overall, color=AXIS, lw=1, zorder=1)
-    ax.text(len(birds) - 0.4, overall + 0.015, f"ArcFace overall {overall:.3f}",
-            ha="right", va="bottom", fontsize=8.5, color=MUTED)
+    # ascending sort puts the empty region top-left, so both the reference-line
+    # label and the legend live there
+    ax.text(-0.4, overall + 0.015, f"ArcFace overall {overall:.3f}",
+            ha="left", va="bottom", fontsize=8.5, color=MUTED)
 
     ax.vlines(x, base, arc, color=AXIS, lw=1.6, zorder=2)
     ax.scatter(x, base, s=34, color=ORANGE, edgecolors=SURFACE, linewidths=1.2,
@@ -216,10 +218,10 @@ def fig_per_individual():
     ax.set_ylim(-0.04, 1.06)
     ax.set_ylabel("macro rank-1 accuracy")
     ax.set_title("Every individual, baseline → ArcFace", color=INK, pad=12, loc="left")
-    ax.legend(frameon=False, loc="upper right", fontsize=9, labelcolor=INK2)
+    ax.legend(frameon=False, loc="upper left", fontsize=9, labelcolor=INK2)
     tidy(ax, grid_axis="y")
     fig.text(0.0, -0.20,
-             "Sorted by ArcFace accuracy, best on the left; the number after each "
+             "Sorted by ArcFace accuracy, best on the right; the number after each "
              "name is that individual's capture sessions. Higher is better.",
              fontsize=8.5, color=MUTED)
     save(fig, "09_per_individual_change.png")
