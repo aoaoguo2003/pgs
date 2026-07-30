@@ -23,3 +23,18 @@ embedding_id/artifacts/*.npz
 # Session-split experiment datasets (regenerate via analysis/build_session_splits.py)
 /penguins_dataset_split_session_disjoint/
 /penguins_dataset_split_session_random/
+
+# Trained model weights -- large and regenerable (train_metric.py / train_experiment1.py).
+# The fold manifest, training curves and result JSONs ARE tracked, so every number
+# in the README can be reproduced without these binaries.
+runs/**/*.pt
+
+# Smoke-test runs
+runs/smoke_*/
+
+# Training logs
+runs_*.log
+
+# Dissertation drafts -- kept local, not published to a public repository
+dissertation_template*.docx
+penguin_photo_count_report.docx

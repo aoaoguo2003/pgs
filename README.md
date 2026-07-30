@@ -4,7 +4,7 @@
 
 Given a photo of a **Humboldt penguin**, identify **which individual** it is (individual identity, not species). The end goal: a visitor takes one photo and instantly learns which specific penguin it is, plus that penguin's name, traits, and habits. All individuals in this project are Humboldt penguins from a single colony.
 
-The project is evolving from a **classification baseline** into an **embedding-retrieval + RAG** system — turning each photo into a vector, matching it against a vector database, and using an LLM to generate a grounded description of the identified penguin. The retrieval core works, but a **data-leakage audit** ([§5](#5-data-leakage-audit--cross-session-evaluation)) found the headline number was inflated by same-session camera bursts shared between train and test: honest **cross-session** top-1 is **~0.49** (vs ~0.96 same-session). Closing that gap — via metric learning and more diverse photos — together with the profile/RAG layer and a conversational UI is the current work.
+The project is evolving from a **classification baseline** into an **embedding-retrieval + RAG** system — turning each photo into a vector, matching it against a vector database, and using an LLM to generate a grounded description of the identified penguin. A **data-leakage audit** ([§5](#5-data-leakage-audit--cross-session-evaluation)) found the original headline inflated by same-session camera bursts shared between train and test. Under session-wise cross-validation ([§6](#6-cross-validated-metric-learning)) the current identification accuracy is **macro top-1 0.559** using ArcFace metric learning, against **0.390** for the softmax baseline. All accuracies in this document are **macro** — each individual weighted equally, regardless of how many photos it has. The profile/RAG layer and a conversational UI are the remaining work.
 
 ---
 
@@ -14,20 +14,24 @@ The project is evolving from a **classification baseline** into an **embedding-r
 - [3. Experiment Record Figures](#3-experiment-record-figures)
 - [4. Key Findings](#4-key-findings)
 - [5. Data Leakage Audit & Cross-Session Evaluation](#5-data-leakage-audit--cross-session-evaluation)
-- [6. Flagship Plan: Embedding Retrieval + RAG](#6-flagship-plan-embedding-retrieval--rag)
-- [7. Repo Structure](#7-repo-structure)
-- [8. Reproduce](#8-reproduce)
+- [6. Cross-Validated Metric Learning](#6-cross-validated-metric-learning)
+- [7. Flagship Plan: Embedding Retrieval + RAG](#7-flagship-plan-embedding-retrieval--rag)
+- [8. Repo Structure](#8-repo-structure)
+- [9. Reproduce](#9-reproduce)
 
 ---
 
 ## 1. Dataset
 
-- Raw data `penguins_data/`: **82 individuals**, image counts ranging from 1 to 291 per bird — a **severe long-tail imbalance**.
+- Raw data `penguins_data/`: **81 individuals, 2307 photos**, image counts ranging from 1 to 291 per bird — a **severe long-tail imbalance**.
 - Filtered to the **44 individuals with ≥ 16 images** (`penguin_image_count_summary.csv`, `selected=True`); the remaining 37 (≤15 images) are too sparse to train and are held out for now.
+- Of those 44, **35 have ≥ 3 distinct capture sessions** and are the individuals used in every session-disjoint evaluation ([§5](#5-data-leakage-audit--cross-session-evaluation), [§6](#6-cross-validated-metric-learning)). A session is a burst of frames from one shoot, detected from filename prefix and frame numbering.
 - Split per individual into train / val / test: `penguins_dataset_split/`.
 - Belly-crop variant (produced by the belly detector): `penguins_dataset_split_belly_by_yoloV8/`.
 
 > Even within the selected 44, counts run from 291 (Medici) down to ~16 — an ~18× max/min gap. This imbalance is the root cause of most downstream difficulty. See [Figure 05](#3-experiment-record-figures).
+>
+> **Coverage is the harder limit than accuracy:** 37 of the colony's 81 birds are not in the system at all, and cannot be identified at any accuracy until they are photographed.
 
 ## 2. Completed Experiments
 
@@ -38,7 +42,7 @@ The project is evolving from a **classification baseline** into an **embedding-r
 | **belly detector** | full body | YOLOv8s detection | 98 | mAP@50 ≈ 0.98 | mAP@50-95 ≈ 0.60 |
 | **exp3 embedding retrieval** | full body | ResNet18 features + FAISS (no training) | — | — | **0.959** (prototype) / 0.947 (1-NN) / 0.978 (top-5) |
 
-> ⚠️ **Leakage caveat:** the exp1 (0.950) and exp3 (0.959) accuracies above use a **random split**. A later audit found same-session camera bursts leak into the test set, inflating these numbers; the honest **cross-session** top-1 is **~0.44–0.49**. See [§5](#5-data-leakage-audit--cross-session-evaluation).
+> ⚠️ **Leakage caveat:** the exp1 (0.950) and exp3 (0.959) accuracies above use a **random split** and are **per-image**. A later audit found same-session camera bursts leak into the test set, inflating these numbers. Under a session-disjoint split the same pipeline scores **macro top-1 0.389** ([§5](#5-data-leakage-audit--cross-session-evaluation)); with ArcFace metric learning and 5-fold cross-validation it reaches **0.559** ([§6](#6-cross-validated-metric-learning)). Treat this section as a historical record, not as current performance.
 
 Shared pipeline:
 - `torchvision.datasets.ImageFolder` loading
@@ -78,7 +82,11 @@ All figures are regenerated from each run's logs by `plot_experiments.py`, writt
 1. **Full body > belly crop (0.950 vs 0.866).** Identity signal is not only in the belly — face pattern, chest band, and body proportions all carry information. Cropping too tightly discards it, and detector error adds noise.
 2. **Training/collection standard = full-body frontal photos.** No need to force a clean, complete belly.
 3. **Front only.** A penguin's back is a large, uniform dark region, nearly identical across individuals; mixing front+back inflates intra-class variance. A production system should ask the visitor to re-shoot "non-frontal" photos rather than force an identity.
-4. **The bottleneck is data, not the model.** Errors fall almost entirely on classes with ≤5 samples; high-support individuals are near-perfect. Raising the ceiling depends on **more data + few-shot / metric-learning methods**, not merely a bigger backbone. A leakage-corrected evaluation ([§5](#5-data-leakage-audit--cross-session-evaluation)) makes this concrete: cross-session accuracy is far below the random-split figure.
+4. **Data is the binding constraint — in two distinct ways.**
+   - **Coverage.** Only 44 of the colony's 81 individuals have enough photos to train on, and 35 have enough capture sessions to evaluate. The other 37 are absent from the system entirely; no algorithm addresses that.
+   - **Session diversity.** Among the 35, accuracy tracks *capture sessions per bird* rather than photo count: 0.19 for birds with 3 sessions versus 0.72 for birds with 7+ ([§6](#6-cross-validated-metric-learning)). Extra frames from the same burst do not help; photographs on a new day, in new light, do.
+   
+   The model side is nevertheless **not exhausted**: on birds that already have ≥4 sessions, changing only the training objective (softmax → ArcFace) moved accuracy from 0.481 to 0.669. Data and method are complementary levers, not alternatives.
 
 ## 5. Data Leakage Audit & Cross-Session Evaluation
 
@@ -91,22 +99,62 @@ The dataset contains many **burst sequences** — same camera, same moment, cons
 
 **Honest re-evaluation.** We re-split by whole **session** (no burst spans train and test) and **retrain from scratch**, against a **random-split control on the same 35 birds / 1743 images / identical per-bird counts** — so any gap is due to the split alone, not to less data. The session-disjoint test set has **0%** near-duplicates vs **10%** for the control.
 
-| metric | random split (leaky) | session-disjoint (honest) | gap |
-|---|---|---|---|
-| softmax classifier top-1 | 0.943 | **0.433** | +0.510 |
-| retrieval prototype top-1 | 0.950 | **0.490** | +0.460 |
-| retrieval 1-NN top-1 | 0.931 | 0.441 | +0.490 |
-| retrieval top-5 | 0.958 | **0.594** | +0.364 |
+All figures below are **macro** (each individual weighted equally), computed by `analysis/evaluate.py`:
 
-The control **reproduces the ~0.95 headline**, so the drop is cleanly attributable to the split. Both routes collapse together — the discriminative power lived in a feature extractor that had seen every session. **Honest cross-session top-1 is ~0.44–0.49 (top-5 ~0.59):** the earlier 0.95/0.959 mainly measured *same-session* recognition and overstated *cross-session* (different day / lighting) generalization.
+| macro metric | random split (leaky) | session-disjoint (honest) | gap |
+|---|---|---|---|
+| retrieval prototype top-1 | 0.920 | **0.389** | +0.531 |
+| retrieval prototype top-5 | 0.984 | **0.726** | +0.258 |
+| retrieval 1-NN top-1 | 0.902 | **0.384** | +0.518 |
+
+The control **reproduces the ~0.92 headline**, so the drop is cleanly attributable to the split. The softmax classification head collapsed in exactly the same way; it is not tabulated here because the identification interface is retrieval, and the head's accuracy exists only per-image. The discriminative power lived in a feature extractor that had seen every session — the earlier 0.95/0.959 mainly measured *same-session* recognition and overstated *cross-session* (different day / lighting) generalization.
+
+> **Two evaluation choices worth stating.** (1) *Macro, not micro.* The test set is dominated by a few heavily photographed birds (Medici 291 photos, Beau 19); per-image accuracy silently adopts that as a prior over which penguin gets photographed, which nothing justifies. (2) *Prototype top-5 means the five nearest class prototypes*, i.e. five distinct candidate individuals — not the five nearest gallery photos, which can all belong to the same bird and so overstate how much a shortlist helps a keeper.
 
 **Open-set threshold** (`embedding_id/tune_openset.py`) — the identifier must also answer "I don't know this bird" (only 44 of ~81 colony members are enrolled). Simulating unknowns by leave-one-penguin-out, known vs unknown separability is **AUC 0.991**; the confidence threshold was raised **0.55 → 0.80** (keeps 91.9% of enrolled birds, rejects 96.6% of unenrolled ones), so an unenrolled penguin is refused rather than misnamed.
 
-**Implication.** Cross-session generalization — not same-session accuracy — is the real challenge, and it is data-limited: 10 of the 44 enrolled birds have only one or two photo sessions. This motivates the two next levers: **ArcFace metric learning** (features built for the cosine retrieval metric) and **more multi-session photos per individual**.
+**Implication.** Cross-session generalization — not same-session accuracy — is the real challenge, and it is data-limited: 10 of the 44 enrolled birds have only one or two photo sessions. This motivated the two levers pursued in [§6](#6-cross-validated-metric-learning): **ArcFace metric learning** and **more multi-session photos per individual**.
 
-Scripts: `analysis/leakage_audit.py`, `analysis/build_session_splits.py`, `analysis/eval_session_retrain.py`, `analysis/session_disjoint_eval.py`, `embedding_id/tune_openset.py`.
+**Known limitation of this single split.** Whole sessions are assigned to train/val/test, so per-bird test size is whatever a session happens to contain — from **1 photo (Beau, Spider, Not Tiki) to 43 (Medici)**, i.e. an actual test share ranging from 2.7% to 42% against a nominal 15% target. Statistics for the smallest birds are near-meaningless here; [§6](#6-cross-validated-metric-learning) removes this limitation by cross-validating.
 
-## 6. Flagship Plan: Embedding Retrieval + RAG
+Scripts: `analysis/leakage_audit.py`, `analysis/build_session_splits.py`, `analysis/session_disjoint_eval.py`, `analysis/evaluate.py`, `embedding_id/tune_openset.py`.
+
+## 6. Cross-Validated Metric Learning
+
+§5 gives an honest but fragile estimate: with whole sessions assigned to one split, several individuals are judged on one or two photographs. This section replaces that single draw with cross-validation and uses it to measure metric learning.
+
+**Protocol** — pre-registered before any run, identical for every configuration compared.
+
+- **Session-wise 5-fold CV** (`analysis/build_cv_folds.py`). *Sessions*, never individual photos, are dealt into folds. Each session goes to the fold minimising (that bird's images already there, then all birds' images already there); the second key matters, because balancing per bird alone piles every bird's largest session into fold 0 and leaves it training on 59% of the data instead of 80%. Result: all five folds get **~80% train / ~350 test**.
+- **Every one of the 1743 photos is tested exactly once**, by a model that never saw its capture session — against 261 tested photos under a single split. A bird such as Beau is judged on all 19 of its photos rather than 1.
+- **Fixed 80-epoch cosine schedule, no validation split, no early stopping**, final epoch kept (`train_metric.py`). This keeps training data at 80% and removes checkpoint selection as a bias source.
+- Configurations are compared by a **paired bootstrap** on the macro difference — the same resampled images applied to both — which is considerably more sensitive than asking whether two independent confidence intervals overlap.
+
+**Result** (`analysis/eval_cv.py`, macro, 1743 photos, 35 individuals):
+
+| macro metric | softmax + basic | **ArcFace + strong** | paired difference |
+|---|---|---|---|
+| prototype top-1 | 0.390 [0.367, 0.411] | **0.559** [0.535, 0.583] | **+0.169** [+0.145, +0.193] |
+| prototype top-5 | 0.746 [0.724, 0.769] | **0.782** [0.759, 0.804] | +0.036 [+0.012, +0.058] |
+| 1-NN top-1 | 0.387 [0.366, 0.409] | **0.561** [0.538, 0.585] | +0.174 [+0.151, +0.198] |
+
+The baseline's cross-validated **0.390 reproduces the single-split 0.389** of §5, so cross-validation introduces no bias and the ArcFace gain is measured against a verified baseline. Every difference interval excludes zero. Intervals also tighten from ±0.05 to ±0.022, because 1743 photos are scored instead of 261.
+
+**Accuracy is governed by capture sessions per individual, not by photo count:**
+
+| capture sessions | individuals | softmax + basic | ArcFace + strong |
+|---|---|---|---|
+| 3 | 8 | 0.081 | **0.186** |
+| 4–6 | 13 | 0.423 | **0.618** |
+| 7+ | 14 | 0.535 | **0.717** |
+
+Metric learning lifts every bucket, but **cannot rescue the 3-session birds**: they stay unusable at 0.186, and one individual (Greyjoy) is never identified under either configuration. Excluding those 8, the remaining 27 individuals reach **0.669**. The levers are therefore complementary — ArcFace exploits session diversity that already exists, and only re-photographing creates it.
+
+> **Correction to an earlier reading.** "12 of 35 individuals are never correctly identified" was an artifact of one- and two-photo test sets under the single split. Evaluated over every photo, the baseline has 2 such individuals and ArcFace has 1.
+
+**Not yet done:** mAP and CMC (the conventional re-ID reporting pair), open-set TAR@FAR, and the deployment model retrained on all 1743 photos — for which 0.559 is the conservative estimate, since each fold trains on 80% of the data while the deployment model would use 100%.
+
+## 7. Flagship Plan: Embedding Retrieval + RAG
 
 The centerpiece direction: turn the classifier into a **multimodal retrieval + Retrieval-Augmented Generation** application.
 
@@ -166,15 +214,17 @@ The user-facing wrapper is a chat window. On entry (QR scan / app open) the bot 
 This direction combines fine-grained computer vision, **metric learning**, a **vector database**, **multimodal RAG**, **grounded LLM generation with anti-hallucination guardrails**, and **RAG evaluation**, applied to a real-world dataset.
 
 ### Current status & next steps
-**Done** — the CNN retrieval route (exp3): a working **FAISS vector database** with **incremental enrollment** (add a new penguin by storing its features — no retraining) and **open-set rejection** (threshold tuned to **0.80** by leave-one-penguin-out, AUC 0.991; blurry / unenrolled → refuse rather than misname). A **data-leakage audit** ([§5](#5-data-leakage-audit--cross-session-evaluation)) established the honest baseline: same-session top-1 ~0.96, but **cross-session ~0.49**. The classifier route is kept only as a baseline; **retrieval is the identification method** going forward.
+**Done** — the CNN retrieval route (exp3): a working **FAISS vector database** with **incremental enrollment** (add a new penguin by storing its features — no retraining) and **open-set rejection** (threshold tuned to **0.80** by leave-one-penguin-out, AUC 0.991; blurry / unenrolled → refuse rather than misname). A **data-leakage audit** ([§5](#5-data-leakage-audit--cross-session-evaluation)) established the honest baseline, and **ArcFace metric learning under 5-fold cross-validation** ([§6](#6-cross-validated-metric-learning)) raised cross-session identification from **macro 0.390 to 0.559**. The classifier route is kept only as a baseline; **retrieval is the identification method** going forward.
 
 **Next**
-1. **Close the cross-session gap (priority)** — **ArcFace** metric-learning retrain (features built for the cosine retrieval metric, evaluated on the session-disjoint split) + **more multi-session photos** for individuals shot on only one or two occasions. (A no-training test-time-augmentation attempt gave no gain, since the model was already trained with horizontal-flip augmentation.)
-2. **Build a clean penguin profile database** — one structured record per individual (name, date of birth, personality, features, habits, band colors) to ground `get_profile`.
-3. **Wire the agent loop** — orchestrate `identify_penguin` / `get_profile` / `search_knowledge` via the LLM's function-calling / tool-use, with conversation memory.
-4. **Conversational Humboldt penguin expert UI** — a chat window with the welcome message and session memory described above.
+1. **Photograph the under-covered birds (priority).** Two gaps, both only closable with a camera: the **37 individuals not in the system at all**, and the **8 enrolled birds with only 3 capture sessions** that metric learning leaves at 0.186. What is needed is photographs on *new days, in new light* — additional frames from an existing burst add nothing.
+2. **Finish the evaluation suite** — mAP and CMC alongside macro rank-1, plus open-set **TAR@FAR** for the "is this bird even enrolled?" question that closed-set accuracy does not measure.
+3. **Train and ship the deployment model** — one ArcFace model on all 1743 photos, reported with the §6 cross-validated estimate.
+4. **Build a clean penguin profile database** — one structured record per individual (name, date of birth, personality, features, habits, band colors) to ground `get_profile`.
+5. **Wire the agent loop** — orchestrate `identify_penguin` / `get_profile` / `search_knowledge` via the LLM's function-calling / tool-use, with conversation memory.
+6. **Conversational Humboldt penguin expert UI** — a chat window with the welcome message and session memory described above.
 
-## 7. Repo Structure
+## 8. Repo Structure
 
 ```text
 pgs/
@@ -186,6 +236,7 @@ pgs/
 │
 ├─ a.py                              # per-individual train/val/test split
 ├─ train_experiment1.py              # classifier training (exp1/exp2, and the §5 retrains)
+├─ train_metric.py                   # §6 softmax/ArcFace training under K-fold CV
 ├─ eval_checkpoint.py                # checkpoint evaluation
 ├─ crop_penguin_belly_yolo.py        # crop bellies with YOLO
 ├─ prepare_belly_yolo_dataset.py     # prepare belly-detection dataset
@@ -193,7 +244,14 @@ pgs/
 ├─ annotate_belly.py                 # belly annotation tool
 │
 ├─ embedding_id/                     # retrieval core: embedder, vector store, identify, open-set tuning
-├─ analysis/                         # data-leakage audit & cross-session evaluation (§5)
+├─ analysis/                         # evaluation & audits
+│  ├─ leakage_audit.py               #   §5 burst/session leakage audit
+│  ├─ build_session_splits.py        #   §5 session-disjoint + random-control splits
+│  ├─ session_disjoint_eval.py       #   §5 session clustering + re-evaluation
+│  ├─ evaluate.py                    #   canonical macro-only evaluation of one model
+│  ├─ build_cv_folds.py              #   §6 session-wise K-fold folds
+│  ├─ eval_cv.py                     #   §6 fold aggregation + paired bootstrap
+│  └─ artifacts/                     #   JSON/CSV results for every analysis above
 │
 ├─ penguins_data/                    # raw data
 ├─ penguins_dataset_split/           # full-body train/val/test (exp1)
@@ -204,10 +262,12 @@ pgs/
    ├─ exp2_belly_resnet18/           # belly-crop classification results
    ├─ exp1b_session_disjoint/        # §5 honest cross-session retrain
    ├─ exp1b_random_control/          # §5 random-split control
+   ├─ cv_softmax_basic/fold0..4/     # §6 baseline, one model per fold
+   ├─ cv_arcface_strong/fold0..4/    # §6 ArcFace + strong augmentation
    └─ detect/…/belly_detector/exp1/  # belly detector results
 ```
 
-## 8. Reproduce
+## 9. Reproduce
 
 Install dependencies (CUDA PyTorch for an RTX 4060):
 ```powershell
@@ -231,9 +291,21 @@ python analysis/leakage_audit.py
 python analysis/build_session_splits.py
 python train_experiment1.py --data-dir penguins_dataset_split_session_disjoint --output-dir runs/exp1b_session_disjoint
 python train_experiment1.py --data-dir penguins_dataset_split_session_random  --output-dir runs/exp1b_random_control
-python analysis/eval_session_retrain.py
+# macro evaluation of both retrains
+python analysis/evaluate.py
 # tune the open-set rejection threshold (leave-one-penguin-out)
 python embedding_id/tune_openset.py
+```
+
+Cross-validated metric learning (§6) — about 11 min per fold on an RTX 4060, ~1 h 50 m in total:
+```powershell
+# deal capture sessions into 5 balanced folds (writes analysis/artifacts/cv_folds.json)
+python analysis/build_cv_folds.py
+# baseline and ArcFace, 5 folds each, fixed 80 epochs, no early stopping
+python train_metric.py --loss softmax --aug basic  --all-folds
+python train_metric.py --loss arcface --aug strong --all-folds
+# pool folds, report macro + CI, and compare the two with a paired bootstrap
+python analysis/eval_cv.py cv_softmax_basic cv_arcface_strong
 ```
 
 Regenerate figures / photo list:

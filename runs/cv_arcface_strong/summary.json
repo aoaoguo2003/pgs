@@ -1,0 +1,56 @@
+{
+  "tag": "cv_arcface_strong",
+  "config": {
+    "loss": "arcface",
+    "aug": "strong",
+    "fold": null,
+    "all_folds": true,
+    "epochs": 80,
+    "batch_size": 32,
+    "lr": 0.0003,
+    "weight_decay": 0.0001,
+    "label_smoothing": 0.0,
+    "warmup_epochs": 3,
+    "margin_warmup_epochs": 5,
+    "num_workers": 4,
+    "seed": 42,
+    "tag": null
+  },
+  "folds": [
+    {
+      "fold": 0,
+      "n_train": 1394,
+      "n_test": 349,
+      "final_train_acc": 0.9943,
+      "minutes": 11.7
+    },
+    {
+      "fold": 1,
+      "n_train": 1393,
+      "n_test": 350,
+      "final_train_acc": 0.995,
+      "minutes": 11.6
+    },
+    {
+      "fold": 2,
+      "n_train": 1392,
+      "n_test": 351,
+      "final_train_acc": 0.9935,
+      "minutes": 10.5
+    },
+    {
+      "fold": 3,
+      "n_train": 1396,
+      "n_test": 347,
+      "final_train_acc": 0.9957,
+      "minutes": 10.9
+    },
+    {
+      "fold": 4,
+      "n_train": 1397,
+      "n_test": 346,
+      "final_train_acc": 0.9964,
+      "minutes": 10.9
+    }
+  ]
+}

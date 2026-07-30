@@ -1,0 +1,247 @@
+{
+  "cv_softmax_basic": {
+    "proto_top1": {
+      "macro": 0.3895,
+      "ci95": [
+        0.367,
+        0.4111
+      ]
+    },
+    "proto_top5": {
+      "macro": 0.7461,
+      "ci95": [
+        0.7235,
+        0.7686
+      ]
+    },
+    "knn_top1": {
+      "macro": 0.3868,
+      "ci95": [
+        0.3657,
+        0.4086
+      ]
+    },
+    "knn_top5": {
+      "macro": 0.4307,
+      "ci95": [
+        0.4077,
+        0.4541
+      ]
+    },
+    "per_class": {
+      "Beaker": 0.08,
+      "Beau": 0.6316,
+      "Bob": 0.1111,
+      "Bud": 0.0,
+      "Calypso": 0.4348,
+      "Chompy": 0.25,
+      "Cooper": 0.8346,
+      "Courtney": 0.3421,
+      "Danny": 0.5806,
+      "Ernest": 0.2105,
+      "Gonzo": 0.7115,
+      "Greyjoy": 0.0,
+      "Heathcliffe": 0.375,
+      "Jaz": 0.1364,
+      "Kermit": 0.7536,
+      "Lannister": 0.2308,
+      "Lenny": 0.8889,
+      "McVitie": 0.6111,
+      "Medici": 0.8557,
+      "Nicki": 0.2075,
+      "Nik_nak": 0.0667,
+      "Not Tiki": 0.8387,
+      "Olive": 0.4474,
+      "Patrick": 0.25,
+      "Peapod": 0.1364,
+      "Phineas": 0.4091,
+      "Ping": 0.4091,
+      "Rainbow": 0.2174,
+      "Robin": 0.0417,
+      "Ron_burgundy": 0.9263,
+      "Snorkel": 0.1429,
+      "Spider": 0.0811,
+      "Swiftie": 0.4186,
+      "Tang": 0.6349,
+      "Ziggy": 0.3659
+    },
+    "n_images_per_class": {
+      "Beaker": 25,
+      "Beau": 19,
+      "Bob": 18,
+      "Bud": 29,
+      "Calypso": 23,
+      "Chompy": 28,
+      "Cooper": 127,
+      "Courtney": 38,
+      "Danny": 31,
+      "Ernest": 19,
+      "Gonzo": 52,
+      "Greyjoy": 19,
+      "Heathcliffe": 64,
+      "Jaz": 22,
+      "Kermit": 69,
+      "Lannister": 26,
+      "Lenny": 27,
+      "McVitie": 54,
+      "Medici": 291,
+      "Nicki": 53,
+      "Nik_nak": 30,
+      "Not Tiki": 31,
+      "Olive": 38,
+      "Patrick": 28,
+      "Peapod": 22,
+      "Phineas": 66,
+      "Ping": 22,
+      "Rainbow": 46,
+      "Robin": 24,
+      "Ron_burgundy": 190,
+      "Snorkel": 28,
+      "Spider": 37,
+      "Swiftie": 43,
+      "Tang": 63,
+      "Ziggy": 41
+    },
+    "never_correct": [
+      "Bud",
+      "Greyjoy"
+    ],
+    "n_images": 1743
+  },
+  "cv_arcface_strong": {
+    "proto_top1": {
+      "macro": 0.5588,
+      "ci95": [
+        0.5348,
+        0.5827
+      ]
+    },
+    "proto_top5": {
+      "macro": 0.782,
+      "ci95": [
+        0.7588,
+        0.8039
+      ]
+    },
+    "knn_top1": {
+      "macro": 0.5613,
+      "ci95": [
+        0.5376,
+        0.585
+      ]
+    },
+    "knn_top5": {
+      "macro": 0.5713,
+      "ci95": [
+        0.5472,
+        0.5956
+      ]
+    },
+    "per_class": {
+      "Beaker": 0.2,
+      "Beau": 0.5789,
+      "Bob": 0.2222,
+      "Bud": 0.069,
+      "Calypso": 0.5652,
+      "Chompy": 0.5,
+      "Cooper": 0.9606,
+      "Courtney": 0.7895,
+      "Danny": 0.7742,
+      "Ernest": 0.5263,
+      "Gonzo": 0.8269,
+      "Greyjoy": 0.0,
+      "Heathcliffe": 0.8281,
+      "Jaz": 0.6364,
+      "Kermit": 0.8406,
+      "Lannister": 0.5769,
+      "Lenny": 0.9259,
+      "McVitie": 0.7407,
+      "Medici": 0.921,
+      "Nicki": 0.1887,
+      "Nik_nak": 0.4,
+      "Not Tiki": 0.9032,
+      "Olive": 0.6579,
+      "Patrick": 0.7143,
+      "Peapod": 0.0455,
+      "Phineas": 0.7424,
+      "Ping": 0.6364,
+      "Rainbow": 0.2609,
+      "Robin": 0.2083,
+      "Ron_burgundy": 0.9737,
+      "Snorkel": 0.2143,
+      "Spider": 0.3514,
+      "Swiftie": 0.6744,
+      "Tang": 0.7143,
+      "Ziggy": 0.3902
+    },
+    "n_images_per_class": {
+      "Beaker": 25,
+      "Beau": 19,
+      "Bob": 18,
+      "Bud": 29,
+      "Calypso": 23,
+      "Chompy": 28,
+      "Cooper": 127,
+      "Courtney": 38,
+      "Danny": 31,
+      "Ernest": 19,
+      "Gonzo": 52,
+      "Greyjoy": 19,
+      "Heathcliffe": 64,
+      "Jaz": 22,
+      "Kermit": 69,
+      "Lannister": 26,
+      "Lenny": 27,
+      "McVitie": 54,
+      "Medici": 291,
+      "Nicki": 53,
+      "Nik_nak": 30,
+      "Not Tiki": 31,
+      "Olive": 38,
+      "Patrick": 28,
+      "Peapod": 22,
+      "Phineas": 66,
+      "Ping": 22,
+      "Rainbow": 46,
+      "Robin": 24,
+      "Ron_burgundy": 190,
+      "Snorkel": 28,
+      "Spider": 37,
+      "Swiftie": 43,
+      "Tang": 63,
+      "Ziggy": 41
+    },
+    "never_correct": [
+      "Greyjoy"
+    ],
+    "n_images": 1743
+  },
+  "_comparison": {
+    "baseline": "cv_softmax_basic",
+    "candidate": "cv_arcface_strong",
+    "proto_top1": {
+      "diff": 0.1693,
+      "ci95": [
+        0.1453,
+        0.1932
+      ],
+      "excludes_zero": true
+    },
+    "proto_top5": {
+      "diff": 0.0358,
+      "ci95": [
+        0.0123,
+        0.0582
+      ],
+      "excludes_zero": true
+    },
+    "knn_top1": {
+      "diff": 0.1745,
+      "ci95": [
+        0.1509,
+        0.198
+      ],
+      "excludes_zero": true
+    }
+  }
+}
