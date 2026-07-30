@@ -86,11 +86,18 @@ def main():
         per_sessions[pen] = sessions
 
     dealt = deal_all(per_sessions, args.k)
-    manifest, rows = {}, []
+    manifest, rows, sess_of = {}, [], {}
     for pen, folds in sorted(dealt.items()):
         files = per[pen]
         manifest[pen] = [[str(files[i].relative_to(ROOT)) for i in fold] for fold in folds]
         rows.append((pen, len(per_sessions[pen]), len(files), [len(f) for f in folds]))
+        # Which session each photo came from. Confidence intervals must resample
+        # SESSIONS, not photos: photos inside one burst are near-duplicates, so
+        # photo-level resampling treats correlated samples as independent and
+        # reports an interval that is too narrow.
+        for si, sess in enumerate(per_sessions[pen]):
+            for i in sess:
+                sess_of[str(files[i].relative_to(ROOT))] = f"{pen}#{si}"
 
     # ---- table -----------------------------------------------------------
     k = args.k
@@ -122,8 +129,8 @@ def main():
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(
         {"k": k, "session_gap": args.session_gap, "min_sessions": args.min_sessions,
-         "src": args.src, "folds": manifest}, ensure_ascii=False, indent=2),
-        encoding="utf-8")
+         "src": args.src, "folds": manifest, "session_of_photo": sess_of},
+        ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"saved -> {out}")
 
 

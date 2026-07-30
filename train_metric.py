@@ -40,6 +40,7 @@ from torchvision import models, transforms
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 ROOT = Path(__file__).resolve().parent
 FOLDS_JSON = ROOT / "analysis" / "artifacts" / "cv_folds.json"
+IMG_EXTS = {".jpg", ".jpeg", ".png", ".bmp", ".webp"}
 
 MEAN, STD = [0.485, 0.456, 0.406], [0.229, 0.224, 0.225]
 
@@ -84,17 +85,56 @@ class PenguinSet(Dataset):
         return self.tfm(img), self.labels[i]
 
 
-def load_fold(manifest, fold, classes):
-    """Return (train_paths, train_labels, n_test) for one CV round."""
+def collect_extra(src: Path, exclude: set, min_photos: int):
+    """Colony members too sparse to EVALUATE, usable as extra TRAINING identities.
+
+    A bird needs >=16 photos and >=3 capture sessions to enter the cross-validated
+    evaluation; 46 of the 81 do not qualify. Nothing stops their photos being extra
+    classes for the metric-learning objective, which never sees the test set. They
+    are added to train in every fold and never to test or the gallery, so the
+    reported numbers stay comparable to runs without them.
+    """
+    out = {}
+    for d in sorted(p for p in src.iterdir() if p.is_dir()):
+        if d.name in exclude:
+            continue
+        imgs = [f for f in sorted(d.iterdir()) if f.suffix.lower() in IMG_EXTS]
+        if len(imgs) >= min_photos:
+            out[d.name] = [str(f.relative_to(ROOT)) for f in imgs]
+    return out
+
+
+def collect_all(src: Path, min_photos: int):
+    """Every colony member with enough photos, all photos, for the deploy model."""
+    out = {}
+    for d in sorted(p for p in src.iterdir() if p.is_dir()):
+        imgs = [f for f in sorted(d.iterdir()) if f.suffix.lower() in IMG_EXTS]
+        if len(imgs) >= min_photos:
+            out[d.name] = [[str(f.relative_to(ROOT)) for f in imgs]]   # one group
+    return out
+
+
+def load_fold(manifest, fold, classes, extra=None):
+    """Return (train_paths, train_labels, n_test) for one CV round.
+
+    fold=None is deploy mode: no group index ever matches, so every photo goes to
+    train and nothing is held out. That is correct for the shipped model -- cross
+    validation has already produced the performance estimate, and holding data
+    back now would only make the deployed extractor worse than the one measured.
+    """
+    extra = extra or {}
     tr_p, tr_y, n_test = [], [], 0
     for ci, pen in enumerate(classes):
-        groups = manifest[pen]
-        for gi, group in enumerate(groups):
-            if gi == fold:
-                n_test += len(group)
-            else:
-                tr_p.extend(group)
-                tr_y.extend([ci] * len(group))
+        if pen in manifest:
+            for gi, group in enumerate(manifest[pen]):
+                if gi == fold:
+                    n_test += len(group)
+                else:
+                    tr_p.extend(group)
+                    tr_y.extend([ci] * len(group))
+        else:                                   # extra identity: always train-only
+            tr_p.extend(extra[pen])
+            tr_y.extend([ci] * len(extra[pen]))
     return tr_p, tr_y, n_test
 
 
@@ -135,8 +175,8 @@ def build_model(loss: str, n_classes: int, device):
 
 # --------------------------------------------------------------------- training
 
-def train_one_fold(args, manifest, classes, fold, out_dir, device):
-    tr_p, tr_y, n_test = load_fold(manifest, fold, classes)
+def train_one_fold(args, manifest, classes, fold, out_dir, device, extra=None):
+    tr_p, tr_y, n_test = load_fold(manifest, fold, classes, extra)
     ds = PenguinSet(tr_p, tr_y, build_transform(args.aug, train=True))
     # persistent_workers matters enormously on Windows: without it the loader
     # respawns every worker process each epoch, and each respawn re-imports
@@ -227,28 +267,66 @@ def main():
     ap.add_argument("--num-workers", type=int, default=4)
     ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--tag")
+    ap.add_argument("--extra-identities", action="store_true",
+                    help="add colony members too sparse to evaluate as extra "
+                         "TRAINING classes (test set and gallery are unchanged)")
+    ap.add_argument("--extra-src", default="penguins_data")
+    ap.add_argument("--extra-min-photos", type=int, default=5)
+    ap.add_argument("--deploy", action="store_true",
+                    help="train the shipped model: every colony member, every "
+                         "photo, no held-out set, same recipe as the CV arms")
+    ap.add_argument("--deploy-min-photos", type=int, default=3)
     args = ap.parse_args()
 
-    if args.fold is None and not args.all_folds:
-        ap.error("pass --fold N or --all-folds")
+    if not args.deploy and args.fold is None and not args.all_folds:
+        ap.error("pass --fold N, --all-folds, or --deploy")
 
     torch.manual_seed(args.seed)
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+
+    if args.deploy:
+        manifest = collect_all(ROOT / args.extra_src, args.deploy_min_photos)
+        classes = sorted(manifest)
+        n_photos = sum(len(g[0]) for g in manifest.values())
+        tag = args.tag or f"deploy_{args.loss}_{args.aug}"
+        base = ROOT / "runs" / tag
+        print(f"{tag}: DEPLOY model -- {len(classes)} individuals, {n_photos} photos, "
+              f"no held-out set, {args.epochs} epochs, device={device}", flush=True)
+        summary = [train_one_fold(args, manifest, classes, None, base, device)]
+        base.mkdir(parents=True, exist_ok=True)
+        (base / "summary.json").write_text(json.dumps(
+            {"tag": tag, "deploy": True, "n_individuals": len(classes),
+             "n_photos": n_photos, "config": vars(args), "runs": summary},
+            ensure_ascii=False, indent=2), encoding="utf-8")
+        print(f"\ndone -> {base/'model.pt'}", flush=True)
+        print("Performance estimate for this model is the cross-validated figure "
+              "in analysis/artifacts/cv_report.json; it is conservative, since each "
+              "fold trained on 80% of the data and this model used 100%.", flush=True)
+        return
+
     data = json.loads(FOLDS_JSON.read_text(encoding="utf-8"))
     manifest, k = data["folds"], data["k"]
-    classes = sorted(manifest)
-    device = "cuda" if torch.cuda.is_available() else "cpu"
+    eval_classes = sorted(manifest)
+
+    extra = {}
+    if args.extra_identities:
+        extra = collect_extra(ROOT / args.extra_src, set(eval_classes),
+                              args.extra_min_photos)
+    classes = eval_classes + sorted(extra)
 
     tag = args.tag or f"cv_{args.loss}_{args.aug}"
     base = ROOT / "runs" / tag
     folds = range(k) if args.all_folds else [args.fold]
 
-    print(f"{tag}: {len(classes)} penguins, {k}-fold, {args.epochs} epochs, "
-          f"device={device}", flush=True)
+    print(f"{tag}: {len(eval_classes)} evaluated penguins"
+          + (f" + {len(extra)} train-only identities ({sum(len(v) for v in extra.values())} photos)"
+             if extra else "")
+          + f", {k}-fold, {args.epochs} epochs, device={device}", flush=True)
     summary = []
     for f in folds:
         print(f"  --- fold {f} ---", flush=True)
         summary.append(train_one_fold(args, manifest, classes, f,
-                                      base / f"fold{f}", device))
+                                      base / f"fold{f}", device, extra))
 
     base.mkdir(parents=True, exist_ok=True)
     (base / "summary.json").write_text(json.dumps(

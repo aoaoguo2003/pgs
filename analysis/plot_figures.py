@@ -253,11 +253,67 @@ def fig_open_set():
                  "\u201cI don\u2019t know\u201d", color=INK, pad=12, loc="left")
     ax.legend(frameon=False, loc="lower right", fontsize=9, labelcolor=INK2)
     tidy(ax, grid_axis="both")
+    arc1 = ARC["open_set"]["at"]["DIR@FAR=1%"]["dir"]
+    sim1 = ARC["open_set_simulated"]["at"]["DIR@FAR=1%"]["dir"]
     fig.text(0.0, -0.06,
-             "Unknowns simulated leave-one-individual-out. Closed-set rank-1 of 0.559 "
-             "falls to 0.229 once unenrolled birds must be refused 99% of the time.",
+             f"Unknowns are the {ARC['n_stranger_photos'] // 5} photos of 46 colony "
+             f"members the models never trained on. Closed-set rank-1 of "
+             f"{ARC['rank1']['macro']:.3f} falls to {arc1:.3f} once strangers must be "
+             f"refused 99% of the time; simulating unknowns instead claims {sim1:.3f}.",
              fontsize=8.5, color=MUTED)
     save(fig, "10_open_set_dir_far.png")
+
+
+# ------------------------------------------- 12 the 2x2: loss x augmentation
+
+def fig_two_by_two():
+    cells = {("softmax", "basic"): "cv_softmax_basic",
+             ("softmax", "strong"): "cv_softmax_strong",
+             ("arcface", "basic"): "cv_arcface_basic",
+             ("arcface", "strong"): "cv_arcface_strong"}
+    if not all(t in cv for t in cells.values()):
+        print("  skip figure 12: the 2x2 is incomplete")
+        return
+
+    panels = [("rank1", "35 enrolled individuals"),
+              ("rank1_colony", "all 81 colony members")]
+    fig, axes = plt.subplots(1, 2, figsize=(9.4, 4.2), sharey=True)
+
+    for ax, (metric, title) in zip(axes, panels):
+        for loss, colour, marker in (("softmax", ORANGE, "o"), ("arcface", BLUE, "o")):
+            ys = [cv[cells[(loss, a)]][metric]["macro"] for a in ("basic", "strong")]
+            los = [cv[cells[(loss, a)]][metric]["ci95"][0] for a in ("basic", "strong")]
+            his = [cv[cells[(loss, a)]][metric]["ci95"][1] for a in ("basic", "strong")]
+            ax.errorbar([0, 1], ys,
+                        yerr=[np.array(ys) - np.array(los), np.array(his) - np.array(ys)],
+                        color=colour, lw=2, marker=marker, ms=7, capsize=4,
+                        elinewidth=1.2, markeredgecolor=SURFACE, markeredgewidth=1.2,
+                        label="ArcFace" if loss == "arcface" else "softmax")
+            # Labels go beside the markers, never above or below: the error bars
+            # are vertical and a stacked label lands on top of a cap.
+            for x, y in zip((0, 1), ys):
+                dx, ha = (-10, "right") if x == 0 else (10, "left")
+                ax.annotate(f"{y:.3f}", (x, y), textcoords="offset points",
+                            xytext=(dx, -3), ha=ha, fontsize=9, color=colour)
+        ax.set_xticks([0, 1], ["basic\naugmentation", "strong\naugmentation"])
+        ax.set_xlim(-0.55, 1.55)
+        ax.set_title(title, color=INK2, fontsize=10.5, pad=8)
+        tidy(ax)
+
+    axes[0].set_ylim(0.15, 0.72)
+    axes[0].set_ylabel("macro rank-1 accuracy")
+    axes[0].legend(frameon=False, loc="upper left", fontsize=9, labelcolor=INK2)
+    fig.suptitle("Loss × augmentation: which change actually did the work",
+                 color=INK, fontsize=12, x=0.02, ha="left", y=1.02)
+    fig.text(0.0, -0.16,
+             "Bars are 95% session-clustered intervals.\n"
+             "Left: the lines converge — ArcFace adds +0.029 [-0.005, +0.060] on top of "
+             "strong augmentation, which is not distinguishable from zero.\n"
+             "Right: against all 81 identities they stay apart, +0.116 [+0.082, +0.148]. "
+             "Metric learning shapes the embedding geometry rather than the\n"
+             "top-1 call, so its value grows with the number of enrolled individuals.",
+             fontsize=8.5, color=MUTED, linespacing=1.6)
+    save(fig, "12_loss_x_augmentation.png")
 
 
 # --------------------------------------------- 11 evaluation coverage: split vs CV
@@ -299,4 +355,5 @@ if __name__ == "__main__":
     fig_per_individual()
     fig_open_set()
     fig_coverage()
+    fig_two_by_two()
     print("done")

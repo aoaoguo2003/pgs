@@ -66,23 +66,33 @@ class Embedder:
 
         model = models.resnet18(weights=None)
         in_features = model.fc.in_features  # 512
-        # Rebuild the exact classification head used in training so the
-        # state_dict loads, then replace it with Identity to expose the 512-d
-        # feature. The head size is inferred from the checkpoint (saved fc
-        # weight, else class_names) so a model with any number of classes loads;
-        # pass num_classes to override.
-        if num_classes is None:
-            if "fc.weight" in state:
+
+        if "fc.weight" in state:
+            # Softmax checkpoint (train_experiment1.py, train_metric.py --loss
+            # softmax): rebuild the head so the state_dict loads, then drop it.
+            # Head size comes from the checkpoint so any class count works.
+            if num_classes is None:
                 num_classes = state["fc.weight"].shape[0]
-            elif "class_names" in ckpt:
-                num_classes = len(ckpt["class_names"])
-            else:
-                num_classes = 44  # legacy fallback
-        model.fc = nn.Linear(in_features, num_classes)
-        model.load_state_dict(state)
-        model.fc = nn.Identity()  # now forward() returns the 512-d embedding
+            model.fc = nn.Linear(in_features, num_classes)
+            model.load_state_dict(state)
+            model.fc = nn.Identity()
+        else:
+            # Metric-learning checkpoint (train_metric.py --loss arcface): the
+            # ArcFace weight matrix is a separate module used only by the loss,
+            # so the saved backbone has no fc at all and IS the embedder.
+            model.fc = nn.Identity()
+            missing, unexpected = model.load_state_dict(state, strict=False)
+            backbone_missing = [k for k in missing if not k.startswith("fc.")]
+            if backbone_missing:
+                raise ValueError(
+                    f"checkpoint is missing backbone weights: {backbone_missing[:4]}")
+            if unexpected:
+                print(f"  note: ignored {len(unexpected)} non-backbone keys "
+                      f"(e.g. {unexpected[0]})")
+
         model.eval().to(self.device)
         self.model = model
+        self.class_names = ckpt.get("class_names") or ckpt.get("classes")
 
     @torch.no_grad()
     def embed_paths(self, paths: list[str], batch_size: int = 64,

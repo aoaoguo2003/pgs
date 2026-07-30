@@ -38,3 +38,6 @@ runs_*.log
 # Dissertation drafts -- kept local, not published to a public repository
 dissertation_template*.docx
 penguin_photo_count_report.docx
+
+# Working notes -- kept local
+note.docx

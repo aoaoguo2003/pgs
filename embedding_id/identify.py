@@ -27,23 +27,42 @@ from embedder import Embedder, VectorStore, l2_normalize
 # Open-set thresholds on cosine similarity to the class prototypes.
 # best score below CONFIDENT_SCORE -> unknown; margin below MARGIN -> ambiguous.
 #
-# Tuned by leave-one-penguin-out simulation (see tune_openset.py): a bird is
-# dropped from the gallery, then queried, so its best score is the score of a
-# genuinely unenrolled individual. Known/unknown separability is AUC 0.991.
-#   0.55 (the original guess) rejected only 0.3% of unenrolled birds -- i.e. it
-#   confidently named a stranger almost every time.
-#   0.80 keeps 91.9% of enrolled birds and rejects 96.6% of unenrolled ones
-#   (best balanced accuracy, 94.2%). Deliberately biased towards "ask for
-#   another photo" over stating a wrong name.
-# NOTE: the enrolled-bird scores are optimistic because train/test share photo
-# sessions; expect to lower this again once session-disjoint data is available.
-CONFIDENT_SCORE = 0.80
+# Measured 2026-07-30 on the session-disjoint cross-validated ArcFace models,
+# using the 564 photos of 46 colony members the models NEVER trained on as the
+# stranger set (analysis/eval_cv.py). Operating points, macro over individuals:
+#
+#   threshold   strangers wrongly accepted   enrolled birds correctly named
+#     0.974                 1%                          0.123
+#     0.938                 5%                          0.237
+#     0.908                10%                          0.312
+#     0.800              29.7%                          (not an operating point)
+#
+# The previous value of 0.80 was tuned on the leaky random split by hiding a
+# bird's own prototype and treating its runner-up as an "unknown". That
+# simulation is far too easy -- the bird was in the training set and had been
+# pushed away from every other identity -- so it overstated stranger rejection
+# badly: it was documented as rejecting 96.6% of unenrolled birds, and actually
+# accepts 29.7% of them. It also overstated DIR@FAR=1% by 87% (0.230 vs 0.123).
+#
+# 0.938 is shipped: refusing a real stranger 95 times in 100 while still naming
+# roughly a quarter of enrolled birds. Raise towards 0.974 if a wrong name is
+# more costly than a refusal; lower towards 0.908 for a keeper-facing tool where
+# the human checks the answer anyway.
+#
+# TWO LIMITS TO STATE WHEN QUOTING THIS. (1) The figure is transferred from the
+# cross-validated models; the deployed model trains on every colony member, so
+# no in-colony bird is a genuine stranger for it and this cannot be re-measured
+# without birds from outside the collection. (2) Once all 81 members are
+# enrolled, the realistic "unknown" is no longer an unenrolled bird but a bad
+# photo -- blurry, rear-facing, or not a penguin -- which this threshold has
+# never been calibrated against.
+CONFIDENT_SCORE = 0.938
 AMBIGUOUS_MARGIN = 0.05
 
 
 class PenguinIdentifier:
     def __init__(self,
-                 checkpoint: str = "runs/exp1_baseline/best_model.pt",
+                 checkpoint: str = "runs/deploy_arcface/model.pt",
                  gallery: str = "embedding_id/artifacts/gallery.npz",
                  root: str | None = None):
         base = Path(root) if root else Path(__file__).resolve().parent.parent

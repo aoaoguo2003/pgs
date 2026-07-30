@@ -1,0 +1,36 @@
+{
+  "tag": "deploy_arcface",
+  "deploy": true,
+  "n_individuals": 79,
+  "n_photos": 2304,
+  "config": {
+    "loss": "arcface",
+    "aug": "strong",
+    "fold": null,
+    "all_folds": false,
+    "epochs": 80,
+    "batch_size": 32,
+    "lr": 0.0003,
+    "weight_decay": 0.0001,
+    "label_smoothing": 0.0,
+    "warmup_epochs": 3,
+    "margin_warmup_epochs": 5,
+    "num_workers": 4,
+    "seed": 42,
+    "tag": "deploy_arcface",
+    "extra_identities": false,
+    "extra_src": "penguins_data",
+    "extra_min_photos": 5,
+    "deploy": true,
+    "deploy_min_photos": 3
+  },
+  "runs": [
+    {
+      "fold": null,
+      "n_train": 2304,
+      "n_test": 0,
+      "final_train_acc": 0.9948,
+      "minutes": 17.8
+    }
+  ]
+}

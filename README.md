@@ -4,7 +4,7 @@
 
 Given a photo of a **Humboldt penguin**, identify **which individual** it is (individual identity, not species). The end goal: a visitor takes one photo and instantly learns which specific penguin it is, plus that penguin's name, traits, and habits. All individuals in this project are Humboldt penguins from a single colony.
 
-The project is evolving from a **classification baseline** into an **embedding-retrieval + RAG** system — turning each photo into a vector, matching it against a vector database, and using an LLM to generate a grounded description of the identified penguin. A **data-leakage audit** ([§5](#5-data-leakage-audit--cross-session-evaluation)) found the original headline inflated by same-session camera bursts shared between train and test. Under session-wise cross-validation ([§6](#6-cross-validated-metric-learning)) the current identification accuracy is **macro top-1 0.559** using ArcFace metric learning, against **0.390** for the softmax baseline. All accuracies in this document are **macro** — each individual weighted equally, regardless of how many photos it has. The profile/RAG layer and a conversational UI are the remaining work.
+The project is evolving from a **classification baseline** into an **embedding-retrieval + RAG** system — turning each photo into a vector, matching it against a vector database, and using an LLM to generate a grounded description of the identified penguin. A **data-leakage audit** ([§5](#5-data-leakage-audit--cross-session-evaluation)) found the original headline inflated by same-session camera bursts shared between train and test. Under session-wise cross-validation ([§6](#6-cross-validated-metric-learning)) identification reaches **macro rank-1 0.559** against **0.390** for the plain baseline; a full loss × augmentation design attributes most of that to **augmentation** rather than to metric learning, with ArcFace's contribution emerging as the gallery grows. Ranked against the whole 81-bird colony the figure is **0.477**, and once real strangers must be refused 99% of the time it is **0.123** — that last number, not the first, is what describes deployment readiness. All accuracies are **macro**: each individual weighted equally, regardless of how many photos it has. The profile/RAG layer and a conversational UI are the remaining work.
 
 ---
 
@@ -60,7 +60,7 @@ Shared pipeline:
 
 ## 3. Experiment Record Figures
 
-Figures 01–05 cover the classification experiments and are regenerated from each run's logs by `plot_experiments.py`. Figures **06–11** cover the leakage audit and the cross-validated evaluation; they are regenerated from the JSON artifacts by `analysis/plot_figures.py` and appear inline in [§5](#5-data-leakage-audit--cross-session-evaluation) and [§6](#6-cross-validated-metric-learning). Both scripts write to `figures/`.
+Figures 01–05 cover the classification experiments and are regenerated from each run's logs by `plot_experiments.py`. Figures **06–12** cover the leakage audit and the cross-validated evaluation; they are regenerated from the JSON artifacts by `analysis/plot_figures.py` and appear inline in [§5](#5-data-leakage-audit--cross-session-evaluation) and [§6](#6-cross-validated-metric-learning). Both scripts write to `figures/`.
 
 **Fig 01 — Classifier training curves (full body vs belly)**
 ![training curves](figures/01_classifier_training_curves.png)
@@ -86,7 +86,7 @@ Figures 01–05 cover the classification experiments and are regenerated from ea
    - **Coverage.** Only 44 of the colony's 81 individuals have enough photos to train on, and 35 have enough capture sessions to evaluate. The other 37 are absent from the system entirely; no algorithm addresses that.
    - **Session diversity.** Among the 35, accuracy tracks *capture sessions per bird* rather than photo count: 0.19 for birds with 3 sessions versus 0.72 for birds with 7+ ([§6](#6-cross-validated-metric-learning)). Extra frames from the same burst do not help; photographs on a new day, in new light, do.
    
-   The model side is nevertheless **not exhausted**: on birds that already have ≥4 sessions, changing only the training objective (softmax → ArcFace) moved accuracy from 0.481 to 0.669. Data and method are complementary levers, not alternatives.
+   The model side is nevertheless **not exhausted**: on birds that already have ≥4 sessions, moving from softmax+basic to ArcFace+strong lifted accuracy from 0.481 to 0.669. The full loss × augmentation design ([§6](#6-cross-validated-metric-learning)) attributes the larger share of that to **augmentation** (+0.141) rather than to the metric-learning loss (+0.096). Data and method are complementary levers, not alternatives.
 
 ## 5. Data Leakage Audit & Cross-Session Evaluation
 
@@ -113,7 +113,9 @@ The control **reproduces the ~0.92 headline**, so the drop is cleanly attributab
 
 > **Two evaluation choices worth stating.** (1) *Macro, not micro.* The test set is dominated by a few heavily photographed birds (Medici 291 photos, Beau 19); per-image accuracy silently adopts that as a prior over which penguin gets photographed, which nothing justifies. (2) *Prototype top-5 means the five nearest class prototypes*, i.e. five distinct candidate individuals — not the five nearest gallery photos, which can all belong to the same bird and so overstate how much a shortlist helps a keeper.
 
-**Open-set threshold** (`embedding_id/tune_openset.py`) — the identifier must also answer "I don't know this bird" (only 44 of ~81 colony members are enrolled). Simulating unknowns by leave-one-penguin-out, known vs unknown separability is **AUC 0.991**; the confidence threshold was raised **0.55 → 0.80** (keeps 91.9% of enrolled birds, rejects 96.6% of unenrolled ones), so an unenrolled penguin is refused rather than misnamed.
+**Open-set threshold** (`embedding_id/tune_openset.py`) — the identifier must also answer "I don't know this bird". Simulating unknowns by leave-one-penguin-out, known vs unknown separability measured **AUC 0.991**, and the confidence threshold was raised **0.55 → 0.80**, reported at the time as rejecting 96.6% of unenrolled birds.
+
+> ⚠️ **That figure was later shown to be wrong.** The leave-one-penguin-out simulation is far too easy: the "unknown" bird was in the training set and had been pushed away from every other identity. Measured against birds the model genuinely never trained on ([§6](#6-cross-validated-metric-learning)), a threshold of 0.80 **accepts 29.7% of real strangers**. The shipped value is now **0.938**. This paragraph is retained as the historical record of how the error arose.
 
 **Implication.** Cross-session generalization — not same-session accuracy — is the real challenge, and it is data-limited: 10 of the 44 enrolled birds have only one or two photo sessions. This motivated the two levers pursued in [§6](#6-cross-validated-metric-learning): **ArcFace metric learning** and **more multi-session photos per individual**.
 
@@ -134,16 +136,36 @@ Scripts: `analysis/leakage_audit.py`, `analysis/build_session_splits.py`, `analy
 
 ![evaluation coverage per individual](figures/11_evaluation_coverage.png)
 
-**Result** (`analysis/eval_cv.py`, macro, 1743 photos, 35 individuals):
+**Result** (`analysis/eval_cv.py`, macro, 1743 photos). All four cells of the loss × augmentation design were run, so each change can be attributed rather than confounded. Intervals are 95% **session-clustered** bootstraps — photos inside one burst are near-duplicates, so resampling photos would treat correlated samples as independent and report an interval that is too narrow.
 
-| macro metric | softmax + basic | **ArcFace + strong** | paired difference |
+| configuration | rank-1 (35-way) | rank-5 | mAP | rank-1 (81-way, colony) |
+|---|---|---|---|---|
+| softmax + basic | 0.390 [0.359, 0.434] | 0.746 [0.709, 0.787] | 0.420 [0.394, 0.463] | 0.224 [0.194, 0.262] |
+| softmax + strong | 0.530 [0.490, 0.585] | **0.809** [0.775, 0.842] | 0.533 [0.501, 0.585] | 0.361 [0.322, 0.410] |
+| ArcFace + basic | 0.486 [0.447, 0.543] | 0.734 [0.706, 0.784] | 0.509 [0.475, 0.563] | 0.364 [0.332, 0.404] |
+| **ArcFace + strong** | **0.559** [0.517, 0.610] | 0.782 [0.751, 0.823] | **0.581** [0.543, 0.636] | **0.477** [0.436, 0.524] |
+
+The baseline's cross-validated **0.390 reproduces the single-split 0.389** of §5, so cross-validation introduces no bias and the gains are measured against a verified baseline.
+
+### Which change did the work
+
+![loss × augmentation](figures/12_loss_x_augmentation.png)
+
+Paired bootstraps on each main effect:
+
+| effect | rank-1 (35-way) | rank-1 (81-way) | mAP |
 |---|---|---|---|
-| rank-1 | 0.390 [0.367, 0.411] | **0.559** [0.535, 0.583] | **+0.169** [+0.145, +0.193] |
-| rank-5 | 0.746 [0.724, 0.769] | **0.782** [0.759, 0.804] | +0.036 [+0.012, +0.058] |
-| **mAP** | 0.420 [0.403, 0.438] | **0.581** [0.558, 0.603] | **+0.161** [+0.141, +0.181] |
-| 1-NN rank-1 | 0.387 [0.365, 0.410] | **0.561** [0.537, 0.586] | +0.174 [+0.151, +0.200] |
+| **augmentation alone** (softmax+basic → softmax+strong) | **+0.141** [+0.105, +0.179] | +0.137 [+0.103, +0.174] | +0.113 [+0.087, +0.141] |
+| **ArcFace alone** (softmax+basic → ArcFace+basic) | +0.096 [+0.061, +0.139] | +0.140 [+0.110, +0.173] | +0.088 [+0.057, +0.124] |
+| **ArcFace on top of strong aug** (softmax+strong → ArcFace+strong) | +0.029 **[−0.005, +0.060]** | +0.116 [+0.082, +0.148] | +0.048 [+0.019, +0.072] |
 
-The baseline's cross-validated **0.390 reproduces the single-split 0.389** of §5, so cross-validation introduces no bias and the ArcFace gain is measured against a verified baseline. Every difference interval excludes zero. Intervals also tighten from ±0.05 to ±0.022, because 1743 photos are scored instead of 261.
+Three things follow, and the third is the interesting one.
+
+1. **Augmentation is the larger single lever** (+0.141 against ArcFace's +0.096), and it is significant on every metric. The combined effect of +0.169 is **sub-additive**: the two individual effects sum to +0.237, so the interaction is −0.068. They are partly treating the same problem.
+2. **Each is independently effective.** Applied to the plain baseline, both intervals exclude zero.
+3. **ArcFace's *marginal* value depends on how hard the task is.** Once strong augmentation is present, ArcFace adds **+0.029 [−0.005, +0.060]** on 35-way rank-1 — *not distinguishable from zero*. On the same models, ranked against all 81 colony members, it adds **+0.116 [+0.082, +0.148]**, and on mAP **+0.048 [+0.019, +0.072]**. Metric learning is shaping the global geometry of the embedding rather than the top-1 decision over a small candidate set, so its contribution becomes visible exactly as the gallery grows — which is the regime the method was designed for, and the regime a real colony is in.
+
+An earlier single-split reading suggested the loss carried about two thirds of the gain. That reading was wrong: under the single split several individuals were judged on one or two photographs, and the cross-validated 2 × 2 reverses the ordering.
 
 ![cumulative matching characteristic](figures/07_cmc_curve.png)
 
@@ -167,19 +189,30 @@ Metric learning lifts every bucket, but **cannot rescue the 3-session birds**: t
 
 ### Open-set identification
 
-Rank-1 assumes the bird in front of the camera is already enrolled. Only **35 of the colony's 81 individuals** are, so in use the identifier is asked about strangers constantly, and it must refuse them rather than pick the nearest name. Unknowns are simulated leave-one-individual-out: a query's impostor score is its best prototype similarity with its own identity removed from the gallery.
+Rank-1 assumes the bird in front of the camera is already enrolled. In use the identifier is asked about strangers constantly, and it must refuse them rather than pick the nearest name.
 
-| operating point | softmax + basic | **ArcFace + strong** |
-|---|---|---|
-| DIR @ FAR = 1% | 0.112 | **0.229** |
-| DIR @ FAR = 5% | 0.176 | **0.360** |
-| DIR @ FAR = 10% | 0.222 | **0.431** |
+**The impostors here are real.** The 564 photographs of the 46 colony members that never entered any fold are used as the stranger set — birds the models genuinely never trained on. An earlier version simulated an unknown by hiding a query's own prototype and taking its runner-up; that is far too easy, because the bird *was* in the training set and had been pushed away from every other identity. The simulation overstates performance by a large margin, and both numbers are reported below so the size of that bias is visible.
+
+| operating point | softmax + basic | **ArcFace + strong** | what the simulation claimed |
+|---|---|---|---|
+| DIR @ FAR = 1% | 0.076 | **0.123** | 0.230 |
+| DIR @ FAR = 5% | 0.134 | **0.237** | 0.361 |
+| DIR @ FAR = 10% | 0.163 | **0.312** | 0.432 |
 
 ![open-set DIR against FAR](figures/10_open_set_dir_far.png)
 
-DIR@FAR=x is the fraction of enrolled birds both correctly named *and* confident enough to be accepted, at the threshold where unenrolled birds are wrongly accepted x of the time. **Closed-set rank-1 of 0.559 falls to 0.229** once unenrolled birds must be refused 99% of the time — that gap is the price of being able to say "I don't know", and it is the number that describes deployment readiness. ArcFace roughly doubles it at every operating point, so metric learning improves the confidence ordering and not only the ranking.
+DIR@FAR=x is the fraction of enrolled birds both correctly named *and* confident enough to be accepted, at the threshold where strangers are wrongly accepted x of the time. **Closed-set rank-1 of 0.559 falls to 0.123** once real strangers must be refused 99% of the time. That gap — not the closed-set figure — is what describes deployment readiness, and it says the system is not yet dependable when it must also decline. ArcFace roughly doubles DIR at every operating point, so metric learning improves the confidence ordering and not only the ranking.
 
-**Not yet done:** the deployment model retrained on all 1743 photos — for which 0.559 is the conservative estimate, since each fold trains on 80% of the data while the deployment model would use 100%.
+### The deployed model
+
+Cross validation produces a performance *estimate*; it does not produce a shippable model. The deployed extractor is therefore retrained with the identical recipe on **every colony member and every photograph** (79 individuals, 2304 photos, no held-out set — `train_metric.py --deploy`), and the gallery enrols **all 81 individuals, 2307 photos** (`embedding_id/build_gallery.py`).
+
+Two deliberate asymmetries, both of which follow from retrieval rather than classification:
+
+- **Enrolment does not require session diversity; honest *evaluation* does.** A bird absent from the gallery can never be identified, only refused, so individuals too sparse to evaluate are still enrolled. Two of them were too sparse even to train on and are enrolled purely as stored vectors — which is the property that motivated the retrieval design: adding an individual is an enrolment, not a retraining.
+- **Nothing is held out.** Withholding data now would only weaken the shipped model, and the estimate already exists.
+
+The confidence threshold is **0.938**, measured at FAR = 5% on the cross-validated models against real strangers. The previous value of 0.80 was tuned on the leaky split against simulated unknowns and was documented as rejecting 96.6% of unenrolled birds; measured properly it **accepts 29.7%** of them. Two limits must be stated whenever the threshold is quoted: it is *transferred* from the cross-validated models, because the deployed model trains on every colony member and so has no genuine in-colony stranger left to calibrate against; and once all 81 are enrolled the realistic "unknown" is no longer an unenrolled bird but a bad photograph — blurred, rear-facing, or not a penguin — a case this threshold has never been calibrated for.
 
 ## 7. Flagship Plan: Embedding Retrieval + RAG
 
@@ -270,7 +303,8 @@ pgs/
 ├─ train_belly_detector.py           # train belly detector
 ├─ annotate_belly.py                 # belly annotation tool
 │
-├─ embedding_id/                     # retrieval core: embedder, vector store, identify, open-set tuning
+├─ embedding_id/                     # retrieval core: embedder, vector store, identify
+│  └─ build_gallery.py               #   enrols all 81 colony members for deployment
 ├─ analysis/                         # evaluation & audits
 │  ├─ leakage_audit.py               #   §5 burst/session leakage audit
 │  ├─ build_session_splits.py        #   §5 session-disjoint + random-control splits
@@ -278,7 +312,7 @@ pgs/
 │  ├─ evaluate.py                    #   canonical macro-only evaluation of one model
 │  ├─ build_cv_folds.py              #   §6 session-wise K-fold folds
 │  ├─ eval_cv.py                     #   §6 fold aggregation, mAP/CMC/open-set, paired bootstrap
-│  ├─ plot_figures.py                #   regenerates figures 06-11 from the artifacts
+│  ├─ plot_figures.py                #   regenerates figures 06-12 from the artifacts
 │  └─ artifacts/                     #   JSON/CSV results for every analysis above
 │
 ├─ penguins_data/                    # raw data
@@ -290,8 +324,11 @@ pgs/
    ├─ exp2_belly_resnet18/           # belly-crop classification results
    ├─ exp1b_session_disjoint/        # §5 honest cross-session retrain
    ├─ exp1b_random_control/          # §5 random-split control
-   ├─ cv_softmax_basic/fold0..4/     # §6 baseline, one model per fold
-   ├─ cv_arcface_strong/fold0..4/    # §6 ArcFace + strong augmentation
+   ├─ cv_softmax_basic/fold0..4/     # §6 the four cells of the loss x augmentation
+   ├─ cv_softmax_strong/fold0..4/    #    design (weights gitignored, curves tracked)
+   ├─ cv_arcface_basic/fold0..4/
+   ├─ cv_arcface_strong/fold0..4/
+   ├─ deploy_arcface/                # §6 the shipped model: all data, no held-out set
    └─ detect/…/belly_detector/exp1/  # belly detector results
 ```
 
@@ -332,10 +369,22 @@ python analysis/build_cv_folds.py
 # baseline and ArcFace, 5 folds each, fixed 80 epochs, no early stopping
 python train_metric.py --loss softmax --aug basic  --all-folds
 python train_metric.py --loss arcface --aug strong --all-folds
-# pool folds; macro rank-1/rank-5/mAP/CMC/open-set + paired bootstrap comparison
-python analysis/eval_cv.py cv_softmax_basic cv_arcface_strong
-# redraw figures 06-11 from the JSON artifacts
+# the other two cells of the design
+python train_metric.py --loss softmax --aug strong --all-folds
+python train_metric.py --loss arcface --aug basic  --all-folds
+# pool folds; macro rank-1/rank-5/mAP/CMC/open-set, all four cells
+python analysis/eval_cv.py cv_softmax_basic cv_softmax_strong cv_arcface_basic cv_arcface_strong
+# each main effect on its own (a paired test needs exactly two arms)
+python analysis/eval_cv.py cv_softmax_strong cv_arcface_strong --out analysis/artifacts/cv_pair_loss_given_strong.json
+# redraw figures 06-12 from the JSON artifacts
 python analysis/plot_figures.py
+```
+
+Train and enrol the deployed system (~20 min):
+```powershell
+python train_metric.py --loss arcface --aug strong --deploy
+python embedding_id/build_gallery.py
+python embedding_id/identify.py path/to/photo.jpg
 ```
 
 Regenerate figures / photo list:

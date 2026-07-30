@@ -43,6 +43,16 @@ sys.path.insert(0, str(ROOT / "analysis"))
 IMG_EXTS = {".jpg", ".jpeg", ".png", ".bmp", ".webp"}
 
 # Runs evaluated when no --run is given. (tag, run_dir, data_dir)
+#
+# The two exp1b runs and their datasets are deleted from the working tree to save
+# 1.4 GB -- they are regenerable and their results are already recorded in
+# analysis/artifacts/{eval_report,session_retrain_report}.json. To reproduce them:
+#   python analysis/build_session_splits.py
+#   python train_experiment1.py --data-dir penguins_dataset_split_session_disjoint \
+#       --output-dir runs/exp1b_session_disjoint
+#   python train_experiment1.py --data-dir penguins_dataset_split_session_random \
+#       --output-dir runs/exp1b_random_control
+# Until then this script simply reports them as skipped.
 REGISTERED = [
     ("exp1b session-disjoint", "runs/exp1b_session_disjoint",
      "penguins_dataset_split_session_disjoint"),
