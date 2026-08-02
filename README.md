@@ -6,6 +6,24 @@ Given a photo of a **Humboldt penguin**, identify **which individual** it is —
 
 The system turns each photograph into a vector, matches it against a vector database of enrolled individuals, and either returns an identity or refuses. A **data-leakage audit** ([§5](#5-data-leakage-audit--cross-session-evaluation)) found the original headline inflated by same-session camera bursts shared between train and test. Under session-wise cross-validation ([§6](#6-cross-validated-metric-learning)) identification reaches **macro rank-1 0.559** against **0.390** for the plain baseline; a full loss × augmentation design attributes most of that to **augmentation** rather than to metric learning, with ArcFace's contribution emerging as the gallery grows. Ranked against the whole 81-bird colony the figure is **0.477**, and once real strangers must be refused 99% of the time it is **0.123** — that last number, not the first, is what describes deployment readiness. All accuracies are **macro**: each individual weighted equally, regardless of how many photos it has.
 
+### The whole arc in one table
+
+| phase | what was done | evaluation protocol | headline |
+|---|---|---|---|
+| exp1 ([§2](#2-completed-experiments)) | ResNet18 softmax classifier, 44 individuals | random split | 0.950 per-image |
+| exp2 ([§2](#2-completed-experiments)) | same, on belly crops | random split | 0.866 per-image |
+| exp3 ([§2](#2-completed-experiments)) | frozen features + FAISS retrieval | random split | 0.959 per-image |
+| **leakage audit** ([§5](#5-data-leakage-audit--cross-session-evaluation)) | *the same pipeline, re-split by capture session* | session-disjoint, macro | **0.389** |
+| **metric learning** ([§6](#6-cross-validated-metric-learning)) | ArcFace + strong augmentation | session-wise 5-fold CV, macro | **0.559** |
+| — attribution ([§6](#which-change-did-the-work)) | full loss × augmentation design | " | aug +0.141, ArcFace +0.096 |
+| — colony scale ([§6](#6-cross-validated-metric-learning)) | ranked against all 81 members | " | **0.477** |
+| — open set ([§6](#open-set-identification)) | real never-trained strangers, FAR = 1% | " | **0.123** |
+| **deployment** ([§7](#7-the-system)) | all data, 81 enrolled, threshold 0.938 | not directly measurable | 0.559 is its conservative estimate |
+
+The three per-image figures in the first rows are **not comparable** with the rest: they use a random split that leaks camera bursts between train and test, and they weight photos rather than individuals. They are kept because the gap between them and the honest figures is one of this project's results.
+
+A machine-readable summary of every current number is regenerated into [`analysis/artifacts/RESULTS.md`](analysis/artifacts/RESULTS.md) by `analysis/summarise_results.py`.
+
 ---
 
 ## Table of Contents
@@ -34,6 +52,8 @@ The system turns each photograph into a vector, matches it against a vector data
 > **Coverage is the harder limit than accuracy:** 37 of the colony's 81 birds are not in the system at all, and cannot be identified at any accuracy until they are photographed.
 
 ## 2. Completed Experiments
+
+The first phase of the project: classification, belly detection, and the retrieval experiment that set the current design. **Everything in this section predates the leakage audit**, so its numbers are per-image on a random split and are superseded by [§5](#5-data-leakage-audit--cross-session-evaluation) and [§6](#6-cross-validated-metric-learning). It is retained because the design decisions it produced still stand, and because the gap between these numbers and the honest ones is itself a result.
 
 | Experiment | Input | Model | Epochs | best val acc | **test acc** |
 |---|---|---|---|---|---|
@@ -79,7 +99,7 @@ Figures 01–05 cover the classification experiments and are regenerated from ea
 
 ## 4. Key Findings
 
-1. **Full body > belly crop (0.950 vs 0.866).** Identity signal is not only in the belly — face pattern, chest band, and body proportions all carry information. Cropping too tightly discards it, and detector error adds noise.
+1. **Full body > belly crop (0.950 vs 0.866, random split).** Identity signal is not only in the belly — face pattern, chest band, and body proportions all carry information. Cropping too tightly discards it, and detector error adds noise.
 2. **Training/collection standard = full-body frontal photos.** No need to force a clean, complete belly.
 3. **Front only.** A penguin's back is a large, uniform dark region, nearly identical across individuals; mixing front+back inflates intra-class variance. A production system should ask the visitor to re-shoot "non-frontal" photos rather than force an identity.
 4. **Data is the binding constraint — in two distinct ways.**
