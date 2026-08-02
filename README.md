@@ -24,6 +24,27 @@ The three per-image figures in the first rows are **not comparable** with the re
 
 A machine-readable summary of every current number is regenerated into [`analysis/artifacts/RESULTS.md`](analysis/artifacts/RESULTS.md) by `analysis/summarise_results.py`.
 
+### The two results that matter most
+
+**1. Which change did the work.** All four cells of the loss × augmentation design, macro rank-1 over 35 individuals under session-wise 5-fold cross-validation:
+
+| | basic augmentation | strong augmentation |
+|---|---|---|
+| softmax | 0.390 | 0.530 |
+| **ArcFace** | 0.486 | **0.559** |
+
+Augmentation alone is worth **+0.141** [+0.105, +0.179]; ArcFace alone **+0.096** [+0.061, +0.139]. They are sub-additive — the interaction is −0.068 — so the combined +0.169 is less than their sum. **Augmentation, not metric learning, is the larger single lever.** But once strong augmentation is present, ArcFace's remaining contribution is +0.029 [−0.005, +0.060] at 35 candidates — indistinguishable from zero — and **+0.116** [+0.082, +0.148] against all 81, because metric learning shapes the embedding geometry rather than the top-1 call. Full decomposition in [§6](#which-change-did-the-work).
+
+**2. Accuracy is set by capture sessions, not photo count.** Same models, individuals grouped by how many separate occasions they were photographed on:
+
+| capture sessions | individuals | ArcFace + strong |
+|---|---|---|
+| **3** | 8 | **0.186** |
+| 4–6 | 13 | 0.618 |
+| **7 or more** | 14 | **0.717** |
+
+A bird photographed on seven separate occasions is identified almost **four times as often** as one photographed on three, and metric learning cannot close that gap — it lifts the 3-session group only from 0.081 to 0.186. Extra frames inside an existing burst add nothing; only a new occasion, on a different day and in different light, does. Excluding the eight 3-session birds, the remaining 27 reach **0.669**. This is the project's central finding and the reason the first future-work item is a camera rather than an algorithm.
+
 ---
 
 ## Table of Contents
