@@ -2,9 +2,9 @@
 
 **English** | [中文](README.zh-CN.md)
 
-Given a photo of a **Humboldt penguin**, identify **which individual** it is (individual identity, not species). The end goal: a visitor takes one photo and instantly learns which specific penguin it is, plus that penguin's name, traits, and habits. All individuals in this project are Humboldt penguins from a single colony.
+Given a photo of a **Humboldt penguin**, identify **which individual** it is — individual identity, not species. The intended use is non-invasive: a keeper or visitor photographs a bird and the system names it, or says it does not know. All individuals in this project are Humboldt penguins from a single colony.
 
-The project is evolving from a **classification baseline** into an **embedding-retrieval + RAG** system — turning each photo into a vector, matching it against a vector database, and using an LLM to generate a grounded description of the identified penguin. A **data-leakage audit** ([§5](#5-data-leakage-audit--cross-session-evaluation)) found the original headline inflated by same-session camera bursts shared between train and test. Under session-wise cross-validation ([§6](#6-cross-validated-metric-learning)) identification reaches **macro rank-1 0.559** against **0.390** for the plain baseline; a full loss × augmentation design attributes most of that to **augmentation** rather than to metric learning, with ArcFace's contribution emerging as the gallery grows. Ranked against the whole 81-bird colony the figure is **0.477**, and once real strangers must be refused 99% of the time it is **0.123** — that last number, not the first, is what describes deployment readiness. All accuracies are **macro**: each individual weighted equally, regardless of how many photos it has. The profile/RAG layer and a conversational UI are the remaining work.
+The system turns each photograph into a vector, matches it against a vector database of enrolled individuals, and either returns an identity or refuses. A **data-leakage audit** ([§5](#5-data-leakage-audit--cross-session-evaluation)) found the original headline inflated by same-session camera bursts shared between train and test. Under session-wise cross-validation ([§6](#6-cross-validated-metric-learning)) identification reaches **macro rank-1 0.559** against **0.390** for the plain baseline; a full loss × augmentation design attributes most of that to **augmentation** rather than to metric learning, with ArcFace's contribution emerging as the gallery grows. Ranked against the whole 81-bird colony the figure is **0.477**, and once real strangers must be refused 99% of the time it is **0.123** — that last number, not the first, is what describes deployment readiness. All accuracies are **macro**: each individual weighted equally, regardless of how many photos it has.
 
 ---
 
@@ -15,7 +15,7 @@ The project is evolving from a **classification baseline** into an **embedding-r
 - [4. Key Findings](#4-key-findings)
 - [5. Data Leakage Audit & Cross-Session Evaluation](#5-data-leakage-audit--cross-session-evaluation)
 - [6. Cross-Validated Metric Learning](#6-cross-validated-metric-learning)
-- [7. Flagship Plan: Embedding Retrieval + RAG](#7-flagship-plan-embedding-retrieval--rag)
+- [7. The System](#7-the-system)
 - [8. Repo Structure](#8-repo-structure)
 - [9. Reproduce](#9-reproduce)
 
@@ -56,7 +56,7 @@ Shared pipeline:
 
 **belly detector (YOLOv8s)** — 98 epochs, val **mAP@50 ≈ 0.98 / mAP@50-95 ≈ 0.60**, precision/recall ~0.95 ([Figure 03](#3-experiment-record-figures)). Weights: `runs/detect/runs/belly_detector/exp1/weights/best.pt`. Detection is good, but cropping **discards identity cues** (face, chest band, body proportions) and detector errors propagate downstream — which explains why exp2 is worse.
 
-**exp3 (embedding retrieval — the CNN route of the flagship plan)** — reuse the exp1 ResNet18 as a **frozen 512-d feature extractor** (drop the classification head), enroll all train+val images into a **FAISS** vector store, and identify test photos by nearest-neighbor / class-prototype search. **No new training.** Result: prototype (class-mean) top-1 **0.959**, 1-NN top-1 0.947, top-5 0.978 — i.e. retrieval **matches/slightly beats** the softmax classifier (0.950) while giving an enrollable vector DB (new individuals just get added, no retraining). Code: `embedding_id/` (`embedder.py`, `build_and_eval.py`, `identify.py`). This is the working core of the `identify_penguin` agent tool.
+**exp3 (embedding retrieval — the origin of the current design)** — reuse the exp1 ResNet18 as a **frozen 512-d feature extractor** (drop the classification head), enroll all train+val images into a **FAISS** vector store, and identify test photos by nearest-neighbor / class-prototype search. **No new training.** Result: prototype (class-mean) top-1 **0.959**, 1-NN top-1 0.947, top-5 0.978 — i.e. retrieval **matches/slightly beats** the softmax classifier (0.950) while giving an enrollable vector DB (new individuals just get added, no retraining). Code: `embedding_id/`. This established the retrieval design the project now uses ([§7](#7-the-system)).
 
 ## 3. Experiment Record Figures
 
@@ -214,75 +214,54 @@ Two deliberate asymmetries, both of which follow from retrieval rather than clas
 
 The confidence threshold is **0.938**, measured at FAR = 5% on the cross-validated models against real strangers. The previous value of 0.80 was tuned on the leaky split against simulated unknowns and was documented as rejecting 96.6% of unenrolled birds; measured properly it **accepts 29.7%** of them. Two limits must be stated whenever the threshold is quoted: it is *transferred* from the cross-validated models, because the deployed model trains on every colony member and so has no genuine in-colony stranger left to calibrate against; and once all 81 are enrolled the realistic "unknown" is no longer an unenrolled bird but a bad photograph — blurred, rear-facing, or not a penguin — a case this threshold has never been calibrated for.
 
-## 7. Flagship Plan: Embedding Retrieval + RAG
+## 7. The System
 
-The centerpiece direction: turn the classifier into a **multimodal retrieval + Retrieval-Augmented Generation** application.
+The deliverable is an **individual identification system**, not a classifier. A photograph goes in, an individual comes out — or an honest refusal.
 
-### Pipeline
 ```
-Visitor photo
+Photograph
    │
    ▼
-[Detect + frontal filter]  ── not frontal / not a penguin ──▶ "please re-shoot"
+[Frontal, full-body?]  ── rear view / not a penguin ──▶  "please re-shoot"
    │
    ▼
-[Image embedding model]  (ArcFace-trained backbone, or CLIP / DINOv2)
+[ResNet18 embedding]     ArcFace-trained, 512-d, L2-normalised
    │  photo → vector
    ▼
-[Vector DB: penguin gallery]  (FAISS / Qdrant / Milvus / pgvector)
-   │  ANN search top-k enrolled vectors
+[Vector store: 81 enrolled individuals]     FAISS, cosine over class prototypes
+   │  ranked candidates
    ▼
-[Match + open-set threshold]  ── distance too large ──▶ "unknown individual"
-   │  identity = Cooper
-   ▼
-[Knowledge retrieval — RAG]
-   ├─ structured profile of "Cooper" (name, age, sex, band colors, personality, habits, keeper notes)
-   └─ general penguin knowledge chunks (species biology, colony, conservation)
+[Open-set threshold 0.938]  ── best score too low ──▶  "not a bird I know"
    │
    ▼
-[LLM generation, grounded on retrieved docs]  → name, traits, habits, answer to visitor's question
+Identity + ranked alternatives
 ```
 
-### Two RAG roles (both used together)
-1. **Profile-grounded generation** — after identity retrieval, fetch that individual's profile document and have the LLM generate a natural-language description. Grounding prevents the model from **hallucinating facts about a real, named animal** — a concrete, defensible reason to use RAG here.
-2. **Open-domain Q&A** — a knowledge base (penguin biology, the colony, care, conservation) chunked + embedded; free-form visitor questions retrieve relevant chunks → grounded answers with citations.
+Every stage above is built and measured. `embedding_id/identify.py` runs the whole path on one photograph and returns the decision, the ranked candidates, and the nearest reference photographs.
 
-### Optional agentic layer
-An LLM agent orchestrating tools: `identify_penguin(image)`, `get_profile(name)`, `search_knowledge(query)` — the model decides which to call. This showcases **AI agent + multimodal retrieval + RAG** in one system.
+### Why retrieval rather than classification
 
-### Product form: a conversational Humboldt penguin expert
-The user-facing wrapper is a chat window. On entry (QR scan / app open) the bot greets the visitor:
+The obvious design is a 81-way classifier. Retrieval was chosen for two properties a softmax head does not have, and both now show up in the deployed system:
 
-> 🐧 Hi! I'm the resident **Humboldt penguin expert**. Send me a **front-facing, full-body** photo of a penguin and I'll tell you which individual it is — its name, birthday, personality and story. Ask me anything about penguins too!
+- **Enrolment without retraining.** Adding an individual means storing its vectors. Two members of the colony have too few photographs to have trained on at all, yet they are enrolled and searchable. A classifier would need a new output layer and a full retrain for each arrival.
+- **A natural way to say "I don't know."** Cosine similarity to a prototype is a calibrated-ish score with a threshold; a softmax head is forced to distribute probability over the identities it knows, so it names *something* no matter what walks past the camera. §6 shows how much this matters: at the operating point where real strangers are refused 99% of the time, only 0.123 of enrolled birds are still confidently named — the classifier route has no equivalent mechanism at all.
 
-- **Persona** = the agent's system prompt (a warm, concise keeper).
-- **Photo → identity**: a penguin photo triggers `identify_penguin`, then `get_profile` to describe that individual.
-- **Question → knowledge**: a general penguin question triggers `search_knowledge`.
-- **Conversation memory**: the identified individual is kept in session state, so follow-ups ("how old is it?") need no photo re-upload.
-- **Graceful uncertainty**: on low confidence / non-frontal photos, the bot asks for a clearer front-facing shot instead of guessing.
-- **Grounding**: facts about a specific penguin come only from `get_profile`; if a field is missing the bot says so rather than inventing it — the core anti-hallucination guarantee.
+The classification experiments in §2 are retained as the baseline that motivated this design, and the softmax arm of §6 is retained as the control the metric-learning arm is measured against.
 
-### Suggested stack
-- **Image embeddings**: currently the exp1 ResNet18 as a frozen feature extractor (exp3); planned ArcFace-trained backbone, benchmarked against off-the-shelf **DINOv2 / CLIP**.
-- **Vector DB**: FAISS (simple/local) → **Qdrant** (production feel) for the demo.
-- **Text embeddings**: open-source `bge` / `e5` for the knowledge base.
-- **LLM**: a **self-hosted open-source model** (e.g. Qwen / Llama), optionally **LoRA-fine-tuned** on penguin data — local deployment rather than a paid API — for grounded generation + citations.
-- **Serving**: FastAPI backend + Streamlit/Gradio demo UI.
-- **Evaluation**: retrieval hit-rate (top-k), answer **faithfulness/groundedness**, and open-set reject precision.
+### What is not built
 
-### Technical scope
-This direction combines fine-grained computer vision, **metric learning**, a **vector database**, **multimodal RAG**, **grounded LLM generation with anti-hallucination guardrails**, and **RAG evaluation**, applied to a real-world dataset.
+The system identifies individuals. It does **not** yet do anything with that identity — there is no per-individual record store, no interface, and no natural-language layer. An earlier plan for a retrieval-augmented conversational assistant has been **dropped**: the identification problem turned out to have enough depth to occupy the project on its own, and the honest open-set figure says the recognition layer is not yet dependable enough to build a visitor-facing product on top of.
 
-### Current status & next steps
-**Done** — the CNN retrieval route (exp3): a working **FAISS vector database** with **incremental enrollment** (add a new penguin by storing its features — no retraining) and **open-set rejection** (threshold tuned to **0.80** by leave-one-penguin-out, AUC 0.991; blurry / unenrolled → refuse rather than misname). A **data-leakage audit** ([§5](#5-data-leakage-audit--cross-session-evaluation)) established the honest baseline, and **ArcFace metric learning under 5-fold cross-validation** ([§6](#6-cross-validated-metric-learning)) raised cross-session identification from **macro 0.390 to 0.559**. The classifier route is kept only as a baseline; **retrieval is the identification method** going forward.
+### Current status
 
-**Next**
-1. **Photograph the under-covered birds (priority).** Two gaps, both only closable with a camera: the **37 individuals not in the system at all**, and the **8 enrolled birds with only 3 capture sessions** that metric learning leaves at 0.186. What is needed is photographs on *new days, in new light* — additional frames from an existing burst add nothing.
-2. **Finish the evaluation suite** — mAP and CMC alongside macro rank-1, plus open-set **TAR@FAR** for the "is this bird even enrolled?" question that closed-set accuracy does not measure.
-3. **Train and ship the deployment model** — one ArcFace model on all 1743 photos, reported with the §6 cross-validated estimate.
-4. **Build a clean penguin profile database** — one structured record per individual (name, date of birth, personality, features, habits, band colors) to ground `get_profile`.
-5. **Wire the agent loop** — orchestrate `identify_penguin` / `get_profile` / `search_knowledge` via the LLM's function-calling / tool-use, with conversation memory.
-6. **Conversational Humboldt penguin expert UI** — a chat window with the welcome message and session memory described above.
+**Working and measured** — a session-disjoint cross-validated evaluation protocol (§6); a metric-learning extractor at macro rank-1 **0.559** over 35 individuals and **0.477** against the full colony; mAP, CMC and open-set DIR@FAR; a deployed extractor trained on all data, a gallery of all 81 individuals, and a threshold measured against real strangers.
+
+**Next, in order of expected value**
+
+1. **Photograph the under-covered birds.** The single lever that can move accuracy past the method ceiling, and the only one a camera can pull. Two distinct gaps: **43 of 81 individuals have fewer than two capture sessions** and so cannot even be evaluated honestly, and **8 enrolled birds have only 3 sessions** and sit at 0.186. Reaching four sessions for every colony member needs roughly 116 individual captures — about **eight separate shooting days** if a session covers ~15 birds. They must be *different days*: extra frames from an existing burst add nothing, which is the central finding of §5 and §6.
+2. **Multi-photograph queries.** Averaging the embeddings of 3–5 photographs from one visit lifts per-visit accuracy from 0.652 to **0.734**, and to **0.772** for a whole visit. It costs nothing, needs no retraining, and matches how a keeper actually uses a camera. Measured, not projected.
+3. **An end-to-end test set.** Every number in this document is measured on hand-cropped, well-framed photographs in which the bird occupies ~89% of the frame. A photograph taken casually is a different distribution, and the detector was itself trained on already-cropped images. Closing this needs a detect→crop→identify pipeline and a set of raw, uncropped photographs with known identities — currently the only part of the system with no measurement at all.
+4. **Evaluation-side refinements.** Roughly +0.05 of macro rank-1 has been measured and left on the table: train/eval framing normalisation, multi-scale averaging, gallery whitening and cohort score normalisation. They change no conclusion in this document, which is why they are last.
 
 ## 8. Repo Structure
 
@@ -303,8 +282,12 @@ pgs/
 ├─ train_belly_detector.py           # train belly detector
 ├─ annotate_belly.py                 # belly annotation tool
 │
-├─ embedding_id/                     # retrieval core: embedder, vector store, identify
-│  └─ build_gallery.py               #   enrols all 81 colony members for deployment
+├─ embedding_id/                     # the deployed system
+│  ├─ embedder.py                    #   photo -> 512-d vector; loads softmax or ArcFace checkpoints
+│  ├─ build_gallery.py               #   enrols all 81 colony members for deployment
+│  ├─ build_and_eval.py              #   the original exp3 retrieval experiment (§2)
+│  ├─ identify.py                    #   one photo -> identity, candidates, or refusal
+│  └─ tune_openset.py                #   threshold sweep
 ├─ analysis/                         # evaluation & audits
 │  ├─ leakage_audit.py               #   §5 burst/session leakage audit
 │  ├─ build_session_splits.py        #   §5 session-disjoint + random-control splits
@@ -313,6 +296,7 @@ pgs/
 │  ├─ build_cv_folds.py              #   §6 session-wise K-fold folds
 │  ├─ eval_cv.py                     #   §6 fold aggregation, mAP/CMC/open-set, paired bootstrap
 │  ├─ plot_figures.py                #   regenerates figures 06-12 from the artifacts
+│  ├─ summarise_results.py           #   compiles artifacts/RESULTS.md, the results summary
 │  └─ artifacts/                     #   JSON/CSV results for every analysis above
 │
 ├─ penguins_data/                    # raw data
