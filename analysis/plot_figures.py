@@ -230,37 +230,60 @@ def fig_per_individual():
 # ----------------------------------------------------------------- 10 open set
 
 def fig_open_set():
-    fig, ax = plt.subplots(figsize=(6.4, 4.0))
+    """DIR vs FAR.
+
+    Layout note: the footnote must be wrapped by hand. savefig(bbox="tight")
+    grows the canvas sideways to fit the widest artist, so a single long
+    fig.text line stretches the figure far past the axes and leaves the right
+    half empty. Keep each line roughly as wide as the axes.
+    """
+    fig, ax = plt.subplots(figsize=(6.6, 4.1))
     for entry, colour, label in ((BASE, ORANGE, BASE_LABEL), (ARC, BLUE, ARC_LABEL)):
         far = np.array(entry["open_set"]["curve"]["far"])
         dr = np.array(entry["open_set"]["curve"]["dir"])
         o = np.argsort(far)
-        ax.plot(far[o], dr[o], color=colour, lw=2, label=label)
-        pt = entry["open_set"]["at"]["DIR@FAR=1%"]
-        ax.scatter([pt["far"]], [pt["dir"]], s=60, color=colour,
-                   edgecolors=SURFACE, linewidths=1.6, zorder=5)
-        ax.annotate(f"{pt['dir']:.3f}", (pt["far"], pt["dir"]),
-                    textcoords="offset points", xytext=(10, -2),
-                    fontsize=9, color=INK2)
+        ax.plot(far[o], dr[o], color=colour, lw=2, label=label, zorder=4)
 
-    ax.axvline(0.01, color=AXIS, lw=1, zorder=1)
-    ax.text(0.014, 0.02, "1% false-accept\noperating point", fontsize=8.5, color=MUTED)
+    # Mark the three operating points the text and Table 6 actually quote.
+    for key, dx, dy in (("DIR@FAR=1%", 7, 7), ("DIR@FAR=5%", 6, 8), ("DIR@FAR=10%", 6, 8)):
+        pt = ARC["open_set"]["at"][key]
+        ax.axvline(pt["far"], color=AXIS, lw=0.8, linestyle=":", zorder=1)
+        ax.scatter([pt["far"]], [pt["dir"]], s=52, color=BLUE,
+                   edgecolors=SURFACE, linewidths=1.6, zorder=6)
+        ax.annotate(f"{pt['dir']:.3f}", (pt["far"], pt["dir"]),
+                    textcoords="offset points", xytext=(dx, dy),
+                    fontsize=9, color=BLUE)
+
+    base1 = BASE["open_set"]["at"]["DIR@FAR=1%"]
+    ax.scatter([base1["far"]], [base1["dir"]], s=52, color=ORANGE,
+               edgecolors=SURFACE, linewidths=1.6, zorder=6)
+    ax.annotate(f"{base1['dir']:.3f}", (base1["far"], base1["dir"]),
+                textcoords="offset points", xytext=(7, -12),
+                fontsize=9, color=ORANGE)
+
     ax.set_xlim(0, 0.35)
-    ax.set_ylim(0, 0.75)
-    ax.set_xlabel("false accept rate on unenrolled birds")
+    ax.set_ylim(0, 0.50)
+    ax.set_xticks([0.0, 0.01, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35])
+    ax.set_xticklabels(["0", "1%", "5%", "10%", "15%", "20%", "25%", "30%", "35%"])
+    ax.set_xlabel("false-accept rate on unenrolled birds")
     ax.set_ylabel("correctly identified and accepted")
     ax.set_title("Open-set identification: the cost of being able to say "
-                 "\u201cI don\u2019t know\u201d", color=INK, pad=12, loc="left")
+                 "\u201cI don\u2019t know\u201d", color=INK, pad=10, loc="left")
     ax.legend(frameon=False, loc="lower right", fontsize=9, labelcolor=INK2)
     tidy(ax, grid_axis="both")
+
     arc1 = ARC["open_set"]["at"]["DIR@FAR=1%"]["dir"]
     sim1 = ARC["open_set_simulated"]["at"]["DIR@FAR=1%"]["dir"]
-    fig.text(0.0, -0.06,
-             f"Unknowns are the {ARC['n_stranger_photos'] // 5} photos of 46 colony "
-             f"members the models never trained on. Closed-set rank-1 of "
-             f"{ARC['rank1']['macro']:.3f} falls to {arc1:.3f} once strangers must be "
-             f"refused 99% of the time; simulating unknowns instead claims {sim1:.3f}.",
-             fontsize=8.5, color=MUTED)
+    lines = [
+        f"Unknowns are the {ARC['n_stranger_photos'] // 5} photographs of 46 colony members "
+        f"the models never trained on.",
+        f"Closed-set rank-1 of {ARC['rank1']['macro']:.3f} falls to {arc1:.3f} once strangers "
+        f"must be refused 99% of the time;",
+        f"simulating unknowns instead claims {sim1:.3f}. Marked points are the three "
+        f"operating rates given in Table 6.",
+    ]
+    for i, line in enumerate(lines):
+        fig.text(0.005, -0.055 - 0.052 * i, line, fontsize=8.5, color=MUTED, ha="left")
     save(fig, "10_open_set_dir_far.png")
 
 

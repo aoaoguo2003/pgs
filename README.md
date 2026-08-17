@@ -101,7 +101,7 @@ Shared pipeline:
 
 ## 3. Experiment Record Figures
 
-Figures 01–05 cover the classification experiments and are regenerated from each run's logs by `plot_experiments.py`. Figures **06–12** cover the leakage audit and the cross-validated evaluation; they are regenerated from the JSON artifacts by `analysis/plot_figures.py` and appear inline in [§5](#5-data-leakage-audit--cross-session-evaluation) and [§6](#6-cross-validated-metric-learning). Both scripts write to `figures/`.
+Figures 01–05 cover the classification experiments and are regenerated from each run's logs by `plot_experiments.py`. Figures **06–12** cover the leakage audit and the cross-validated evaluation; they are regenerated from the JSON artifacts by `analysis/plot_figures.py` and appear inline in [§5](#5-data-leakage-audit--cross-session-evaluation) and [§6](#6-cross-validated-metric-learning). Figures **13–14** describe capture-session coverage across the whole colony and are written by `analysis/plot_colony_sessions.py` and `analysis/plot_photos_vs_sessions.py`, which read the photo archive directly rather than the result JSON. All scripts write to `figures/`.
 
 **Fig 01 — Classifier training curves (full body vs belly)**
 ![training curves](figures/01_classifier_training_curves.png)
@@ -222,6 +222,12 @@ mAP rises with rank-1 rather than lagging it, so the gain is a genuinely better 
 
 ![accuracy versus capture sessions](figures/08_accuracy_vs_sessions.png)
 
+**The gradient survives controlling for photograph count.** Session count and photograph count are themselves correlated across individuals (Spearman ρ = 0.663), so the table above cannot separate them on its own — partial correlation can. For ArcFace + strong, accuracy correlates with session count at ρ = 0.702 and with photograph count at ρ = 0.585. Controlling for photograph count, the session association holds at **ρ = 0.518 (p = 0.002)**; controlling for session count, the photograph association falls to **ρ = 0.224 (p = 0.203) — not significant**. The same pattern holds under the baseline (0.479, p = 0.004 against 0.192, p = 0.277), so it is not an artifact of the training configuration. Regenerate with `analysis/sessions_vs_photos.py`.
+
+The clearest single case: **Nicki** holds 53 photographs from 3 sessions and is identified correctly 0.189 of the time; **Gonzo** holds 52 photographs from 13 sessions and is identified correctly 0.827 of the time. Almost the same number of files, four times the accuracy.
+
+![photographs against capture sessions](figures/14_photos_vs_sessions.png)
+
 Metric learning lifts every bucket, but **cannot rescue the 3-session birds**: they stay unusable at 0.186, and one individual (Greyjoy) is never identified under either configuration. Excluding those 8, the remaining 27 individuals reach **0.669**. The levers are therefore complementary — ArcFace exploits session diversity that already exists, and only re-photographing creates it.
 
 ![per-individual change](figures/09_per_individual_change.png)
@@ -299,9 +305,12 @@ The system identifies individuals. It does **not** yet do anything with that ide
 
 **Next, in order of expected value**
 
-1. **Photograph the under-covered birds.** The single lever that can move accuracy past the method ceiling, and the only one a camera can pull. Two distinct gaps: **43 of 81 individuals have fewer than two capture sessions** and so cannot even be evaluated honestly, and **8 enrolled birds have only 3 sessions** and sit at 0.186. Reaching four sessions for every colony member needs roughly 116 individual captures — about **eight separate shooting days** if a session covers ~15 birds. They must be *different days*: extra frames from an existing burst add nothing, which is the central finding of §5 and §6.
-2. **Multi-photograph queries.** Averaging the embeddings of 3–5 photographs from one visit lifts per-visit accuracy from 0.652 to **0.734**, and to **0.772** for a whole visit. It costs nothing, needs no retraining, and matches how a keeper actually uses a camera. Measured, not projected.
-3. **An end-to-end test set.** Every number in this document is measured on hand-cropped, well-framed photographs in which the bird occupies ~89% of the frame. A photograph taken casually is a different distribution, and the detector was itself trained on already-cropped images. Closing this needs a detect→crop→identify pipeline and a set of raw, uncropped photographs with known identities — currently the only part of the system with no measurement at all.
+1. **Photograph the under-covered birds.** The single lever that can move accuracy past the method ceiling, and the only one a camera can pull. A census of the whole colony under the evaluation's own session rule (`analysis/colony_session_audit.py`) finds **335 capture sessions across 81 individuals**, distributed very unevenly: 20 birds appear in a single session, 23 in two and 10 in three, so **43 of 81 have fewer than three sessions** and only **28 of 81 (35%) reach four**. Reaching four sessions for every colony member needs **116 further individual captures** — about **eight separate outings** if one covers ~15 birds. They must be *different days*: extra frames from an existing burst add nothing, which is the central finding of §5 and §6.
+
+![capture sessions per individual across the colony](figures/13_colony_sessions_per_individual.png)
+
+2. **Multi-photograph queries.** Pooling the embeddings of several photographs from one visit looked promising in an exploratory run — 0.652 per photograph rising to ~0.734 at three and ~0.772 for a whole session — and it costs nothing and needs no retraining. ⚠️ **Those figures came from a multi-agent exploration and have not been independently reproduced under the protocol in §6.** Treat them as a lead and re-measure before quoting them anywhere.
+3. **An end-to-end test set.** Every identification number in this document is measured on the archive *as photographed*: `penguins_dataset_split` was verified byte-identical to the raw archive across all 1,996 files, so no cropping, background removal or segmentation was applied. What has never been measured is the **chain** — `embedding_id/identify.py` contains no detector, and the chest detector was trained on already-cropped images, so no number here describes going from an unconstrained photograph through localisation to an identity. Closing this needs a detect→crop→identify pipeline and a set of raw photographs with known identities — currently the only part of the system with no measurement at all.
 4. **Evaluation-side refinements.** Roughly +0.05 of macro rank-1 has been measured and left on the table: train/eval framing normalisation, multi-scale averaging, gallery whitening and cohort score normalisation. They change no conclusion in this document, which is why they are last.
 
 ## 8. Repo Structure
