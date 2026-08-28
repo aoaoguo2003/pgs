@@ -1,0 +1,9 @@
+{
+  "name": "pgs-final-presentation",
+  "private": true,
+  "description": "10-minute final presentation deck, built from this repo's own figures and result artifacts",
+  "scripts": {
+    "build": "node build_deck.js && python3 finalise.py final_presentation.pptx"
+  },
+  "dependencies": { "pptxgenjs": "^4.0.1" }
+}

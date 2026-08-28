@@ -1,0 +1,6 @@
+# Regenerate with: python3 prepare_assets.py
+assets/
+node_modules/
+package-lock.json
+*.pdf
+slide-*.jpg
