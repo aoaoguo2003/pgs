@@ -12,7 +12,7 @@ PPTX = sys.argv[1]
 WPM = 140
 
 # seconds budgeted per content slide (slides 1..12); the backup section is 0
-BUDGET = [20, 48, 47, 72, 49, 54, 66, 63, 54, 39, 46, 33]
+BUDGET = [20, 43, 47, 72, 49, 57, 75, 63, 54, 39, 46, 33]
 
 prs = Presentation(PPTX)
 elapsed = 0

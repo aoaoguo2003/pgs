@@ -78,11 +78,11 @@ const RUN = "Automatic identification of Humboldt penguins · ZSL London Zoo";
 
   L.foot(s, ++n, RUN);
   s.addNotes(
-    "London Zoo tells its 81 Humboldt penguins apart with coloured flipper bands, read off this laminated sheet. " +
-    "Bands work, but they can be hidden by posture or by another bird — and in king penguins, ten years of banding cost survival " +
-    "and breeding success. That does not transfer directly to captive Humboldts; it just says a marker is not automatically neutral. " +
-    "The alternative is already on the bird. Humboldts have been told apart by their breast spots since 1989, and African penguins " +
-    "use ventral dot patterns to recognise each other. So I am asking a model to read a cue the species already reads."
+    "London Zoo tells its 81 Humboldt penguins apart with coloured flipper bands, read off this laminated sheet. Bands work, but they " +
+    "can be hidden by posture or by another bird — and in king penguins, ten years of banding cost survival and breeding success. " +
+    "That does not transfer directly to captive Humboldts; it just says a marker is not automatically neutral. " +
+    "The alternative is already on the bird: African penguins use their ventral dot patterns to recognise each other, so I am asking " +
+    "a model to read a cue the species already reads."
   );
 }
 
@@ -279,9 +279,10 @@ const RUN = "Automatic identification of Humboldt penguins · ZSL London Zoo";
   L.foot(s, ++n, RUN);
   s.addNotes(
     "Under that protocol I ran a full two-by-two: objective crossed with augmentation, five folds each, twenty runs. " +
-    "The baseline scores 0.390 — essentially the single-split figure of 0.389, so cross-validation itself introduced no bias. " +
-    "Strong augmentation is worth plus 0.141; ArcFace on its own plus 0.096. They are sub-additive: once strong augmentation is there, " +
-    "ArcFace adds only 0.029, and that interval crosses zero. At 35 candidates I cannot claim the loss is doing significant work. " +
+    "The baseline scores 0.390, numerically close to the single-split 0.389 — though those runs used different recipes, so I would " +
+    "not read that as a validation. " +
+    "Strong augmentation is worth plus 0.141; ArcFace alone plus 0.096. They are sub-additive: once strong augmentation is there, " +
+    "ArcFace adds only 0.029 and that interval crosses zero, so at 35 candidates I cannot claim the loss is doing significant work. " +
     "But widen the gallery to all 81 colony members — the right-hand panel — and ArcFace is worth plus 0.116, clear of zero, because " +
     "metric learning shapes the embedding geometry rather than the top-one call. That is the regime a real colony is in."
   );
@@ -293,7 +294,7 @@ const RUN = "Automatic identification of Humboldt penguins · ZSL London Zoo";
 {
   const s = L.lightSlide(pres);
   L.kicker(s, "Result 3 — the central finding");
-  L.title(s, "Identifiability is set by how many days a bird was\nphotographed, not by how many photographs exist", { h: 1.2, size: 25 });
+  L.title(s, "Identifiability tracks how many days a bird was\nphotographed, not how many photographs exist", { h: 1.2, size: 25 });
 
   L.fitImage(s, `${A}/08_accuracy_vs_sessions_notitle.png`,
     { x: M, y: 1.9, w: 7.7, h: 4.3 });
@@ -308,19 +309,21 @@ const RUN = "Automatic identification of Humboldt penguins · ZSL London Zoo";
   L.caption(s,
     "Each figure is the fraction of that bird's photographs identified correctly. Illustration, not evidence — the evidence is the " +
     "partial rank correlation across all 35 birds: holding photograph count constant, sessions still predict accuracy " +
-    "(ρ = 0.518, P = 0.002); holding sessions constant, photograph count does not (ρ = 0.224, P = 0.203).",
+    "(ρ = 0.518, P = 0.002); holding sessions constant, photograph count does not reach significance (ρ = 0.224, P = 0.203) — " +
+    "which does not exclude a modest effect this study is underpowered to detect.",
     { x: 8.45, y: 5.62, w: 4.3, size: 10 });
 
   L.foot(s, ++n, RUN);
   s.addNotes(
     "This is the finding I care most about. Group the 35 birds by how many separate occasions they were photographed on: the eight with " +
-    "three sessions score 0.186; the thirteen with four to six score 0.618; the fourteen with seven or more score 0.717. The ordering " +
-    "holds in all four configurations — and the best configuration on a three-session bird still loses to the worst configuration on a " +
-    "seven-session bird, 0.186 against 0.535. " +
+    "three sessions score 0.186; the thirteen with four to six score 0.618; the fourteen with seven or more score 0.717. The same " +
+    "ordering holds in all four training configurations. " +
     "Nicki and Gonzo make it concrete: 53 photographs against 52, but three sessions against thirteen, and 19% against 83%. " +
-    "That pair is an illustration, not the evidence. Sessions and photograph count are themselves correlated at rho 0.663 — so I partial " +
-    "one out. Sessions survive at 0.518, P equals 0.002; photograph count falls to 0.224 and is not significant. " +
-    "Extra frames inside a burst you already have add nothing. A new day does."
+    "That pair is an illustration, not the evidence. Sessions and photograph count are correlated at rho 0.663, so I partial one out. " +
+    "Sessions survive at 0.518, P equals 0.002; photograph count falls to 0.224 and does not reach significance — with 35 birds I " +
+    "cannot exclude a modest photograph effect, only say sessions are the stronger one. " +
+    "One caution I will give you myself: a three-session bird's prototype is built from only one or two gallery sessions, so part of " +
+    "this gradient is design rather than biology. It still points the same way for collection."
   );
 }
 
@@ -360,7 +363,8 @@ const RUN = "Automatic identification of Humboldt penguins · ZSL London Zoo";
     fontFace: F.head, fontSize: 16, italic: true, bold: true, color: C.navy,
     isTextBox: true, margin: 0, valign: "top", lineSpacingMultiple: 1.05,
   });
-  L.caption(s, "A five-candidate shortlist still contains the right bird 78.2% of the time (35 candidates).",
+  L.caption(s, "The deployed configuration's five-candidate shortlist contains the right bird 78.2% of the time (35 candidates; "
+    + "softmax + strong is better at rank-5, at 0.809).",
     { x: 8.5, y: 5.75, w: 4.22, size: 10.5 });
 
   L.foot(s, ++n, RUN);
@@ -394,8 +398,9 @@ const RUN = "Automatic identification of Humboldt penguins · ZSL London Zoo";
     { text: "  enrolled", options: { fontSize: 13, color: C.ink } },
   ], { x: 8.6, y: 2.13, w: 3.9, h: 0.55, isTextBox: true, margin: 0, valign: "middle" });
   s.addText(
-    "Smew and Skunk have one and two photographs. They were never trained on — they are in the gallery, and they are searchable. " +
-    "A softmax head would need a new output layer and a full retrain for each arrival.",
+    "Smew and Skunk have one and two photographs. Never trained on, in the gallery, searchable. A softmax head would need a new " +
+    "output layer and a full retrain for each arrival. The deployed model has no held-out partition of its own — the cross-validated " +
+    "0.559 is its estimate.",
     { x: 8.6, y: 2.7, w: 3.9, h: 1.05,
       fontFace: F.body, fontSize: 11.5, color: C.ink,
       isTextBox: true, margin: 0, valign: "top", lineSpacingMultiple: 1.08 }
