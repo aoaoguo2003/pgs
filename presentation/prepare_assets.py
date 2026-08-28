@@ -40,10 +40,10 @@ OUT.mkdir(exist_ok=True)
 CROPS = {
     "03_belly_detector_map":            (0, None),     # backup slide, title kept
     "06_leakage_random_vs_session":     (95, None),    # footnote kept: it is the control statement
-    "08_accuracy_vs_sessions":          (95, 1240),
+    "08_accuracy_vs_sessions":          (95, None),   # footnote is the legend for the group-mean rules
     "09_per_individual_change":         (95, None),
     "11_evaluation_coverage":           (95, None),
-    "12_loss_x_augmentation":           (95, 1310),
+    "12_loss_x_augmentation":           (95, 1380),   # keeps line 1 only: what the error bars are
     "13_colony_sessions_per_individual": (95, None),   # footnote is 9pt and does project
     "14_photos_vs_sessions":            (85, None),
 }

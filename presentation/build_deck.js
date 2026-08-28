@@ -46,10 +46,7 @@ const RUN = "Automatic identification of Humboldt penguins · ZSL London Zoo";
       isTextBox: true, margin: 0, valign: "top", lineSpacingMultiple: 1.25,
     }
   );
-  s.addNotes(
-    "My first result on this project was 0.920 — nine penguins in ten identified correctly from a photograph. " +
-    "It was wrong. The reason it was wrong is most of what I want to tell you in the next ten minutes."
-  );
+  s.addNotes("My first result on this project was 0.920 — nine penguins in ten identified correctly from a photograph. It was wrong. The reason it was wrong is most of what I want to tell you in the next ten minutes.");
   n++;
 }
 
@@ -77,13 +74,7 @@ const RUN = "Automatic identification of Humboldt penguins · ZSL London Zoo";
   ], { x: M, y: 2.15, w: 7.15, h: 4.1, size: 15, space: 17 });
 
   L.foot(s, ++n, RUN);
-  s.addNotes(
-    "London Zoo tells its 81 Humboldt penguins apart with coloured flipper bands, read off this laminated sheet. Bands work, but they " +
-    "can be hidden by posture or by another bird — and in king penguins, ten years of banding cost survival and breeding success. " +
-    "That does not transfer directly to captive Humboldts; it just says a marker is not automatically neutral. " +
-    "The alternative is already on the bird: African penguins use their ventral dot patterns to recognise each other, so I am asking " +
-    "a model to read a cue the species already reads."
-  );
+  s.addNotes("London Zoo tells its 81 Humboldt penguins apart with coloured flipper bands, read off this laminated sheet. Bands work, but they can be hidden by posture or another bird — and in king penguins, ten years of banding cost survival and breeding success. That does not transfer directly to captive Humboldts; it just says a marker is not automatically neutral. The alternative is already on the bird: African penguins use their ventral dot patterns to recognise each other, so I am asking a model to read a cue the species already reads.");
 }
 
 // ===========================================================================
@@ -124,14 +115,7 @@ const RUN = "Automatic identification of Humboldt penguins · ZSL London Zoo";
   );
 
   L.foot(s, ++n, RUN);
-  s.addNotes(
-    "2,307 photographs of all 81 birds, taken by volunteers during husbandry, not to a research protocol — counts run from " +
-    "1 to 291. Thirty-five birds clear both inclusion rules, and those are the birds I evaluate: the better-photographed 43% " +
-    "of the colony. The other 46 are never queries — they are gallery distractors and, later, genuine strangers. " +
-    "The definition at the bottom is the one that matters. A capture session is one photographic encounter with one bird, inferred " +
-    "from the camera's own frame numbering and checked against EXIF. Frames inside a session share lighting, background and posture, " +
-    "so they are not independent samples."
-  );
+  s.addNotes("2,307 photographs of all 81 birds, taken by volunteers during husbandry, not to a research protocol — counts run from 1 to 291. Thirty-five birds clear both inclusion rules: the better-photographed 43% of the colony. The other 46 are never queries; they are gallery distractors and, later, genuine strangers. The definition at the bottom is what matters. A capture session is one photographic encounter with one bird, inferred from the camera's frame numbering. Frames inside a session share lighting, background and posture, so they are not independent samples.");
 }
 
 // ===========================================================================
@@ -169,17 +153,7 @@ const RUN = "Automatic identification of Humboldt penguins · ZSL London Zoo";
   });
 
   L.foot(s, ++n, RUN);
-  s.addNotes(
-    "Here is the experiment the whole project turns on. I held everything constant — the same 35 birds, the same 1,743 photographs, " +
-    "the same number of photographs per bird on each side, the same training recipe — and changed exactly one thing: whether a test " +
-    "photograph is allowed to come from a capture session the gallery has already seen. " +
-    "Under the conventional random split, macro rank-one accuracy is 0.920. Under the session-disjoint split, it is 0.389. " +
-    "That is an inflation of 0.531 attributable to the partitioning rule alone. Rank-five and nearest-neighbour move the same way, " +
-    "so this is not a quirk of one metric. " +
-    "And I can show the entanglement without reference to any model: 97.8% of the randomly assigned test photographs shared a capture " +
-    "session with a gallery photograph, and 13.8% had a near-duplicate — found with perceptual hashing, pixel correlation and EXIF " +
-    "timestamps. So the random split was measuring recognition of a familiar encounter, not identification on a new occasion."
-  );
+  s.addNotes("Here is the experiment the whole project turns on. Birds, photographs, per-bird counts and training recipe all held fixed, and exactly one thing changed: whether a test photograph may come from a capture session the gallery has already seen. Under the conventional random split, rank-one accuracy — every bird weighted equally — is 0.920. Under the session-disjoint split, it is 0.389: an inflation of 0.531 attributable to the partitioning rule alone. Rank-five and nearest-neighbour move with it. And I can show the entanglement without reference to any model: 97.8% of the randomly assigned test photographs shared a capture session with a gallery photograph, and 13.8% had a near-duplicate. So the random split was measuring recognition of a familiar encounter, not identification on a new occasion.");
 }
 
 // ===========================================================================
@@ -223,15 +197,7 @@ const RUN = "Automatic identification of Humboldt penguins · ZSL London Zoo";
   });
 
   L.foot(s, ++n, RUN);
-  s.addNotes(
-    "So what replaces it. Three things. " +
-    "First, session-wise five-fold cross-validation: complete sessions are dealt to folds, so no session is ever split, and every one " +
-    "of the 1,743 photographs is tested exactly once by a model that never saw its session. That is not a claim in prose — the " +
-    "evaluation script asserts it and refuses to run without the session map. " +
-    "Second, every number is macro, because success on the most-photographed penguin cannot compensate for failing on another colony member. " +
-    "Third, the intervals resample capture sessions rather than photographs, and apply the same resampled sessions to both arms of a " +
-    "comparison — so these are paired differences."
-  );
+  s.addNotes("So what replaces it. Three things. First, session-wise five-fold cross-validation: complete sessions are dealt to folds, so no session is ever split, and every one of the 1,743 photographs is tested exactly once by a model that never saw its session. That is not a claim in prose — the evaluation script asserts it and refuses to run without the session map. Second, every number is macro: one bird, one vote. Third, the intervals resample capture sessions rather than photographs, and apply the same resampled sessions to both arms of a comparison, so these are paired differences.");
 }
 
 // ===========================================================================
@@ -277,15 +243,7 @@ const RUN = "Automatic identification of Humboldt penguins · ZSL London Zoo";
   });
 
   L.foot(s, ++n, RUN);
-  s.addNotes(
-    "Under that protocol I ran a full two-by-two: objective crossed with augmentation, five folds each, twenty runs. " +
-    "The baseline scores 0.390, numerically close to the single-split 0.389 — though those runs used different recipes, so I would " +
-    "not read that as a validation. " +
-    "Strong augmentation is worth plus 0.141; ArcFace alone plus 0.096. They are sub-additive: once strong augmentation is there, " +
-    "ArcFace adds only 0.029 and that interval crosses zero, so at 35 candidates I cannot claim the loss is doing significant work. " +
-    "But widen the gallery to all 81 colony members — the right-hand panel — and ArcFace is worth plus 0.116, clear of zero, because " +
-    "metric learning shapes the embedding geometry rather than the top-one call. That is the regime a real colony is in."
-  );
+  s.addNotes("Under that protocol I ran a full two-by-two: objective crossed with augmentation, five folds each, twenty runs. The baseline scores 0.390, close to the single-split 0.389 — but different recipes, so not a validation. Strong augmentation is worth plus 0.141; ArcFace alone plus 0.096. They are sub-additive: once strong augmentation is there, ArcFace adds only 0.029 and that interval crosses zero, so at 35 candidates I cannot claim the loss is doing significant work. Widen the gallery to all 81 — the right-hand panel — and ArcFace is worth plus 0.116, clear of zero, because metric learning shapes the embedding geometry rather than the top-one call. That is the regime a real colony is in.");
 }
 
 // ===========================================================================
@@ -294,7 +252,7 @@ const RUN = "Automatic identification of Humboldt penguins · ZSL London Zoo";
 {
   const s = L.lightSlide(pres);
   L.kicker(s, "Result 3 — the central finding");
-  L.title(s, "Identifiability tracks how many days a bird was\nphotographed, not how many photographs exist", { h: 1.2, size: 25 });
+  L.title(s, "Identifiability tracks how many separate occasions a bird\nwas photographed on, not how many photographs exist", { h: 1.2, size: 25 });
 
   L.fitImage(s, `${A}/08_accuracy_vs_sessions_notitle.png`,
     { x: M, y: 1.9, w: 7.7, h: 4.3 });
@@ -314,17 +272,7 @@ const RUN = "Automatic identification of Humboldt penguins · ZSL London Zoo";
     { x: 8.45, y: 5.62, w: 4.3, size: 10 });
 
   L.foot(s, ++n, RUN);
-  s.addNotes(
-    "This is the finding I care most about. Group the 35 birds by how many separate occasions they were photographed on: the eight with " +
-    "three sessions score 0.186; the thirteen with four to six score 0.618; the fourteen with seven or more score 0.717. The same " +
-    "ordering holds in all four training configurations. " +
-    "Nicki and Gonzo make it concrete: 53 photographs against 52, but three sessions against thirteen, and 19% against 83%. " +
-    "That pair is an illustration, not the evidence. Sessions and photograph count are correlated at rho 0.663, so I partial one out. " +
-    "Sessions survive at 0.518, P equals 0.002; photograph count falls to 0.224 and does not reach significance — with 35 birds I " +
-    "cannot exclude a modest photograph effect, only say sessions are the stronger one. " +
-    "One caution I will give you myself: a three-session bird's prototype is built from only one or two gallery sessions, so part of " +
-    "this gradient is design rather than biology. It still points the same way for collection."
-  );
+  s.addNotes("This is the finding I care most about. Group the 35 birds by how many separate occasions they were photographed on: three sessions, 0.186; four to six, 0.618; seven or more, 0.717. The same ordering holds in all four configurations. Nicki and Gonzo make it concrete: 53 photographs against 52, but three sessions against thirteen, and 19% against 83%. That pair is an illustration, not the evidence. Sessions and photograph count are correlated at rho 0.663, so I partial one out. Sessions survive at 0.518; photograph count falls to 0.224 and does not reach significance — with 35 birds I cannot exclude a modest photograph effect, only say sessions are the stronger one. And one caution I will give you myself: a three-session bird's prototype is built from one or two gallery sessions, so part of this gradient is my design rather than the birds. It points the same way for collection either way.");
 }
 
 // ===========================================================================
@@ -333,51 +281,44 @@ const RUN = "Automatic identification of Humboldt penguins · ZSL London Zoo";
 {
   const s = L.lightSlide(pres);
   L.kicker(s, "Result 4 — deployment readiness");
-  L.title(s, "The more honest the question, the lower the answer", { h: 0.72 });
+  L.title(s, "One set of models, three questions — and only one of them\ndescribes deployment", { h: 1.2, size: 25 });
 
   K.staircase(s, {
-    x: M, y: 1.45, w: 7.5, h: 5.15,
+    x: M, y: 2.05, w: 7.5, h: 4.4,
     steps: [
-      { q: "Random split", v: 0.920, note: "leaky — the error,\nnot the achievement", color: C.faint },
-      { q: "35 candidates,\nclosed set", v: 0.559, note: "highest of four\nconfigurations", color: C.blue },
-      { q: "All 81 colony\ncandidates", v: 0.477, note: "same queries, 46\nidentities added as\ndistractors", color: C.blue },
-      { q: "Strangers must be\nrefused 99% of\nthe time", v: 0.123, note: "DIR at 1% false-accept,\nagainst 564 photos of 46\nnever-trained birds", color: C.orange },
+      { q: "35 candidates,\nclosed set", v: 0.559, note: "the reference —\nhighest of the four\nconfigurations", color: C.blue },
+      { q: "…now rank against\nall 81 colony\ncandidates", v: 0.477, note: "same 1,743 queries;\n46 identities added\nas distractors", color: C.blue },
+      { q: "…now strangers must\nbe refused 99% of\nthe time", v: 0.123, note: "DIR at 1% false-accept,\nagainst 564 photographs\nof 46 never-trained birds", color: C.orange },
     ],
   });
 
-  L.card(s, { x: 8.5, y: 1.5, w: 4.22, h: 2.5, fill: C.panel });
+  L.caption(s, "Each of the two is one change away from the first, not a chain: the gallery grows, or strangers must be refused. "
+    + "All three come from the same five cross-validated models and are macro over the 35 individuals.",
+    { x: M, y: 6.42, w: 7.5, size: 10.5 });
+  L.card(s, { x: 8.5, y: 2.05, w: 4.22, h: 2.5, fill: C.panel });
   s.addText("The shortcut I did not take", {
-    x: 8.75, y: 1.68, w: 3.72, h: 0.3,
+    x: 8.75, y: 2.23, w: 3.72, h: 0.3,
     fontFace: F.body, fontSize: 13, bold: true, color: C.orange,
     isTextBox: true, margin: 0, valign: "middle",
   });
   s.addText(
     "Simulating strangers by hiding a bird's own prototype reports 0.230 instead of 0.123 — an overstatement of 87%. " +
     "Both numbers come out of the same evaluation run, so this is a controlled comparison, not two studies stitched together.",
-    { x: 8.75, y: 2.04, w: 3.72, h: 1.85,
+    { x: 8.75, y: 2.59, w: 3.72, h: 1.85,
       fontFace: F.body, fontSize: 12, color: C.ink,
       isTextBox: true, margin: 0, valign: "top", lineSpacingMultiple: 1.1 }
   );
   s.addText("“The number that describes\ndeployment readiness\nis 0.123, not 0.559.”", {
-    x: 8.5, y: 4.25, w: 4.22, h: 1.35,
+    x: 8.5, y: 4.8, w: 4.22, h: 1.35,
     fontFace: F.head, fontSize: 16, italic: true, bold: true, color: C.navy,
     isTextBox: true, margin: 0, valign: "top", lineSpacingMultiple: 1.05,
   });
   L.caption(s, "The deployed configuration's five-candidate shortlist contains the right bird 78.2% of the time (35 candidates; "
     + "softmax + strong is better at rank-5, at 0.809).",
-    { x: 8.5, y: 5.75, w: 4.22, size: 10.5 });
+    { x: 8.5, y: 6.2, w: 4.22, size: 10.5 });
 
   L.foot(s, ++n, RUN);
-  s.addNotes(
-    "I want to be the one who tells you how good this is not. " +
-    "The leaky number was 0.920. Honestly evaluated, the best of four configurations reaches 0.559 against 35 candidates. Rank the same " +
-    "queries against all 81 colony identities and it falls to 0.477 — that is how often the right bird outranks eighty alternatives, " +
-    "not accuracy across all 81 birds. " +
-    "Then the real test: the system must be able to refuse. Using the 564 photographs of 46 birds the models never trained on, at a one " +
-    "percent false-accept rate only 12.3% of enrolled birds are both accepted and correctly named. Had I simulated the strangers instead " +
-    "— the conventional shortcut — I would have reported 0.230, an overstatement of 87%. Both numbers come from the same run. " +
-    "The number that describes deployment readiness is 0.123, not 0.559."
-  );
+  s.addNotes("I want to be the one who tells you how good this is not. These are the same five models asked three questions. Against 35 candidates, closed set, the best configuration reaches 0.559. Rank the same queries against all 81 colony identities and it falls to 0.477 — how often the right bird outranks eighty alternatives, not accuracy across all 81 birds. Then the real test: it must be able to refuse. Using the 564 photographs of 46 birds the models never trained on, at a one percent false-accept rate only 12.3% of photographs of enrolled birds are both accepted and correctly named. Simulate the strangers instead — the conventional shortcut — and it reports 0.230, an 87% overstatement. Both come from the same run. The number that describes deployment readiness is 0.123, not 0.559.");
 }
 
 // ===========================================================================
@@ -421,15 +362,7 @@ const RUN = "Automatic identification of Humboldt penguins · ZSL London Zoo";
   );
 
   L.foot(s, ++n, RUN);
-  s.addNotes(
-    "What exists is a retrieval system, not a classifier. A photograph becomes a 512-dimensional vector, compared by cosine similarity " +
-    "against one prototype per enrolled identity. I chose retrieval for two properties a softmax head does not have. " +
-    "First, enrolment without retraining: the deployed model trained on 79 birds, but the gallery holds all 81. Smew and Skunk, with one " +
-    "and two photographs, were never trained on — and they are searchable. " +
-    "Second, a principled way to say I don't know. A softmax head must spread probability over the identities it knows, so it names " +
-    "something whatever walks past. Here, below the threshold the answer is a refusal, and a narrow top-two margin returns a shortlist " +
-    "for the keeper to confirm."
-  );
+  s.addNotes("What exists is a retrieval system, not a classifier. A photograph becomes a 512-dimensional vector, compared by cosine similarity against one prototype per enrolled identity. I chose retrieval for two properties a softmax head does not have. First, enrolment without retraining: the deployed model trained on 79 birds, but the gallery holds all 81. Smew and Skunk, with one and two photographs, were never trained on — and they are searchable. Second, a principled way to say I don't know. A softmax head must name something, whatever walks past. Here, below 0.938 — that five-per-cent point — the answer is a refusal, and a narrow top-two margin returns a shortlist for the keeper to confirm.");
 }
 
 // ===========================================================================
@@ -460,12 +393,7 @@ const RUN = "Automatic identification of Humboldt penguins · ZSL London Zoo";
   });
 
   L.foot(s, ++n, RUN);
-  s.addNotes(
-    "Four things this does not show, quickly. There is no end-to-end test — no detector in the deployed path, so every claim is " +
-    "conditional on inputs like the archive. The operating threshold was transferred from the cross-validated models, not recalibrated, " +
-    "and it has never been tested against blurred or rear-facing photographs. The evaluated set is the better-photographed 43% of the " +
-    "colony, and the rest are probably harder. And there is one backbone and one reconstructed session rule — so 0.559 is not an upper limit."
-  );
+  s.addNotes("Four things this does not show, quickly. There is no end-to-end test — no detector in the deployed path, so every claim is conditional on inputs like the archive. The operating threshold was transferred from the cross-validated models, not recalibrated, and has never been tested against blurred or rear-facing photographs. The evaluated set is the better-photographed 43% of the colony, and the rest are probably harder. And there is one backbone and one reconstructed session rule — so 0.559 is not an upper limit.");
 }
 
 // ===========================================================================
@@ -490,14 +418,7 @@ const RUN = "Automatic identification of Humboldt penguins · ZSL London Zoo";
   }));
 
   L.foot(s, ++n, RUN);
-  s.addNotes(
-    "So the recommendation is a collection protocol, not an architecture. Applying my session rule to the whole colony: 335 sessions " +
-    "across 81 birds, very unevenly spread. Only 28 reach four separate occasions; 53 fall short. " +
-    "Four is provisional — I grouped four, five and six sessions together and did not assign effort experimentally, so it is a starting " +
-    "point for prospective validation, not a validated threshold. But it is costable: 116 further individual encounters, about eight " +
-    "outings at fifteen birds each, on different days, deliberately varying viewpoint, light and distance. " +
-    "Eight mornings with a camera is something a zoo can approve."
-  );
+  s.addNotes("So the recommendation is a collection protocol, not an architecture. Applying my session rule to the whole colony: 335 sessions across 81 birds, very unevenly spread. Only 28 reach four separate occasions; 53 fall short. Four is provisional — I grouped four, five and six sessions together and did not assign effort experimentally, so it is a starting point, not a validated threshold. But it is costable: 116 further encounters, about eight outings, on different days, deliberately varying viewpoint, light and distance. Eight mornings with a camera is something a zoo can approve.");
 }
 
 // ===========================================================================
@@ -530,12 +451,7 @@ const RUN = "Automatic identification of Humboldt penguins · ZSL London Zoo";
     }
   );
   L.foot(s, ++n, "");
-  s.addNotes(
-    "To close. On this evidence, 116 more individual encounters — about eight mornings with a camera — is worth more than any change " +
-    "I could make to the model. Better algorithms cannot substitute for observations that are not in the archive. " +
-    "And the number I would defend is not 0.559. It is 0.531: the amount a conventional random split silently added to a result " +
-    "that already looked finished. Thank you."
-  );
+  s.addNotes("To close. On this evidence, 116 more individual encounters — about eight mornings with a camera — is worth more than any change I could make to the model. Better algorithms cannot substitute for observations that are not in the archive. And the number I would defend is not 0.559. It is 0.531: the amount a conventional random split silently added to a result that already looked finished. Thank you.");
 }
 
 // ===========================================================================

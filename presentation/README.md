@@ -23,26 +23,31 @@ The line to land: *the number I would defend is not 0.559, it is 0.531.*
 | # | slide | s | ends |
 |---|---|---|---|
 | 1 | Title | 20 | 0:20 |
-| 2 | Identity is currently worn, not read from the bird | 43 | 1:03 |
-| 3 | 2,307 photographs — but the unit of evidence is the encounter | 47 | 1:50 |
-| 4 | **Change only the split rule, and 0.920 becomes 0.389** | 72 | 3:02 |
-| 5 | An evaluation whose unit is the encounter, whose weight is the individual | 49 | 3:51 |
-| 6 | Augmentation is the larger lever; metric learning earns its place as the gallery grows | 57 | 4:48 |
-| 7 | **Identifiability is set by how many days a bird was photographed** | 75 | 6:03 |
-| 8 | The more honest the question, the lower the answer | 63 | 7:06 |
-| 9 | Retrieval, not classification — a new bird costs an enrolment | 54 | 8:00 |
-| 10 | What this study does not show | 39 | 8:39 |
-| 11 | The next gain is a camera, not a loss function | 46 | 9:25 |
-| 12 | Close | 33 | 9:58 |
+| 2 | Identity is currently worn, not read from the bird | 44 | 1:04 |
+| 3 | 2,307 photographs — but the unit of evidence is the encounter | 43 | 1:47 |
+| 4 | **Change only the split rule, and 0.920 becomes 0.389** | 60 | 2:47 |
+| 5 | An evaluation whose unit is the encounter, whose weight is the individual | 47 | 3:34 |
+| 6 | Augmentation is the larger lever; metric learning earns its place as the gallery grows | 55 | 4:29 |
+| 7 | **Identifiability tracks separate occasions, not photograph count** | 73 | 5:42 |
+| 8 | One set of models, three questions — only one describes deployment | 64 | 6:46 |
+| 9 | Retrieval, not classification — a new bird costs an enrolment | 55 | 7:41 |
+| 10 | What this study does not show | 41 | 8:22 |
+| 11 | The next gain is a camera, not a loss function | 45 | 9:07 |
+| 12 | Close | 34 | 9:41 |
 
-598 s budgeted; the scripts themselves are ~562 s at 140 wpm, leaving the rest
-for pauses and slide changes. Rehearse against the stamped clock — number-heavy
-delivery runs slower than prose, so if your first run lands past 10:00, **cut
-from slides 5 and 10 first**: the protocol slide survives as "sessions to folds,
-macro, session bootstrap", and the limitations slide can be read at pace. Slides
-4 and 7 are the two that must not be rushed.
+581 s budgeted. The clock is baselined at **130 wpm, not 140** — about a fifth of
+this script is spelled-out decimals, and spoken numbers are delivered as slow
+discrete chunks rather than prose, so 140 flatters it by roughly forty seconds.
+1,208 words at 130 wpm is 558 s of speech, leaving ~19 s for twelve slide
+changes and the opening beat.
 
-## Backup slides (13–19)
+**Release valve**, decided in advance rather than mid-talk: if you are not on
+slide 9 by 6:45, drop the design-confound sentence on slide 7 and the
+"deliberately varying viewpoint, light and distance" clause on slide 11 — about
+15 s, and neither argument breaks. Slides 4 and 7 are the two that must not be
+rushed.
+
+## Backup slides (13–20)
 
 | slide | answers |
 |---|---|
@@ -78,19 +83,21 @@ Answers held in reserve, not on a slide:
   worth conceding cleanly: under session-disjoint CV a three-session bird's
   prototype is assembled from one or two gallery sessions, so averaging over
   more encounters helps close to by construction. It does not weaken the
-  collection recommendation — it is an argument for it — but "days decide
-  recognisability" is too strong without this sentence attached.
+  collection recommendation — it is an argument for it — but any phrasing
+  stronger than "tracks" needs this sentence attached. The slide says "tracks"
+  and the script volunteers the confound.
 - **"The two leakage numbers — same dataset?"** No, and say so: the 97.8% /
   13.8% entanglement audit was run on the original 70:15:15 split over 44
   individuals (1,676 gallery, 320 query); the 0.920 vs 0.389 retrain is the
-  purpose-built count-matched pair over 35 birds and 261 test photographs. Two
-  independent lines of evidence, not one measurement.
+  purpose-built count-matched pair over 35 birds and 261 test photographs. A
+  model-free audit plus a separate count-matched retrain — two lines of
+  evidence, not one measurement.
 - **"De-duplicate and the problem goes away?"** It does not. Within the random
-  split, the half with near-duplicates scores 1.000 and the clean half still
-  scores 0.946 — dropping the 13.8% recovers almost nothing. Keep that
-  comparison inside the random split when you quote it: those are per-image
-  softmax numbers over 44 birds, not the macro prototype 0.389, so do not line
-  the three up as one scale.
+  split's 320 queries, the 44 with a near-duplicate in the gallery score 1.000
+  and the remaining 276 still score 0.946 — dropping the 13.8% recovers almost
+  nothing. Keep that comparison inside the random split when you quote it:
+  those are per-image softmax numbers over 44 birds, not the macro prototype
+  0.389, so do not line the three up as one scale.
 - **"Was the session gradient's 0.186 vs 0.535 head-to-head significant?"** It
   is not on a slide, deliberately: those are bin means over 8 and 14 birds with
   no intervals. Quote the monotone ordering and the partial correlation

@@ -9,10 +9,10 @@ from pptx import Presentation
 from pptx.util import Pt
 
 PPTX = sys.argv[1]
-WPM = 140
+WPM = 130   # number-heavy academic delivery: spoken decimals are slow discrete chunks
 
 # seconds budgeted per content slide (slides 1..12); the backup section is 0
-BUDGET = [20, 43, 47, 72, 49, 57, 75, 63, 54, 39, 46, 33]
+BUDGET = [20, 44, 43, 60, 47, 55, 73, 64, 55, 41, 45, 34]
 
 prs = Presentation(PPTX)
 elapsed = 0
