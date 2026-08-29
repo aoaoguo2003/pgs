@@ -1,6 +1,6 @@
 # Final presentation — 10 minutes
 
-`final_presentation.pptx` — 12 content slides for a ten-minute slot, followed by
+`final_presentation.pptx` — 13 content slides for a ten-minute slot, followed by
 seven backup slides for questions. Every speaker note is stamped with its time
 budget and the running clock, so the deck can be rehearsed without a crib sheet.
 
@@ -33,13 +33,15 @@ The line to land: *the number I would defend is not 0.559, it is 0.531.*
 | 9 | Retrieval, not classification — a new bird costs an enrolment | 55 | 7:41 |
 | 10 | What this study does not show | 41 | 8:22 |
 | 11 | The next gain is a camera, not a loss function | 45 | 9:07 |
-| 12 | Close | 34 | 9:41 |
+| 12 | Close — the number I would defend is 0.531 | 34 | 9:41 |
+| 13 | Thank you / any questions — stays up through Q&A | 15 | 9:56 |
 
-581 s budgeted. The clock is baselined at **130 wpm, not 140** — about a fifth of
+596 s budgeted. The clock is baselined at **130 wpm, not 140** — about a fifth of
 this script is spelled-out decimals, and spoken numbers are delivered as slow
 discrete chunks rather than prose, so 140 flatters it by roughly forty seconds.
-1,208 words at 130 wpm is 558 s of speech, leaving ~19 s for twelve slide
-changes and the opening beat.
+1,242 words at 130 wpm is 573 s of speech, leaving ~23 s for thirteen slide
+changes and the opening beat. Slide 13 carries the three numbers a panel is
+most likely to want in front of them, so it is worth leaving up.
 
 **Release valve**, decided in advance rather than mid-talk: if you are not on
 slide 9 by 6:45, drop the design-confound sentence on slide 7 and the
@@ -47,17 +49,17 @@ slide 9 by 6:45, drop the design-confound sentence on slide 7 and the
 15 s, and neither argument breaks. Slides 4 and 7 are the two that must not be
 rushed.
 
-## Backup slides (13–20)
+## Backup slides (14–21)
 
 | slide | answers |
 |---|---|
-| 14 | Why 35 of 81? The session rule binds, not the photo rule |
-| 15 | Did ArcFace help everyone, or did the macro mean hide it? |
-| 16 | Why cross-validate rather than hold out one split? |
-| 17 | Why not crop to the breast spots? |
-| 18 | The threshold has a provenance, and it was wrong once |
-| 19 | Training is fixed-length by design — and the 1.000 diagnostic |
-| 20 | Every reported number, in one table |
+| 15 | Why 35 of 81? The session rule binds, not the photo rule |
+| 16 | Did ArcFace help everyone, or did the macro mean hide it? |
+| 17 | Why cross-validate rather than hold out one split? |
+| 18 | Why not crop to the breast spots? |
+| 19 | The threshold has a provenance, and it was wrong once |
+| 20 | Training is fixed-length by design — and the 1.000 diagnostic |
+| 21 | Every reported number, in one table |
 
 Answers held in reserve, not on a slide:
 
@@ -114,7 +116,7 @@ Answers held in reserve, not on a slide:
 
 ### One number to check before you present
 
-Backup slide 18 repeats the dissertation's statement that the old threshold of
+Backup slide 19 repeats the dissertation's statement that the old threshold of
 **0.800 accepts 29.7% of genuine strangers**. That figure does not reproduce
 from `analysis/artifacts/cv_report.json`: reading the false-accept rate off the
 genuine-stranger curve at threshold 0.800 gives **0.346** for ArcFace + strong,
@@ -156,8 +158,28 @@ soffice --headless --convert-to pdf final_presentation.pptx
 | `build_deck.js` | the deck: content, speaker notes, slide layout |
 | `lib.js` | palette, type scale and layout helpers |
 | `components.js` | the four custom graphics (pipeline, honesty staircase, 2×2, session comparison) |
-| `prepare_assets.py` | regenerates every image the deck uses |
+| `prepare_assets.py` | regenerates every image the deck uses, photographs included |
 | `finalise.py` | stamps time budgets into the notes, checks each script fits, repairs content types |
+
+## The photographs
+
+They are the colony's own birds, not stock images. `penguins_data/` is
+gitignored, so the only place the real photographs survive in this repository is
+the YOLO detector's validation mosaics under `runs/detect/`;
+`prepare_assets.py` lifts individual cells out of them and inpaints away the
+detector's box, its "belly" label chip and the source filename.
+
+Slide 3 is the one that earns its picture: those two frames are Ping, camera
+frames two apart, which under this project's own session rule makes them **one
+capture session**. Same light, same ground, same posture — and a random split
+is free to put one in training and the other in test. That is the whole argument
+of slide 4, made visible one slide early.
+
+If you rebuild this locally and have `penguins_data/` on disk, better crops are
+available: point `PHOTOS` in `prepare_assets.py` at real files instead, and
+Nicki and Gonzo on slide 7 would be a genuine upgrade.
+
+## Design
 
 The palette is sampled from the project's own figures — background `#FCFCFB`,
 series `#2A78D6` and `#EB6834`, grid `#E1E0D9` — so the plots sit on the slides

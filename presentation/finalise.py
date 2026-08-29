@@ -11,8 +11,8 @@ from pptx.util import Pt
 PPTX = sys.argv[1]
 WPM = 130   # number-heavy academic delivery: spoken decimals are slow discrete chunks
 
-# seconds budgeted per content slide (slides 1..12); the backup section is 0
-BUDGET = [20, 44, 43, 60, 47, 55, 73, 64, 55, 41, 45, 34]
+# seconds budgeted per content slide (slides 1..13); the backup section is 0
+BUDGET = [20, 44, 43, 60, 47, 55, 73, 64, 55, 41, 45, 34, 15]
 
 prs = Presentation(PPTX)
 elapsed = 0

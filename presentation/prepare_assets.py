@@ -17,7 +17,9 @@ Two kinds of asset:
    punchline drawn onto the axes: rank-5 = 0.782, and the simulated-impostor
    0.230 beside the genuine 0.123. Nothing is hand-entered.
 
-Plus one crop of Color_Bands1.jpg, the colony's own identification sheet.
+3. Photographs of the actual colony birds, recovered from the YOLO detector's
+   validation mosaics (penguins_data/ is gitignored), plus one crop of
+   Color_Bands1.jpg, the colony's own identification sheet.
 
 Run:  python presentation/prepare_assets.py
 Out:  presentation/assets/ (gitignored - regenerate rather than commit)
@@ -60,6 +62,89 @@ def crop_figures():
         dst = OUT / (f"{name}.png" if top == 0 and bot is None else f"{name}_notitle.png")
         im.save(dst)
         print(f"  {dst.name:46s} {im.width}x{im.height}")
+
+
+# --------------------------------------------------------------------------
+# Photographs of the actual colony birds.
+#
+# penguins_data/ is gitignored, so the only place the real photographs survive
+# in this repository is the YOLO detector's validation mosaics under
+# runs/detect/. Each cell there carries the detector's blue box, its "belly"
+# label chip and the source filename drawn across the top; all three are
+# removed below so the photograph reads as a photograph.
+#
+# Ping3 and Ping1 are deliberate: same camera prefix, frame numbers two apart,
+# so under this project's own session rule they are ONE capture session — which
+# is exactly what slide 3 needs to make "capture session" concrete.
+DETECT = ROOT / "runs/detect/runs/belly_detector/exp1"
+PHOTOS = {                     # name: (mosaic, column, row, columns, rows)
+    "penguin_title":     ("val_batch2_labels.jpg", 2, 3, 4, 4),   # Pong, front-facing
+    "penguin_session_a": ("val_batch1_labels.jpg", 0, 1, 4, 4),   # Ping, frame 3
+    "penguin_session_b": ("val_batch1_labels.jpg", 0, 2, 4, 4),   # Ping, frame 1
+    "penguin_query":     ("val_batch2_labels.jpg", 2, 1, 4, 4),   # Ray
+    "penguin_thanks":    ("val_batch0_labels.jpg", 0, 3, 4, 4),   # Cooper
+}
+FILENAME_BAND = 54             # rows ultralytics draws the source filename into
+
+
+def _declutter(c):
+    """Inpaint the detector's box and label chip, drop the filename band and padding."""
+    import cv2
+    b, g, r = c[:, :, 2].astype(int), c[:, :, 1].astype(int), c[:, :, 0].astype(int)
+    blue = (b - np.maximum(r, g)) > 40
+    mask = blue.astype(np.uint8)
+
+    # the label chip is a filled blue rectangle with white text in it; take the
+    # white pixels sitting inside a blue-dense row so the text goes with the chip
+    for y0 in np.where(blue.sum(axis=1) > 20)[0]:
+        xs = np.where(blue[y0])[0]
+        if len(xs) > 20:
+            seg = np.zeros(c.shape[1], bool)
+            seg[xs.min():xs.max() + 1] = True
+            mask[y0][(r[y0] > 200) & (g[y0] > 200) & (b[y0] > 200) & seg] = 1
+
+    mask = cv2.dilate(mask, np.ones((3, 3), np.uint8), iterations=1)
+    out = cv2.inpaint(cv2.cvtColor(c, cv2.COLOR_RGB2BGR), mask, 3, cv2.INPAINT_NS)
+    out = cv2.cvtColor(out, cv2.COLOR_BGR2RGB)
+    out[:FILENAME_BAND] = 113                       # let the pad trim carry it away
+
+    # Peel the uniform pad one line at a time from each edge. Every test is made
+    # against the region already trimmed - testing a full-height column while the
+    # top rows still hold image content would never see the column as padding.
+    def flat(line):
+        """Padding is uniform and neutral; a photograph edge is neither. The
+        mosaics pad with grey in some files and white in others, so match on
+        uniformity rather than on a fixed colour."""
+        v = line.astype(int)
+        if len(v) == 0 or v.std(axis=0).max() > 9:
+            return False
+        m = v.mean(axis=0)
+        return abs(m[0] - m[1]) < 10 and abs(m[1] - m[2]) < 10
+
+    t, b_, l, r_ = 0, out.shape[0], 0, out.shape[1]
+    changed = True
+    while changed and t < b_ - 1 and l < r_ - 1:
+        changed = False
+        if flat(out[t, l:r_]):
+            t += 1; changed = True
+        if b_ > t + 1 and flat(out[b_ - 1, l:r_]):
+            b_ -= 1; changed = True
+        if flat(out[t:b_, l]):
+            l += 1; changed = True
+        if r_ > l + 1 and flat(out[t:b_, r_ - 1]):
+            r_ -= 1; changed = True
+    return out[t:b_, l:r_]
+
+
+def colony_photos():
+    for name, (mosaic, col, row, cols, rows) in PHOTOS.items():
+        im = np.array(Image.open(DETECT / mosaic).convert("RGB"))
+        H, W = im.shape[:2]
+        cw, ch = W // cols, H // rows
+        c = im[row * ch:(row + 1) * ch, col * cw:(col + 1) * cw].copy()
+        out = _declutter(c)
+        Image.fromarray(out).save(OUT / f"{name}.png")
+        print(f"  {name + '.png':46s} {out.shape[1]}x{out.shape[0]}")
 
 
 def band_sheet():
@@ -190,5 +275,6 @@ def slide_figures():
 if __name__ == "__main__":
     print(f"writing to {OUT}")
     crop_figures()
+    colony_photos()
     band_sheet()
     slide_figures()

@@ -25,23 +25,25 @@ const RUN = "Automatic identification of Humboldt penguins · ZSL London Zoo";
 // ===========================================================================
 {
   const s = L.darkSlide(pres);
+  const PANEL = 4.75;                       // width of the half-bleed photo panel
+  L.coverImage(s, `${A}/penguin_title.png`, { x: W - PANEL, y: 0, w: PANEL, h: H });
   s.addText("Automatic Identification of\nHumboldt Penguins at London Zoo", {
-    x: M, y: 1.75, w: W - 2 * M - 1.2, h: 1.9,
-    fontFace: F.head, fontSize: 40, bold: true, color: C.white,
-    isTextBox: true, margin: 0, valign: "top", lineSpacingMultiple: 1.0,
+    x: M, y: 1.5, w: W - PANEL - M - 0.5, h: 2.3,
+    fontFace: F.head, fontSize: 34, bold: true, color: C.white,
+    isTextBox: true, margin: 0, valign: "top", lineSpacingMultiple: 1.02,
   });
   s.addText("What a photograph can tell you about which bird it is — and what it cannot", {
-    x: M, y: 3.75, w: W - 2 * M - 1.2, h: 0.45,
+    x: M, y: 3.72, w: W - PANEL - M - 0.7, h: 0.8,
     fontFace: F.body, fontSize: 17, color: "9FC0E4",
     isTextBox: true, margin: 0, valign: "top",
   });
   // the session-dot motif, introduced here and repeated wherever sessions matter
-  L.dots(s, { x: M, y: 4.55, n: 13, color: C.blue, d: 0.15, gap: 0.1 });
+  L.dots(s, { x: M, y: 4.78, n: 13, color: C.blue, d: 0.15, gap: 0.1 });
   s.addText(
     "Candidate TDYK3   ·   MSc Ecology and Data Science   ·   BIOS0057\n" +
     "Supervisor: Robin Freeman   ·   Division of Biosciences, UCL",
     {
-      x: M, y: 5.25, w: W - 2 * M, h: 0.8,
+      x: M, y: 5.4, w: W - PANEL - M - 0.5, h: 0.9,
       fontFace: F.body, fontSize: 13, color: "C9D6E6",
       isTextBox: true, margin: 0, valign: "top", lineSpacingMultiple: 1.25,
     }
@@ -92,14 +94,35 @@ const RUN = "Automatic identification of Humboldt penguins · ZSL London Zoo";
     { v: "335", l: "capture sessions", sub: "258 across the 35" },
   ];
   stats.forEach((st, i) => L.stat(s, {
-    x: M + i * 2.42, y: 1.98, w: 2.3,
+    x: M + i * 2.16, y: 1.98, w: 2.05,
     value: st.v, label: st.l, sub: st.sub,
-    color: i === 2 ? C.orange : C.navy, size: 44,
+    color: i === 2 ? C.orange : C.navy, size: 40, labelSize: 11.5,
   }));
 
-  L.card(s, { x: M, y: 4.05, w: W - 2 * M, h: 1.95, fill: C.panel });
+  // two frames of Ping: same camera prefix, frame numbers two apart, so one
+  // capture session under this project's own rule. This is the whole argument.
+  {
+    // identical boxes, cover-cropped: sizing them from one photo's aspect would
+    // stretch the other and leave its residual border showing
+    const pw = 1.95, ph = 2.45;
+    const x0 = W - M - 2 * pw - 0.14;
+    L.coverImage(s, `${A}/penguin_session_a.png`, { x: x0, y: 3.62, w: pw, h: ph });
+    L.coverImage(s, `${A}/penguin_session_b.png`, { x: x0 + pw + 0.14, y: 3.62, w: pw, h: ph });
+    // one bracket over the pair: these two frames are a single session
+    s.addShape("rect", { x: x0, y: 3.44, w: 2 * pw + 0.14, h: 0.05,
+      fill: { color: C.blue }, line: { color: C.blue, width: 0 } });
+    s.addText("one capture session — two frames of Ping", {
+      x: x0, y: 3.06, w: 2 * pw + 0.14, h: 0.32,
+      fontFace: F.body, fontSize: 12, bold: true, color: C.blue, align: "center",
+      isTextBox: true, margin: 0, valign: "bottom",
+    });
+    L.caption(s, "Same light, same ground, same posture. A random split can put one of these in training and the other in test.",
+      { x: x0, y: 3.68 + ph, w: 2 * pw + 0.14, size: 10, align: "center" });
+  }
+
+  L.card(s, { x: M, y: 4.05, w: W - 2 * M - 4.35, h: 2.2, fill: C.panel });
   s.addText("A capture session = every photograph of one bird from a single photographic encounter.", {
-    x: M + 0.3, y: 4.26, w: W - 2 * M - 0.6, h: 0.34,
+    x: M + 0.3, y: 4.24, w: W - 2 * M - 4.95, h: 0.56,
     fontFace: F.body, fontSize: 15.5, bold: true, color: C.navy,
     isTextBox: true, margin: 0, valign: "middle",
   });
@@ -108,14 +131,14 @@ const RUN = "Automatic identification of Humboldt penguins · ZSL London Zoo";
     "frame exceeds 50. Checked against EXIF timestamps where present. Frames inside one session share light, background, " +
     "viewpoint and posture — they are correlated observations, not independent evidence of how a bird looks on a new day.",
     {
-      x: M + 0.3, y: 4.68, w: W - 2 * M - 0.6, h: 1.2,
-      fontFace: F.body, fontSize: 13.5, color: C.ink,
+      x: M + 0.3, y: 4.88, w: W - 2 * M - 4.95, h: 1.25,
+      fontFace: F.body, fontSize: 12.5, color: C.ink,
       isTextBox: true, margin: 0, valign: "top", lineSpacingMultiple: 1.1,
     }
   );
 
   L.foot(s, ++n, RUN);
-  s.addNotes("2,307 photographs of all 81 birds, taken by volunteers during husbandry, not to a research protocol — counts run from 1 to 291. Thirty-five birds clear both inclusion rules: the better-photographed 43% of the colony. The other 46 are never queries; they are gallery distractors and, later, genuine strangers. The definition at the bottom is what matters. A capture session is one photographic encounter with one bird, inferred from the camera's frame numbering. Frames inside a session share lighting, background and posture, so they are not independent samples.");
+  s.addNotes("2,307 photographs of all 81 birds, taken by volunteers during husbandry, not to a research protocol — counts run from 1 to 291. Thirty-five birds clear both inclusion rules: the better-photographed 43% of the colony. The other 46 are never queries; they are gallery distractors and, later, genuine strangers. The definition at the bottom is what matters. A capture session is one photographic encounter with one bird, inferred from the camera's frame numbering. The two frames on the right are one session: same light, same ground, same posture. They are not independent samples.");
 }
 
 // ===========================================================================
@@ -329,9 +352,19 @@ const RUN = "Automatic identification of Humboldt penguins · ZSL London Zoo";
   L.kicker(s, "What exists");
   L.title(s, "Retrieval, not classification — so a new bird costs\nan enrolment, not a retraining", { h: 1.2, size: 25 });
 
-  K.pipeline(s, { x: M, y: 1.98, w: 7.1, stepH: 0.62, gap: 0.2 });
+  K.pipeline(s, { x: M + 1.55, y: 1.98, w: 6.1, stepH: 0.62, gap: 0.2 });
+  {
+    const d = L.imageSize(`${A}/penguin_query.png`);
+    const pw = 1.3, ph = pw * d[1] / d[0];
+    s.addImage({ path: `${A}/penguin_query.png`, x: M, y: 1.98, w: pw, h: ph });
+    // the arrow points at the first box, not at the middle of the photograph
+    s.addShape("rightArrow", { x: M + pw + 0.06, y: 1.98 + 0.31 - 0.08, w: 0.34, h: 0.16,
+      fill: { color: C.rule }, line: { color: C.rule, width: 0 } });
+    L.caption(s, "one photograph,\nuncropped, as taken",
+      { x: M, y: 2.04 + ph, w: pw + 0.3, size: 9.5 });
+  }
 
-  L.card(s, { x: 8.35, y: 1.98, w: 4.4, h: 1.85, fill: C.panel });
+  L.card(s, { x: 8.35, y: 1.98, w: 4.4, h: 2.25, fill: C.panel });
   s.addText([
     { text: "79", options: { fontFace: F.head, fontSize: 30, bold: true, color: C.navy } },
     { text: "  trained on          ", options: { fontSize: 13, color: C.ink } },
@@ -342,21 +375,21 @@ const RUN = "Automatic identification of Humboldt penguins · ZSL London Zoo";
     "Smew and Skunk have one and two photographs. Never trained on, in the gallery, searchable. A softmax head would need a new " +
     "output layer and a full retrain for each arrival. The deployed model has no held-out partition of its own — the cross-validated " +
     "0.559 is its estimate.",
-    { x: 8.6, y: 2.7, w: 3.9, h: 1.05,
-      fontFace: F.body, fontSize: 11.5, color: C.ink,
+    { x: 8.6, y: 2.68, w: 3.9, h: 1.45,
+      fontFace: F.body, fontSize: 11, color: C.ink,
       isTextBox: true, margin: 0, valign: "top", lineSpacingMultiple: 1.08 }
   );
 
-  L.card(s, { x: 8.35, y: 4.08, w: 4.4, h: 2.0, fill: C.panel });
+  L.card(s, { x: 8.35, y: 4.46, w: 4.4, h: 1.95, fill: C.panel });
   s.addText("It refuses in two ways", {
-    x: 8.6, y: 4.26, w: 3.9, h: 0.3,
+    x: 8.6, y: 4.64, w: 3.9, h: 0.3,
     fontFace: F.body, fontSize: 13, bold: true, color: C.orange,
     isTextBox: true, margin: 0, valign: "middle",
   });
   s.addText(
     "Below 0.938 it returns “not a bird I know” and asks for a clearer photograph. Above it, but with a top-two margin under 0.05, " +
     "it returns a shortlist and asks the keeper to confirm. It never emits a name it is not confident in.",
-    { x: 8.6, y: 4.62, w: 3.9, h: 1.35,
+    { x: 8.6, y: 5.0, w: 3.9, h: 1.3,
       fontFace: F.body, fontSize: 11.5, color: C.ink,
       isTextBox: true, margin: 0, valign: "top", lineSpacingMultiple: 1.08 }
   );
@@ -452,6 +485,67 @@ const RUN = "Automatic identification of Humboldt penguins · ZSL London Zoo";
   );
   L.foot(s, ++n, "");
   s.addNotes("To close. On this evidence, 116 more individual encounters — about eight mornings with a camera — is worth more than any change I could make to the model. Better algorithms cannot substitute for observations that are not in the archive. And the number I would defend is not 0.559. It is 0.531: the amount a conventional random split silently added to a result that already looked finished. Thank you.");
+}
+
+// ===========================================================================
+// 13 — THANK YOU / QUESTIONS  (the slide that stays up during Q&A)
+// ===========================================================================
+{
+  const s = L.darkSlide(pres);
+  const PANEL2 = 4.75;
+  L.coverImage(s, `${A}/penguin_thanks.png`, { x: W - PANEL2, y: 0, w: PANEL2, h: H });
+  s.addText("Thank you", {
+    x: M, y: 0.95, w: 7.4, h: 0.85,
+    fontFace: F.head, fontSize: 42, bold: true, color: C.white,
+    isTextBox: true, margin: 0, valign: "middle",
+  });
+  s.addText("Any questions?", {
+    x: M, y: 1.8, w: 7.4, h: 0.55,
+    fontFace: F.head, fontSize: 26, color: C.orange,
+    isTextBox: true, margin: 0, valign: "middle",
+  });
+
+  // the three numbers the panel is most likely to want in front of them
+  const recap = [
+    { v: "0.531", l: "inflation from splitting by\nfile instead of by encounter", c: C.orange },
+    { v: "0.559", l: "macro rank-1, 35 candidates,\nclosed set", c: C.white },
+    { v: "0.123", l: "correctly named at a 1%\nstranger false-accept rate", c: C.white },
+  ];
+  recap.forEach((r, i) => {
+    const x = M + i * 2.5;
+    s.addText(r.v, {
+      x, y: 2.75, w: 2.3, h: 0.6,
+      fontFace: F.head, fontSize: 34, bold: true, color: r.c,
+      isTextBox: true, margin: 0, valign: "middle",
+    });
+    s.addText(r.l, {
+      x, y: 3.35, w: 2.3, h: 0.66,
+      fontFace: F.body, fontSize: 10.5, color: "9FC0E4",
+      isTextBox: true, margin: 0, valign: "top", lineSpacingMultiple: 1.05,
+    });
+  });
+
+  L.dots(s, { x: M, y: 4.3, n: 13, color: C.blue, d: 0.13, gap: 0.09 });
+
+  s.addText(
+    "With thanks to Robin Freeman for his supervision, and to ZSL London Zoo and the volunteer " +
+    "photographers whose archive made this possible.",
+    {
+      x: M, y: 4.75, w: 7.2, h: 0.75,
+      fontFace: F.body, fontSize: 12.5, color: "C9D6E6",
+      isTextBox: true, margin: 0, valign: "top", lineSpacingMultiple: 1.2,
+    }
+  );
+  s.addText("Code and analysis:  github.com/aoaoguo2003/pgs", {
+    x: M, y: 5.62, w: 7.2, h: 0.34,
+    fontFace: F.body, fontSize: 12.5, bold: true, color: "9FC0E4",
+    isTextBox: true, margin: 0, valign: "middle",
+  });
+  n++;   // no page number: it would land on the photograph, and this slide is the end
+  s.addNotes(
+    "Thank you. I am happy to take questions — and I have backup slides on the inclusion criteria, " +
+    "the open-set calibration, the training recipe and the full results table."
+  );
 }
 
 // ===========================================================================

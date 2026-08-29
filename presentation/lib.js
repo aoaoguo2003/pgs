@@ -189,8 +189,18 @@ function fitImage(slide, path, box, dims) {
   return { x: box.x + (box.w - w) / 2, y: box.y + (box.h - h) / 2, w, h };
 }
 
+// Fill a box completely, cropping the source centrally to the box's aspect.
+// pptxgenjs supports this natively through sizing:{type:"cover"}, which crops
+// rather than distorting - the right behaviour for a half-bleed photograph.
+function coverImage(slide, path, box) {
+  slide.addImage({
+    path, x: box.x, y: box.y, w: box.w, h: box.h,
+    sizing: { type: "cover", w: box.w, h: box.h },
+  });
+}
+
 module.exports = {
-  imageSize,
+  imageSize, coverImage,
   C, F, W, H, M,
   newDeck, dots, darkSlide, lightSlide, title, kicker, foot,
   bullets, stat, card, caption, fitImage,
