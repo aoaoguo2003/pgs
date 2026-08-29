@@ -51,6 +51,11 @@ WRITEUP_DATA_PACK.md
 /presentation/package.json
 /presentation/package-lock.json
 /presentation/fig/
+/presentation/pg/
 /presentation/bands.jpg
 /presentation/title_bg.jpg
+/presentation/spot*.jpg
+/presentation/strip*.jpg
+/presentation/slide-*.jpg
 /presentation/penguin_reid_final_pre.pptx
+/presentation/penguin_reid_final_pre.pdf

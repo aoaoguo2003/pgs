@@ -8,7 +8,7 @@ Everything written here is derived; nothing is hand-edited. Run this before
   python presentation/prepare_assets.py
   cd presentation && node build_deck.js
 
-Three kinds of asset:
+Four kinds of asset:
 
   fig/*.jpg     the analysis figures with their small-print footnote block cropped
                 off. The footnotes are unreadable when projected, so the slide
@@ -18,16 +18,23 @@ Three kinds of asset:
                 columns. The ARKS and microchip columns are deliberately cropped
                 away -- they are institutional record numbers with no place on a
                 projected slide.
-  title_bg.jpg  a blurred, darkened montage for the title slide. Blurred hard
-                enough to read as texture rather than as a claim about the
-                pipeline: the boxes in it come from the preliminary chest
-                detector, which is not part of the identification path.
+  pg/*.jpg      named photographs of individual colony members, recovered from
+                the YOLO mosaics with the detector's boxes and labels painted out
+                (penguin_photos.py). The boxes come from a preliminary chest
+                detector that is not part of the identification path, so removing
+                them makes the slides show the archive as photographed.
+  title_bg.jpg, spot*.jpg, strip*.jpg
+                crops of those photographs, framed for the slide that uses them:
+                the hero on the title slide, three ventral close-ups, and the
+                seven-bird strip that shows the archive's range of conditions.
 """
 from __future__ import annotations
 
 from pathlib import Path
 
 from PIL import Image, ImageEnhance, ImageFilter
+
+import penguin_photos as pp
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = Path(__file__).resolve().parent
@@ -63,16 +70,46 @@ def main() -> None:
     bands.thumbnail((1000, 1640), Image.LANCZOS)
     bands.save(OUT / "bands.jpg", quality=92)
 
-    mosaic = Image.open(
-        ROOT / "runs/detect/runs/belly_detector/exp1/val_batch0_labels.jpg"
-    ).convert("RGB")
-    bg = mosaic.crop((0, 0, 1920, 1080)).resize((2560, 1440), Image.LANCZOS)
-    bg = bg.filter(ImageFilter.GaussianBlur(5))
-    bg = ImageEnhance.Color(bg).enhance(0.35)
-    bg = Image.blend(bg, Image.new("RGB", bg.size, (16, 44, 74)), 0.86)
-    ImageEnhance.Brightness(bg).enhance(0.94).save(OUT / "title_bg.jpg", quality=90)
+    lib = pp.build_library(OUT / "pg")
+    title_background(lib["ping"])
+
+    # slide 2 -- the marking the bird already carries
+    for i, (name, cy) in enumerate([("ronnie", 0.52), ("phineas", 0.52), ("gopher", 0.52)]):
+        pp.closeup(lib[name], frac=0.55, cy=cy).resize((520, 520), Image.LANCZOS) \
+          .save(OUT / f"spot{i + 1}.jpg", quality=94)
+
+    # slide 3 -- the archive's range of birds, poses, light and backgrounds
+    strip = ["tiger", "lizzie", "mcvitie", "jaz", "kermit", "chompy", "pong"]
+    for i, name in enumerate(strip):
+        pp.crop_ratio(lib[name], 0.78, cy=0.46).resize((410, 526), Image.LANCZOS) \
+          .save(OUT / f"strip{i + 1}.jpg", quality=94)
 
     print(f"assets written to {OUT}")
+
+
+def title_background(hero: Image.Image) -> None:
+    """Navy field with one bird bled off the right edge, dissolving into it."""
+    W, H = 2560, 1440
+    navy = (16, 44, 74)
+    bg = Image.new("RGB", (W, H), navy)
+
+    pw = int(W * 0.46)
+    photo = pp.crop_ratio(hero, pw / H, cy=0.46).resize((pw, H), Image.LANCZOS)
+    # the source tile is only ~320px wide and carries the scars of the removed
+    # annotation, so soften it: at this size it should read as atmosphere
+    photo = photo.filter(ImageFilter.GaussianBlur(2.4))
+    photo = ImageEnhance.Brightness(ImageEnhance.Color(photo).enhance(0.80)).enhance(0.95)
+    photo = Image.blend(photo, Image.new("RGB", photo.size, navy), 0.20)
+
+    fade = int(pw * 0.42)                      # dissolve the photo's left edge
+    alpha = Image.new("L", (pw, H), 255)
+    ramp = alpha.load()
+    for x in range(fade):
+        v = int(255 * (x / fade) ** 1.5)
+        for y in range(H):
+            ramp[x, y] = v
+    bg.paste(photo, (W - pw, 0), alpha)
+    bg.save(OUT / "title_bg.jpg", quality=91)
 
 
 if __name__ == "__main__":

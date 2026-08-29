@@ -29,10 +29,27 @@ The arc is deliberately the project's own: a headline that looked finished,
 an audit that broke it, and a protocol that produced a smaller number worth
 believing.
 
+## The penguins
+
+Slides 1, 2 and 3 carry photographs of the actual colony. The raw archive is not
+in this repository, so they are recovered from the YOLO detector's plotted
+mosaics under `runs/detect/`, and `penguin_photos.py` paints out the boxes and
+`belly` labels the detector drew on them — that detector is a preliminary
+experiment and is *not* part of the identification path, so removing its marks
+is what makes the slides show the archive as photographed.
+
+Only the **validation** mosaics are used. One validation tile is one photograph
+of one bird, so the drawn filename identifies it. The train mosaics apply mosaic
+augmentation — four different birds stitched into a single labelled tile — so a
+photograph taken from there cannot be attributed to the bird in its label. That
+is why slide 10 names Nicki and Gonzo but shows neither: Gonzo appears only in
+train batches, and a photograph captioned with the wrong bird would undercut the
+one slide that turns on which bird is which.
+
 ## Rebuilding it
 
 ```bash
-python presentation/prepare_assets.py     # derives the images from figures/ and the archive
+python presentation/prepare_assets.py     # derives every image from figures/ and runs/
 cd presentation && npm install pptxgenjs && node build_deck.js
 ```
 

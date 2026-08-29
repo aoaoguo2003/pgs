@@ -90,45 +90,45 @@ function caption(s, text, o) {
   const s = darkSlide();
   s.addImage({ path: path.join(D, "title_bg.jpg"), x: 0, y: 0, w: W, h: H });
 
-  s.addText("MSc Ecology and Data Science  ·  Research Project BIOS0057  ·  UCL", {
-    x: M, y: 1.08, w: 8.6, h: 0.3, fontFace: SANS, fontSize: 12.5, bold: true,
+  s.addText("MSc Ecology and Data Science  ·  Research Project BIOS0057", {
+    x: M, y: 0.94, w: 8.2, h: 0.3, fontFace: SANS, fontSize: 12.5, bold: true,
     color: ICE, charSpacing: 1.8, isTextBox: true, margin: 0, valign: "middle",
   });
 
   s.addText("Which penguin\nis this?", {
-    x: M, y: 1.52, w: 8.6, h: 1.95, fontFace: HEAD, fontSize: 58, bold: true,
-    color: "FFFFFF", lineSpacing: 62, isTextBox: true, margin: 0, valign: "middle",
+    x: M, y: 1.4, w: 7.1, h: 1.8, fontFace: HEAD, fontSize: 52, bold: true,
+    color: "FFFFFF", lineSpacing: 56, isTextBox: true, margin: 0, valign: "middle",
   });
 
   s.addText("Automatic identification of Humboldt penguins at ZSL London Zoo — and what an honest evaluation says it can really do.", {
-    x: M, y: 3.66, w: 7.9, h: 1.0, fontFace: SANS, fontSize: 19,
-    color: "D6E4F5", lineSpacing: 27, isTextBox: true, margin: 0, valign: "top",
+    x: M, y: 3.38, w: 6.35, h: 1.1, fontFace: SANS, fontSize: 18,
+    color: "D6E4F5", lineSpacing: 26, isTextBox: true, margin: 0, valign: "top",
   });
 
   s.addText("Aoao Guo", {
-    x: M, y: 5.62, w: 6.0, h: 0.42, fontFace: HEAD, fontSize: 24, bold: true,
+    x: M, y: 4.78, w: 6.0, h: 0.42, fontFace: HEAD, fontSize: 24, bold: true,
     color: "FFFFFF", isTextBox: true, margin: 0, valign: "middle",
   });
-  s.addText("Supervisor: Robin Freeman  ·  Division of Biosciences, Faculty of Life Sciences", {
-    x: M, y: 6.06, w: 7.5, h: 0.32, fontFace: SANS, fontSize: 13.5,
+  s.addText("Supervisor: Robin Freeman  ·  Division of Biosciences, UCL", {
+    x: M, y: 5.22, w: 6.4, h: 0.32, fontFace: SANS, fontSize: 13.5,
     color: ICE, isTextBox: true, margin: 0, valign: "middle",
   });
 
-  // right-hand stat rail, each led by a spot
+  // the archive, in three numbers, along the foot of the navy field
   const stats = [
     ["2,307", "photographs"],
     ["81", "individuals"],
     ["335", "capture sessions"],
   ];
   stats.forEach(([n, l], i) => {
-    const y = 2.05 + i * 1.25;
-    dot(s, 10.05, y + 0.22, 0.15, ORANGE);
+    const x = M + i * 2.28;
+    dot(s, x, 6.13, 0.13, ORANGE);
     s.addText(n, {
-      x: 10.42, y: y - 0.06, w: 2.4, h: 0.62, fontFace: HEAD, fontSize: 34, bold: true,
+      x, y: 6.3, w: 2.1, h: 0.52, fontFace: HEAD, fontSize: 28, bold: true,
       color: "FFFFFF", isTextBox: true, margin: 0, valign: "middle",
     });
     s.addText(l, {
-      x: 10.42, y: y + 0.54, w: 2.4, h: 0.3, fontFace: SANS, fontSize: 12.5,
+      x, y: 6.79, w: 2.1, h: 0.28, fontFace: SANS, fontSize: 12,
       color: ICE, isTextBox: true, margin: 0, valign: "middle",
     });
   });
@@ -155,7 +155,16 @@ The talk has a turn in it. I built a system that looked excellent, discovered it
     "Coloured flipper bands are the current answer — and they are hidden by the bird's posture, by another penguin, or simply by the viewing angle.",
     "Over ten years, flipper-banded king penguins showed lower survival and breeding success than electronically tagged controls (Saraux et al., 2011). A marker is not automatically neutral.",
     "The birds already carry an identifier: the black spots on their white ventral plumage. African penguins use those same patterns to recognise each other (Baciadonna et al., 2024).",
-  ], { x: M, y: 2.78, w: 6.3, gap: 1.2, size: 14 });
+  ], { x: M, y: 2.7, w: 6.3, gap: 1.12, size: 14 });
+
+  // the identifier the bird already carries
+  [1, 2, 3].forEach((n, i) => {
+    s.addImage({ path: path.join(D, `spot${n}.jpg`), x: M + i * 1.22, y: 5.84, w: 1.1, h: 1.1 });
+  });
+  s.addText("Ventral spot patterns: individual, stable, and already on the bird.", {
+    x: 4.6, y: 5.88, w: 2.6, h: 1.02, fontFace: SANS, fontSize: 12.5, italic: true,
+    color: BODY, lineSpacing: 17, isTextBox: true, margin: 0, valign: "middle",
+  });
 
   s.addImage({ path: path.join(D, "bands.jpg"), x: 8.55, y: 1.7, w: 2.95, h: 4.83 });
   caption(s, "The colony's own band chart — the system a photograph would complement.",
@@ -181,34 +190,46 @@ Meanwhile the penguins already carry an identifier — the spot pattern on the b
     ["1 → 291", "photographs per bird"],
     ["335", "capture sessions"],
   ];
-  const cw = 2.78, cgap = 0.22;
+  const cw = 2.5, cgap = 0.2;
   stats.forEach(([n, l], i) => {
-    const x = M + i * (cw + cgap);
+    const x = M + (i % 2) * (cw + cgap);
+    const y = 1.66 + Math.floor(i / 2) * 1.16;
     s.addShape(pres.ShapeType.roundRect, {
-      x, y: 1.58, w: cw, h: 1.16, rectRadius: 0.06,
+      x, y, w: cw, h: 1.06, rectRadius: 0.06,
       fill: { color: CARD }, line: { type: "none" },
     });
-    dot(s, x + 0.22, 1.79, 0.11, i === 2 ? ORANGE : BLUE);
+    dot(s, x + 0.2, y + 0.19, 0.1, i === 2 ? ORANGE : BLUE);
     s.addText(n, {
-      x: x + 0.22, y: 1.93, w: cw - 0.44, h: 0.5, fontFace: HEAD, fontSize: 27, bold: true,
+      x: x + 0.2, y: y + 0.32, w: cw - 0.4, h: 0.44, fontFace: HEAD, fontSize: 23, bold: true,
       color: INK, isTextBox: true, margin: 0, valign: "middle",
     });
     s.addText(l, {
-      x: x + 0.22, y: 2.4, w: cw - 0.44, h: 0.28, fontFace: SANS, fontSize: 12,
+      x: x + 0.2, y: y + 0.74, w: cw - 0.4, h: 0.26, fontFace: SANS, fontSize: 11.5,
       color: MUTED, isTextBox: true, margin: 0, valign: "middle",
     });
   });
+
+  const iw = 5.9;
+  s.addImage({ path: F("05_dataset_distribution.jpg"), x: 6.55, y: 1.72, w: iw, h: iw * 0.3395 });
+  caption(s, "Every colony member, sorted by photograph count — Medici holds 291.",
+    { x: 6.55, y: 3.78, w: iw, h: 0.3, align: "center" });
 
   s.addText([
     { text: "Taken by volunteers during routine husbandry — no protocol, no fixed viewpoint, no schedule. ", options: { color: INK } },
     { text: "Two inclusion thresholds leave the ", options: { color: BODY } },
     { text: "35 individuals and 1,743 photographs", options: { color: INK, bold: true } },
     { text: " behind every number here.", options: { color: BODY } },
-  ], { x: M, y: 2.92, w: W - 2 * M, h: 0.9, fontFace: SANS, fontSize: 14.5,
+  ], { x: M, y: 4.28, w: W - 2 * M, h: 0.66, fontFace: SANS, fontSize: 14.5,
        lineSpacing: 21, isTextBox: true, margin: 0, valign: "top" });
 
-  const iw = 9.2;
-  s.addImage({ path: F("05_dataset_distribution.jpg"), x: (W - iw) / 2, y: 3.86, w: iw, h: iw * 0.3395 });
+  const pw = 1.31, pgap = 0.14, pn = 7;
+  const px0 = (W - (pn * pw + (pn - 1) * pgap)) / 2;
+  for (let i = 0; i < pn; i++) {
+    s.addImage({ path: path.join(D, `strip${i + 1}.jpg`),
+                 x: px0 + i * (pw + pgap), y: 5.02, w: pw, h: pw / 0.78 });
+  }
+  caption(s, "Seven of the eighty-one, as photographed — different days, light, distance and backgrounds, and one bird facing away.",
+    { x: M, y: 6.78, w: W - 2 * M, h: 0.34, align: "center" });
 
   s.addNotes(
 `[1:30-2:15]  Here is the raw material. 2,307 photographs of 81 birds — but look at the shape of it. One bird has 291 photographs; the tail has one each. An eighteen-fold spread across even the birds I could use.
