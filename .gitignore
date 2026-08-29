@@ -45,3 +45,12 @@ note.docx
 # Dissertation handoff notes -- kept local
 HANDOFF.md
 WRITEUP_DATA_PACK.md
+
+# Slide-deck build artefacts (regenerate via presentation/prepare_assets.py + build_deck.js)
+/presentation/node_modules/
+/presentation/package.json
+/presentation/package-lock.json
+/presentation/fig/
+/presentation/bands.jpg
+/presentation/title_bg.jpg
+/presentation/penguin_reid_final_pre.pptx
